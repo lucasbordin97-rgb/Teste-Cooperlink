@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento - Cooperlink Brasil</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#0c3b6d',
+                            light: '#145293',
+                            orange: '#f36621',
+                            darkorange: '#d65415'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { background-color: #f8fafc; }
+        .slot-btn:disabled { opacity: 0.4; cursor: not-allowed; background-color: #f1f5f9; border-color: #e2e8f0; color: #94a3b8; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+
+<body class="text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- HEADER BRANDING -->
+    <header class="bg-brand-blue text-white shadow-lg sticky top-0 z-40">
+        <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-center gap-3">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0 shadow-inner">
+                <i data-lucide="shield-check" class="w-6 h-6 text-brand-orange"></i>
+            </div>
+            <div class="flex flex-col">
+                <h1 class="text-xl font-extrabold tracking-tight leading-tight">Cooperlink<span class="text-brand-orange">Brasil</span></h1>
+                <span class="text-[10px] font-medium tracking-widest text-blue-200 uppercase">Proteção Veicular</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTAINER PRINCIPAL MOBILE-FIRST -->
+    <main class="flex-grow max-w-md mx-auto w-full p-4 sm:p-6 mb-12">
+
+        <!-- PROGRESS BAR -->
+        <div class="mb-8 px-2">
+            <div class="flex items-center justify-between relative">
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 rounded-full -z-10"></div>
+                <div id="progressBar" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-brand-orange rounded-full -z-10 transition-all duration-300" style="width: 0%;"></div>
+                
+                <div id="pStep1" class="w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors border-2 border-white">1</div>
+                <div id="pStep2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors">2</div>
+                <div id="pStep3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors">3</div>
+                <div id="pStep4" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors">4</div>
+            </div>
+            <div class="flex justify-between mt-2 text-[10px] font-semibold text-slate-400">
+                <span class="text-brand-orange">Serviço</span>
+                <span>Local</span>
+                <span>Data</span>
+                <span>Dados</span>
+            </div>
+        </div>
+
+        <!-- FLUXO DO AGENDAMENTO -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-5 sm:p-6 overflow-hidden relative">
+            
+            <!-- ETAPA 1: TIPO DE SERVIÇO -->
+            <div id="step1" class="space-y-5 transition-all">
+                <div>
+                    <h2 class="text-xl font-extrabold text-brand-blue">O que você precisa?</h2>
+                    <p class="text-sm text-slate-500 mt-1">Selecione o serviço para o seu veículo</p>
+                </div>
+                
+                <div class="flex flex-col gap-3">
+                    <button type="button" onclick="selecionarServico('Instalação')" class="w-full bg-white border-2 border-slate-100 hover:border-brand-blue hover:bg-blue-50 p-4 rounded-2xl text-left transition-all group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-100 group-hover:bg-brand-blue text-brand-blue group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                            <i data-lucide="wrench" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base group-hover:text-brand-blue">Instalação</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Novo equipamento de rastreamento.</p>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="selecionarServico('Manutenção')" class="w-full bg-white border-2 border-slate-100 hover:border-brand-orange hover:bg-orange-50 p-4 rounded-2xl text-left transition-all group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-orange-100 group-hover:bg-brand-orange text-brand-orange group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                            <i data-lucide="cog" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base group-hover:text-brand-orange">Manutenção</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Ajuste ou reparo de equipamento.</p>
+                        </div>
+                    </button>
+
+                    <button type="button" onclick="selecionarServico('Remoção')" class="w-full bg-white border-2 border-slate-100 hover:border-rose-500 hover:bg-rose-50 p-4 rounded-2xl text-left transition-all group flex items-center gap-4">
+                        <div class="w-12 h-12 bg-rose-100 group-hover:bg-rose-600 text-rose-600 group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                            <i data-lucide="trash-2" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base group-hover:text-rose-600">Remoção</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Desinstalação completa.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ETAPA 2: CEP / LOCAL -->
+            <div id="step2" class="hidden space-y-5 animate-fade-in">
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="voltarPara(1)" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-extrabold text-brand-blue">Onde você está?</h2>
+                        <p class="text-sm text-slate-500">Validação da região de atendimento</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Qual o seu CEP?</label>
+                    <div class="flex flex-col gap-3">
+                        <input type="tel" id="inputCEP" placeholder="Ex: 13010-140" maxlength="9" oninput="mascaraCEP(this)" 
+                               class="w-full p-4 border-2 border-slate-200 rounded-xl text-base font-semibold text-center tracking-widest focus:border-brand-blue focus:ring-0 outline-none transition-colors">
+                        <button type="button" onclick="buscarEAnalisarCEP()" id="btnBuscarCep" class="w-full bg-brand-blue hover:bg-brand-light text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md">
+                            <i data-lucide="search" class="w-5 h-5"></i> Verificar Disponibilidade
+                        </button>
+                    </div>
+                    <div id="cepFeedback" class="mt-3 text-sm text-center font-medium min-h-[20px]"></div>
+                </div>
+
+                <!-- TÉCNICO EXTERNO -->
+                <div id="boxTecnicoExterno" class="hidden pt-1">
+                    <button type="button" onclick="encaminharParaTecnicoParceiro()" 
+                            class="w-full bg-brand-orange hover:bg-brand-darkorange text-white font-bold text-sm p-5 rounded-2xl shadow-lg transition-all transform hover:scale-[1.02] flex flex-col items-center gap-3 text-center">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <i data-lucide="truck" class="w-6 h-6"></i>
+                        </div>
+                        <span class="leading-relaxed">Pela localização, iremos encaminhar para um Técnico Parceiro entrar em contato agendando Data e Horário. <br><br><b>Clique aqui para confirmar seus dados.</b></span>
+                    </button>
+                </div>
+
+                <!-- POSTO FIXO (HENRICAR) -->
+                <div id="boxPostosFixos" class="hidden pt-1">
+                    <button type="button" onclick="confirmarPostoParceiro('Henricar - Av. Benjamin Constant, 550, Campinas/SP (CEP 13010-140)')" 
+                            class="w-full bg-white border-2 border-brand-blue p-4 rounded-2xl text-left transition-all hover:bg-blue-50 group flex items-start gap-4">
+                        <div class="w-10 h-10 bg-brand-blue text-white rounded-full flex items-center justify-center shrink-0 mt-1">
+                            <i data-lucide="map-pin" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold tracking-wider text-brand-orange uppercase mb-1 block">Atendimento Local</span>
+                            <h3 class="font-extrabold text-brand-blue text-base">Henricar - Campinas</h3>
+                            <p class="text-xs text-slate-600 font-medium mt-1 leading-relaxed">Av. Benjamin Constant, 550<br>Centro, Campinas - SP</p>
+                            <div class="mt-3 flex items-center gap-1.5 text-xs font-bold text-brand-blue">
+                                Prosseguir com Agendamento <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ETAPA 3: DATA E HORÁRIO -->
+            <div id="step3" class="hidden space-y-5 animate-fade-in">
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="voltarPara(2)" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-extrabold text-brand-blue">Quando?</h2>
+                        <p class="text-sm text-slate-500">Escolha o dia e o horário</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Dia do Atendimento</label>
+                    <input type="date" id="dataAgendamento" onchange="carregarHorarios()"
+                           class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-slate-800 font-semibold focus:border-brand-blue focus:ring-0 outline-none transition-colors shadow-sm bg-slate-50">
+                </div>
+
+                <div id="containerHorarios" class="pt-2 border-t border-slate-100">
+                    <div class="mb-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i data-lucide="sun" class="w-4 h-4 text-amber-500"></i>
+                            <span class="text-sm font-extrabold text-slate-700">Manhã (09:00 - 11:30)</span>
+                        </div>
+                        <div id="gridHorariosManha" class="grid grid-cols-3 gap-2"></div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <i data-lucide="sunset" class="w-4 h-4 text-brand-orange"></i>
+                            <span class="text-sm font-extrabold text-slate-700">Tarde (13:00 - 17:20)</span>
+                        </div>
+                        <div id="gridHorariosTarde" class="grid grid-cols-3 gap-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 4: FORMULÁRIO DE DADOS -->
+            <div id="step4" class="hidden space-y-5 animate-fade-in">
+                <div class="flex items-center gap-3">
+                    <button type="button" id="btnVoltarEtapa4" onclick="voltarPara(3)" class="w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-extrabold text-brand-blue">Quase lá!</h2>
+                        <p class="text-sm text-slate-500">Confirme os dados do veículo</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl flex items-start gap-3">
+                    <i data-lucide="info" class="w-5 h-5 text-brand-blue shrink-0 mt-0.5"></i>
+                    <p class="text-xs text-brand-blue font-medium leading-relaxed">
+                        Seu agendamento será registrado para <b><span id="resumoModalidade"></span></b>.
+                    </p>
+                </div>
+
+                <form id="formAgendamento" onsubmit="finalizarAgendamento(event)" class="space-y-4 pt-1">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Nome Completo</label>
+                        <input type="text" id="inputNome" required placeholder="Digite o nome" 
+                               class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">WhatsApp</label>
+                        <input type="tel" id="inputTelefone" required placeholder="(19) 99999-9999" maxlength="15" oninput="mascaraTelefone(this)" 
+                               class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Placa do Veículo</label>
+                        <input type="text" id="inputPlaca" required placeholder="ABC1D23" maxlength="8" oninput="formatarPlaca(this)" 
+                               class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-bold text-slate-800 uppercase focus:border-brand-blue outline-none transition-colors bg-slate-50 text-center tracking-widest text-lg">
+                    </div>
+
+                    <button type="submit" id="btnConfirmar" class="w-full bg-brand-orange hover:bg-brand-darkorange text-white font-extrabold text-base py-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-2">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i> Finalizar Agendamento
+                    </button>
+                </form>
+            </div>
+
+            <!-- ETAPA 5: SUCESSO -->
+            <div id="stepSucesso" class="hidden text-center py-6 space-y-5 animate-fade-in">
+                <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-2 animate-bounce">
+                    <i data-lucide="check" class="w-10 h-10"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Tudo Certo!</h2>
+                    <p class="text-sm text-slate-500 mt-2 max-w-[250px] mx-auto">Sua solicitação foi registrada no nosso sistema com sucesso.</p>
+                </div>
+
+                <div class="bg-blue-50 border-2 border-brand-blue p-4 rounded-2xl text-brand-blue flex items-center justify-center gap-3 shadow-sm">
+                    <i data-lucide="smartphone" class="w-6 h-6 shrink-0 animate-pulse"></i>
+                    <span class="text-sm font-bold text-left leading-tight">Iremos encaminhar a Ordem de Serviço via WhatsApp!</span>
+                </div>
+
+                <div class="pt-4 flex flex-col gap-3">
+                    <!-- Botão do WhatsApp removido conforme solicitado -->
+                    <button type="button" onclick="reiniciarFluxo()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-4 rounded-xl transition-colors">
+                        Fazer Novo Agendamento
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER SETTINGS (ADMIN) -->
+    <footer class="mt-auto py-6 flex justify-center pb-8">
+        <button type="button" onclick="toggleSettings()" class="text-slate-300 hover:text-slate-400 transition-colors flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest">
+            <i data-lucide="settings-2" class="w-3.5 h-3.5"></i> Acesso Restrito
+        </button>
+    </footer>
+
+    <!-- MODAL DE CONFIGURAÇÕES ADMIN (OCULTO PARA CLIENTE) -->
+    <div id="modalAdmin" class="fixed inset-0 bg-slate-900/60 z-50 hidden flex-col justify-end sm:justify-center animate-fade-in backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md mx-auto rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button type="button" onclick="toggleSettings()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+            
+            <h2 class="text-xl font-extrabold text-brand-blue mb-6 flex items-center gap-2">
+                <i data-lucide="shield" class="w-6 h-6"></i> Controle Interno
+            </h2>
+
+            <div class="space-y-6">
+                <!-- URL Config -->
+                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200">
+                    <label class="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">Integração Google Sheets</label>
+                    <input type="url" id="scriptUrlInput" placeholder="URL do Apps Script (/exec)" 
+                           class="w-full p-3 border border-amber-300 rounded-xl text-xs focus:outline-none focus:border-brand-blue bg-white mb-2">
+                    <div class="flex gap-2">
+                        <button type="button" onclick="salvarEtestar()" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors">
+                            <i data-lucide="save" class="w-4 h-4"></i> Salvar e Testar
+                        </button>
+                    </div>
+                    <div id="statusIntegracao" class="mt-2 text-[10px] font-bold text-slate-500"></div>
+                </div>
+
+                <!-- Painel Dados -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Registros Locais (<span id="totalAgendamentos">0</span>)</label>
+                        <button type="button" onclick="exportarCSV()" class="bg-brand-blue text-white text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1">
+                            <i data-lucide="download" class="w-3 h-3"></i> CSV
+                        </button>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <button type="button" onclick="resetarVagas()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition-colors">
+                            Limpar Dados Locais de Teste
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE LÓGICA -->
+    <script>
+        function safeInitIcons() {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        }
+
+        // DADOS PADRÃO
+        const POSTO_HENRICAR = {
+            nome: "Henricar - Av. Benjamin Constant, 550, Campinas/SP (CEP 13010-140)",
+            cidade: "Campinas - SP",
+            cep: "13010-140"
+        };
+        const horariosManha = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
+        const horariosTarde = ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:20"];
+
+        let estadoAgendamento = {
+            servico: "",
+            posto: null,
+            cep: "",
+            cepFormatado: "",
+            enderecoFormatado: "",
+            isTecnicoExterno: false,
+            data: "",
+            horario: ""
+        };
+
+        let agendamentosDB = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            safeInitIcons();
+            definirDataMinima();
+            try { agendamentosDB = JSON.parse(localStorage.getItem('agendamentos_db')) || []; } catch(e){}
+            carregarUrlSalva();
+            atualizarTabelaAdmin();
+        });
+
+        // NAVEGAÇÃO E PROGRESSO
+        function voltarPara(etapa) {
+            document.querySelectorAll('[id^="step"]').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('animate-fade-in');
+            });
+            const alvo = document.getElementById('step' + etapa);
+            alvo.classList.remove('hidden');
+            // Timeout para trigger da animação
+            setTimeout(() => alvo.classList.add('animate-fade-in'), 10);
+            atualizarTracker(etapa);
+        }
+
+        function atualizarTracker(etapaAtual) {
+            const steps = 4;
+            const percentage = ((etapaAtual - 1) / (steps - 1)) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById('pStep' + i);
+                if (i <= etapaAtual) {
+                    el.className = "w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors border-2 border-white z-10";
+                } else {
+                    el.className = "w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10";
+                }
+            }
+        }
+
+        // MÁSCARAS
+        function mascaraCEP(input) {
+            let v = input.value.replace(/\D/g, "");
+            v = v.replace(/^(\d{5})(\d)/, "$1-$2");
+            input.value = v;
+        }
+        function mascaraTelefone(input) {
+            let v = input.value.replace(/\D/g, "");
+            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+            input.value = v;
+        }
+        function formatarPlaca(input) {
+            input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        }
+
+        // FLUXO
+        function selecionarServico(servico) {
+            estadoAgendamento.servico = servico;
+            voltarPara(2);
+        }
+
+        // FUNÇÃO DE NORMALIZAÇÃO DE TEXTO PARA REMOVER ACENTOS E DEIXAR MINÚSCULO
+        function normalizarTexto(texto) {
+            return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+        }
+
+        async function buscarEAnalisarCEP() {
+            const rawCep = document.getElementById('inputCEP').value.replace(/\D/g, '');
+            const maskedCep = document.getElementById('inputCEP').value;
+            const feedback = document.getElementById('cepFeedback');
+            const boxTecnico = document.getElementById('boxTecnicoExterno');
+            const boxPostos = document.getElementById('boxPostosFixos');
+            const btn = document.getElementById('btnBuscarCep');
+
+            boxTecnico.classList.add('hidden');
+            boxPostos.classList.add('hidden');
+
+            if (rawCep.length !== 8) {
+                feedback.innerHTML = `<span class="text-rose-500">CEP inválido (8 dígitos).</span>`;
+                return;
+            }
+
+            btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Buscando...`;
+            safeInitIcons();
+            feedback.innerHTML = ``;
+
+            try {
+                const res = await fetch(`https://viacep.com.br/ws/${rawCep}/json/`);
+                const data = await res.json();
+
+                btn.innerHTML = `<i data-lucide="search" class="w-5 h-5"></i> Verificar Disponibilidade`;
+                safeInitIcons();
+
+                if (data.erro) {
+                    feedback.innerHTML = `<span class="text-rose-500">CEP não encontrado.</span>`;
+                    return;
+                }
+
+                estadoAgendamento.cep = rawCep;
+                estadoAgendamento.cepFormatado = maskedCep;
+                estadoAgendamento.enderecoFormatado = `${data.logradouro || 'Bairro'}, ${data.bairro || ''} - ${data.localidade}/${data.uf}`;
+
+                // REGRA DE NEGÓCIO: Apenas Campinas e Hortolândia vão para o Posto Fixo
+                const cidadeNorm = normalizarTexto(data.localidade);
+                const isRegiaoAtendida = (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");
+
+                if (!isRegiaoAtendida) {
+                    estadoAgendamento.isTecnicoExterno = true;
+                    feedback.innerHTML = `<span class="text-amber-600 font-semibold">Sua região (${data.localidade}) é atendida via Técnico Parceiro.</span>`;
+                    boxTecnico.classList.remove('hidden');
+                } else {
+                    estadoAgendamento.isTecnicoExterno = false;
+                    feedback.innerHTML = `<span class="text-emerald-600 font-semibold">Atendimento liberado para o Posto Henricar.</span>`;
+                    boxPostos.classList.remove('hidden');
+                }
+
+            } catch (error) {
+                btn.innerHTML = `<i data-lucide="search" class="w-5 h-5"></i> Verificar Disponibilidade`;
+                safeInitIcons();
+                feedback.innerHTML = `<span class="text-rose-500">Erro na conexão. Tente novamente.</span>`;
+            }
+        }
+
+        function encaminharParaTecnicoParceiro() {
+            // CORREÇÃO: Informação formatada que será enviada para a Planilha do Google
+            estadoAgendamento.posto = { nome: "Agend. Tecnico Parceiro - CEP: " + estadoAgendamento.cepFormatado };
+            estadoAgendamento.isTecnicoExterno = true;
+            estadoAgendamento.data = "A agendar via técnico";
+            estadoAgendamento.horario = "A agendar";
+            
+            document.getElementById('resumoModalidade').innerText = "Técnico Parceiro (Atendimento Externo)";
+            document.getElementById('btnVoltarEtapa4').setAttribute('onclick', 'voltarPara(2)');
+            voltarPara(4);
+        }
+
+        function confirmarPostoParceiro(nomePosto) {
+            estadoAgendamento.posto = { nome: nomePosto };
+            estadoAgendamento.isTecnicoExterno = false;
+            document.getElementById('resumoModalidade').innerText = "Atendimento no Posto Henricar";
+            document.getElementById('btnVoltarEtapa4').setAttribute('onclick', 'voltarPara(3)');
+            voltarPara(3);
+            carregarHorarios();
+        }
+
+        function definirDataMinima() {
+            const hoje = new Date().toISOString().split('T')[0];
+            const elem = document.getElementById('dataAgendamento');
+            elem.min = hoje;
+            elem.value = hoje;
+            estadoAgendamento.data = hoje;
+        }
+
+        function carregarHorarios() {
+            const dataEscolhida = document.getElementById('dataAgendamento').value;
+            estadoAgendamento.data = dataEscolhida;
+
+            const gridM = document.getElementById('gridHorariosManha');
+            const gridT = document.getElementById('gridHorariosTarde');
+
+            const renderBloco = (listaHorarios) => {
+                return listaHorarios.map(horario => {
+                    const ocupados = agendamentosDB.filter(a => 
+                        a.posto === (estadoAgendamento.posto ? estadoAgendamento.posto.nome : '') && 
+                        a.data === dataEscolhida && 
+                        a.horario === horario
+                    ).length;
+
+                    const lotado = ocupados >= 1;
+
+                    return `
+                        <button type="button" onclick="selecionarHorario('${horario}')" ${lotado ? 'disabled' : ''} 
+                                class="slot-btn border-2 ${lotado ? 'border-slate-200 bg-slate-100 text-slate-400' : 'border-slate-200 bg-white text-brand-blue hover:border-brand-blue hover:bg-blue-50'} py-3 px-2 rounded-xl text-center transition-all font-bold text-sm shadow-sm">
+                            ${horario}
+                        </button>
+                    `;
+                }).join('');
+            };
+
+            gridM.innerHTML = renderBloco(horariosManha);
+            gridT.innerHTML = renderBloco(horariosTarde);
+        }
+
+        function selecionarHorario(horario) {
+            estadoAgendamento.horario = horario;
+            voltarPara(4);
+        }
+
+        function finalizarAgendamento(event) {
+            event.preventDefault();
+            
+            const btn = document.getElementById('btnConfirmar');
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Concluindo...`;
+            safeInitIcons();
+
+            const nome = document.getElementById('inputNome').value;
+            const telefone = document.getElementById('inputTelefone').value;
+            const placa = document.getElementById('inputPlaca').value;
+
+            const novoAgendamento = {
+                id: Date.now(),
+                dataRegistro: new Date().toLocaleString('pt-BR'),
+                servico: estadoAgendamento.servico,
+                posto: estadoAgendamento.posto ? estadoAgendamento.posto.nome : POSTO_HENRICAR.nome,
+                cep: estadoAgendamento.cepFormatado, // Salva com a máscara na planilha
+                endereco: estadoAgendamento.enderecoFormatado,
+                data: estadoAgendamento.data,
+                horario: estadoAgendamento.horario,
+                nome: nome,
+                telefone: telefone,
+                placa: placa
+            };
+
+            agendamentosDB.push(novoAgendamento);
+            try { localStorage.setItem('agendamentos_db', JSON.stringify(agendamentosDB)); } catch(e){}
+            
+            atualizarTabelaAdmin();
+            dispararParaGoogle(novoAgendamento);
+
+            setTimeout(() => {
+                document.getElementById('step4').classList.add('hidden');
+                const stepSucesso = document.getElementById('stepSucesso');
+                stepSucesso.classList.remove('hidden');
+                setTimeout(() => stepSucesso.classList.add('animate-fade-in'), 10);
+                safeInitIcons();
+            }, 800);
+        }
+
+        function reiniciarFluxo() {
+            document.getElementById('formAgendamento').reset();
+            document.getElementById('stepSucesso').classList.add('hidden');
+            document.getElementById('stepSucesso').classList.remove('animate-fade-in');
+            document.getElementById('inputCEP').value = "";
+            document.getElementById('cepFeedback').innerHTML = "";
+            document.getElementById('boxTecnicoExterno').classList.add('hidden');
+            document.getElementById('boxPostosFixos').classList.add('hidden');
+            
+            const btn = document.getElementById('btnConfirmar');
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> Finalizar Agendamento`;
+            
+            voltarPara(1);
+        }
+
+        // INTEGRAÇÃO & ADMIN
+        function dispararParaGoogle(dados) {
+            let url = "https://script.google.com/macros/s/AKfycby7bTDko_5w8EY0RmTqAjFdO5ktNOQI9NF-gvH_2wVAD1JvoIRPPepExJWJRzgiICkt/exec";
+            try { const saved = localStorage.getItem('google_script_url'); if (saved) url = saved; } catch(e){}
+            if (!url) return;
+
+            fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            }).then(() => console.log("Google Sheets OK!")).catch(err => console.error(err));
+        }
+
+        function toggleSettings() {
+            const modal = document.getElementById('modalAdmin');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+            safeInitIcons();
+        }
+
+        function salvarEtestar() {
+            const url = document.getElementById('scriptUrlInput').value.trim();
+            if (!url) { alert("Insira URL válida."); return; }
+            try { localStorage.setItem('google_script_url', url); } catch(e){}
+            
+            dispararParaGoogle({
+                servico: "Teste App",
+                posto: "Integração",
+                cep: "00000-000",
+                endereco: "Sistema",
+                data: "00/00/0000",
+                horario: "00:00",
+                nome: "Teste Conexão",
+                telefone: "000000000",
+                placa: "TST0000"
+            });
+            alert("Salvo e enviado teste!");
+            atualizarStatusIntegracao();
+        }
+
+        function carregarUrlSalva() {
+            try {
+                const url = localStorage.getItem('google_script_url') || "https://script.google.com/macros/s/AKfycby7bTDko_5w8EY0RmTqAjFdO5ktNOQI9NF-gvH_2wVAD1JvoIRPPepExJWJRzgiICkt/exec";
+                if (url) document.getElementById('scriptUrlInput').value = url;
+            } catch(e){}
+            atualizarStatusIntegracao();
+        }
+
+        function atualizarStatusIntegracao() {
+            let url = "";
+            try { url = localStorage.getItem('google_script_url'); } catch(e){}
+            const elem = document.getElementById('statusIntegracao');
+            if (url) {
+                elem.innerHTML = `<span class="text-emerald-600 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> API Conectada</span>`;
+            } else {
+                elem.innerHTML = `<span class="text-amber-600 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3"></i> Sem API configurada</span>`;
+            }
+            safeInitIcons();
+        }
+
+        function atualizarTabelaAdmin() {
+            document.getElementById('totalAgendamentos').innerText = agendamentosDB.length;
+        }
+
+        function resetarVagas() {
+            agendamentosDB = [];
+            try { localStorage.removeItem('agendamentos_db'); } catch(e){}
+            atualizarTabelaAdmin();
+            alert("Dados locais resetados. Vagas liberadas.");
+        }
+
+        // GERADOR SEGURO DE CSV VIA ARRAY JOIN EVITANDO ERROS DE \n
+        function exportarCSV() {
+            if (agendamentosDB.length === 0) {
+                alert("Nenhum dado.");
+                return;
+            }
+            let linhas = ["DataRegistro,Servico,Associado,Telefone,CEP,Endereco,Placa,Posto,Data,Horario"];
+            agendamentosDB.forEach(a => {
+                linhas.push(`"${a.dataRegistro}","${a.servico}","${a.nome}","${a.telefone}","${a.cep || ''}","${a.endereco || ''}","${a.placa}","${a.posto}","${a.data}","${a.horario}"`);
+            });
+            let csvData = linhas.join('\n');
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "agendamentos_cooperlink.csv";
+            link.click();
+        }
+    </script>
+    <style>
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</body>
+</html>
