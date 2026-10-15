@@ -1,1461 +1,1397 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>Central de Agendamento Técnico | Cooperlink Brasil</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            dark: '#041020',
-                            navy: '#081d38',
-                            blue: '#0c3b6d',
-                            light: '#145293',
-                            accent: '#1e6bc4',
-                            orange: '#f36621',
-                            darkorange: '#d65415'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    }
-                }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Central de Agendamento Técnico | Cooperlink Brasil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#041020',
+              navy: '#081d38',
+              blue: '#0c3b6d',
+              light: '#145293',
+              accent: '#1e6bc4',
+              orange: '#f36621',
+              darkorange: '#d65415'
             }
-        };
-    </script>
-    <style>
-        body {
-            background-color: #041020;
-            color: #1e293b;
-            overflow-x: hidden;
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
         }
-        .cooperlink-bg {
-            background: 
-                radial-gradient(circle at 12% 18%, rgba(243, 102, 33, 0.14) 0%, transparent 42%),
-                radial-gradient(circle at 88% 80%, rgba(30, 107, 196, 0.25) 0%, transparent 50%),
-                linear-gradient(135deg, #030c18 0%, #071c36 48%, #0c3b6d 100%);
-            position: relative;
-        }
-        .cooperlink-bg::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 26px 26px;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.11);
-            transition: all 0.25s ease;
-        }
-        .glass-panel:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(243, 102, 33, 0.35);
-        }
-        .telemetry-hud {
-            background: rgba(4, 16, 32, 0.82);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-        }
-        .form-card-shadow {
-            box-shadow: 0 25px 55px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.14);
-        }
-        .slot-btn:disabled {
-            opacity: 0.38;
-            cursor: not-allowed;
-            background-color: #f1f5f9;
-            border-color: #e2e8f0;
-            color: #94a3b8;
-            text-decoration: line-through;
-        }
-        .animate-fade-in { animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes radarPulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(2.4); opacity: 0; }
-        }
-        .radar-ring::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 9999px;
-            border: 1.5px solid #10b981;
-            animation: radarPulse 2s infinite ease-out;
-        }
-        .hp-field { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; pointer-events: none; }
-        .hero-slide { transition: opacity 0.6s ease-in-out; }
-    </style>
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #041020;
+      color: #1e293b;
+      overflow-x: hidden;
+    }
+    .cooperlink-bg {
+      background:
+        radial-gradient(circle at 12% 18%, rgba(243, 102, 33, 0.14) 0%, transparent 42%),
+        radial-gradient(circle at 88% 80%, rgba(30, 107, 196, 0.25) 0%, transparent 50%),
+        linear-gradient(135deg, #030c18 0%, #071c36 48%, #0c3b6d 100%);
+      position: relative;
+    }
+    .cooperlink-bg::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 26px 26px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      transition: all 0.25s ease;
+    }
+    .glass-panel:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(243, 102, 33, 0.35);
+    }
+    .telemetry-hud {
+      background: rgba(4, 16, 32, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+    .form-card-shadow {
+      box-shadow: 0 25px 55px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.14);
+    }
+    .slot-btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      background-color: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+    .animate-fade-in { animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes radarPulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+    .radar-ring::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      border: 1.5px solid #10b981;
+      animation: radarPulse 2s infinite ease-out;
+    }
+    .hp-field { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; pointer-events: none; }
+    .hero-slide { transition: opacity 0.6s ease-in-out; }
+  </style>
 </head>
 
 <body class="cooperlink-bg font-sans antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- TOP BAR OFICIAL COOPERLINK BRASIL -->
-    <header class="border-b border-white/10 bg-[#041020]/85 backdrop-blur-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between">
-            <!-- Brand Logo (Abre admin com duplo clique no PC ou 3 toques rápidos no celular) -->
-            <div id="logoAdminTrigger" onclick="window.cliqueMultiploLogo()" ondblclick="window.toggleAdminLogin()" class="flex items-center gap-3.5 cursor-pointer select-none" title="Cooperlink Brasil">
-                <div class="w-11 h-11 bg-gradient-to-br from-brand-blue to-[#062344] rounded-xl flex items-center justify-center shrink-0 shadow-lg border border-white/15 relative overflow-hidden">
-                    <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-brand-orange/30 rounded-full blur-sm"></div>
-                    <svg class="w-7 h-7 relative z-10" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14 2.5L4.5 6.5V13.5C4.5 19.8 8.5 25.4 14 27C19.5 25.4 23.5 19.8 23.5 13.5V6.5L14 2.5Z" fill="#0c3b6d" stroke="#f36621" stroke-width="2"/>
-                        <path d="M10.5 14.5L13 17L18 11.5" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <div class="flex flex-col">
-                    <div class="flex items-center gap-2.5">
-                        <h1 class="font-display text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-none">
-                            Cooperlink<span class="text-brand-orange">Brasil</span>
-                        </h1>
-                        <span class="hidden sm:inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-md">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SUSEP & AAAPV
-                        </span>
-                    </div>
-                    <span class="text-[10px] font-semibold tracking-widest text-blue-200/75 uppercase mt-1">
-                        Proteção Veicular • Central de Telemetria
-                    </span>
-                </div>
-            </div>
-
-            <!-- Canais Oficiais Cooperlink -->
-            <div class="hidden md:flex items-center gap-3.5 text-xs text-blue-100">
-                <div class="flex items-center gap-2.5 bg-white/5 px-3.5 py-2 rounded-xl border border-white/10">
-                    <svg class="w-4 h-4 text-brand-orange shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                    <div>
-                        <span class="text-[10px] text-blue-300/80 block leading-none">Central de Atendimento</span>
-                        <strong class="text-white font-mono font-bold">(19) 2042-3966</strong>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2.5 bg-white/5 px-3.5 py-2 rounded-xl border border-white/10">
-                    <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-                    <div>
-                        <span class="text-[10px] text-blue-300/80 block leading-none">Assistência 24h</span>
-                        <strong class="text-white font-mono font-bold">0800 941 9571</strong>
-                    </div>
-                </div>
-            </div>
+  <!-- TOP BAR OFICIAL COOPERLINK BRASIL -->
+  <header class="border-b border-white/10 bg-[#041020]/85 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between">
+      <div id="logoAdminTrigger" onclick="window.cliqueMultiploLogo()" ondblclick="window.toggleAdminLogin()" class="flex items-center gap-3.5 cursor-pointer select-none" title="Cooperlink Brasil">
+        <div class="w-11 h-11 bg-gradient-to-br from-brand-blue to-[#062344] rounded-xl flex items-center justify-center shrink-0 shadow-lg border border-white/15 relative overflow-hidden">
+          <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-brand-orange/30 rounded-full blur-sm"></div>
+          <svg class="w-7 h-7 relative z-10" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2.5L4.5 6.5V13.5C4.5 19.8 8.5 25.4 14 27C19.5 25.4 23.5 19.8 23.5 13.5V6.5L14 2.5Z" fill="#0c3b6d" stroke="#f36621" stroke-width="2"/>
+            <path d="M10.5 14.5L13 17L18 11.5" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
-    </header>
-
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="relative z-10 flex-grow max-w-7xl mx-auto w-full px-4 sm:px-8 py-6 lg:py-10 flex items-center">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-center">
-
-            <!-- COLUNA ESQUERDA: VITRINE COOPERLINK & CERTIFICAÇÕES -->
-            <div class="lg:col-span-7 space-y-5 text-white order-2 lg:order-1">
-                
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-brand-orange/15 border border-brand-orange/35 text-orange-200 text-xs font-bold tracking-wide">
-                    <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
-                    <span>PORTAL OFICIAL DO ASSOCIADO • TELEMETRIA E RASTREAMENTO</span>
-                </div>
-
-                <div class="space-y-2.5">
-                    <h2 class="font-display text-3xl sm:text-4xl lg:text-[40px] font-extrabold tracking-tight leading-[1.14] text-white">
-                        Mais de <span class="text-brand-orange">20 mil veículos protegidos</span> rodando tranquilos pelo Brasil.
-                    </h2>
-                    <p class="text-blue-100/80 text-sm sm:text-base leading-relaxed max-w-2xl">
-                        Na Cooperlink você não é um número: por trás de cada veículo existe uma família. Agende sua instalação, manutenção ou revisão do equipamento rastreador em menos de 1 minuto.
-                    </p>
-                </div>
-
-                <!-- CARROSSEL DE CAMPANHAS COM HUD DE TELEMETRIA -->
-                <div class="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-[#061830] h-[300px] sm:h-[330px] group">
-                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,#145293_0%,#041020_75%)] opacity-80"></div>
-
-                    <!-- SLIDE 1 -->
-                    <div id="slide0" class="hero-slide absolute inset-0 opacity-100">
-                        <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=85" 
-                             alt="Veículo Monitorado Cooperlink Brasil" 
-                             class="w-full h-full object-cover object-center opacity-55 mix-blend-luminosity"
-                             onerror="this.style.display='none'">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-[#041020] via-[#0c3b6d]/65 to-transparent"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#041020] via-[#041020]/40 to-transparent"></div>
-
-                        <div class="absolute top-4 left-4 telemetry-hud px-3.5 py-2 rounded-xl flex items-center gap-3 z-10">
-                            <div class="relative w-3 h-3 rounded-full bg-emerald-400 radar-ring"></div>
-                            <div class="font-mono text-[10px] leading-tight">
-                                <span class="text-emerald-300 font-bold block">TELEMETRIA 4G ATIVA</span>
-                                <span class="text-slate-300">SINAL GPS/GPRS • MONITORAMENTO 24H</span>
-                            </div>
-                        </div>
-
-                        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 flex flex-col justify-end">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="bg-brand-orange text-white text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded">
-                                    Jeito Cooperlink
-                                </span>
-                                <span class="text-xs font-semibold text-amber-300">
-                                    Proteção Sem Letra Miúda
-                                </span>
-                            </div>
-                            <p class="text-white font-display font-bold text-base sm:text-lg leading-snug max-w-xl">
-                                “Ninguém lê letra miúda porque ela costuma esconder problema. A nossa esconde solução: atendimento rápido, humano e sem burocracia.”
-                            </p>
-                            <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-white/15 text-xs text-blue-200/90">
-                                <span><strong>Central de Rastreamento 24h</strong> • Equipe Própria</span>
-                                <span class="font-mono text-[11px] text-emerald-300 font-semibold">● Pronta Resposta Nacional</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SLIDE 2 -->
-                    <div id="slide1" class="hero-slide absolute inset-0 opacity-0 pointer-events-none">
-                        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=85" 
-                             alt="Cobertura Nacional Cooperlink" 
-                             class="w-full h-full object-cover object-center opacity-55 mix-blend-luminosity"
-                             onerror="this.style.display='none'">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-[#041020] via-[#0c3b6d]/65 to-transparent"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#041020] via-[#041020]/45 to-transparent"></div>
-
-                        <div class="absolute top-4 left-4 telemetry-hud px-3.5 py-2 rounded-xl flex items-center gap-3 z-10">
-                            <span class="w-2.5 h-2.5 rounded-full bg-brand-orange"></span>
-                            <div class="font-mono text-[10px] leading-tight">
-                                <span class="text-orange-300 font-bold block">COBERTURA EM 23 ESTADOS</span>
-                                <span class="text-slate-300">+13.000 ASSISTÊNCIAS REALIZADAS</span>
-                            </div>
-                        </div>
-
-                        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 flex flex-col justify-end">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="bg-blue-500/40 border border-blue-400/50 text-blue-100 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded">
-                                    Imprevisto Não Escolhe Cidade
-                                </span>
-                            </div>
-                            <p class="text-white font-display font-bold text-base sm:text-lg leading-snug max-w-xl">
-                                “É a leveza de dirigir sabendo que, aconteça o que acontecer, a Cooperlink está do seu lado em qualquer rodovia ou cidade do Brasil.”
-                            </p>
-                            <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-white/15 text-xs text-blue-200/90">
-                                <span><strong>Assistência 24 Horas</strong> • Roubo, Furto, Colisão e Pane</span>
-                                <span class="font-mono text-[11px] text-amber-300 font-semibold">0800 941 9571</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SLIDE 3 -->
-                    <div id="slide2" class="hero-slide absolute inset-0 opacity-0 pointer-events-none">
-                        <img src="https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=85" 
-                             alt="Telemetria Avançada Cooperlink" 
-                             class="w-full h-full object-cover object-center opacity-55 mix-blend-luminosity"
-                             onerror="this.style.display='none'">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-[#041020] via-[#0c3b6d]/65 to-transparent"></div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#041020] via-[#041020]/45 to-transparent"></div>
-
-                        <div class="absolute top-4 left-4 telemetry-hud px-3.5 py-2 rounded-xl flex items-center gap-3 z-10">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                            <div class="font-mono text-[10px] leading-tight">
-                                <span class="text-emerald-300 font-bold block">MÓDULOS HOMOLOGADOS ANATEL</span>
-                                <span class="text-slate-300">INSTALAÇÃO NÃO-INVASIVA • GARANTIA PRESERVADA</span>
-                            </div>
-                        </div>
-
-                        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 flex flex-col justify-end">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="bg-emerald-600/40 border border-emerald-400/50 text-emerald-100 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded">
-                                    Padrão Técnico Cooperlink
-                                </span>
-                            </div>
-                            <p class="text-white font-display font-bold text-base sm:text-lg leading-snug max-w-xl">
-                                “Equipamentos de telemetria de última geração instalados por especialistas credenciados, mantendo 100% da originalidade elétrica do veículo.”
-                            </p>
-                            <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-white/15 text-xs text-blue-200/90">
-                                <span><strong>Unidades Credenciadas & Técnicos Móveis</strong></span>
-                                <span class="font-mono text-[11px] text-blue-300 font-semibold">Alta Precisão GPS</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Seletores do Carrossel -->
-                    <div class="absolute top-4 right-4 flex items-center gap-2 bg-[#041020]/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 z-20">
-                        <button type="button" onclick="window.trocarSlideMarketing(0)" id="dot0" class="w-5 h-2 rounded-full bg-brand-orange transition-all cursor-pointer" aria-label="Slide 1"></button>
-                        <button type="button" onclick="window.trocarSlideMarketing(1)" id="dot1" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all cursor-pointer" aria-label="Slide 2"></button>
-                        <button type="button" onclick="window.trocarSlideMarketing(2)" id="dot2" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all cursor-pointer" aria-label="Slide 3"></button>
-                    </div>
-                </div>
-
-                <!-- CERTIFICAÇÕES OFICIAIS COOPERLINK (SVGs Embutidos) -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                    <div class="glass-panel p-3.5 rounded-xl flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-lg bg-brand-orange/20 border border-brand-orange/40 flex items-center justify-center shrink-0 mt-0.5 text-brand-orange">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-1.5">
-                                <h4 class="font-display font-bold text-xs text-white">Cadastrada SUSEP</h4>
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            </div>
-                            <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">
-                                Adequada à Lei Complementar Federal nº 213/2025.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel p-3.5 rounded-xl flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-lg bg-blue-500/20 border border-blue-400/40 flex items-center justify-center shrink-0 mt-0.5 text-blue-300">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-1.5">
-                                <h4 class="font-display font-bold text-xs text-white">Afiliada à AAAPV</h4>
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            </div>
-                            <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">
-                                Autorregulamentação e excelência patrimonial.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel p-3.5 rounded-xl flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center shrink-0 mt-0.5 text-emerald-300">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-1.5">
-                                <h4 class="font-display font-bold text-xs text-white">Desde 2017</h4>
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                            </div>
-                            <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">
-                                Sede própria em Campinas/SP • Telemetria ANATEL.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- COLUNA DIREITA: CARD DE AGENDAMENTO INTERATIVO -->
-            <div class="lg:col-span-5 order-1 lg:order-2">
-                <div class="bg-white/95 backdrop-blur-xl rounded-[24px] form-card-shadow p-5 sm:p-7 overflow-hidden relative border border-white">
-
-                    <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-brand-blue via-brand-orange to-amber-500"></div>
-
-                    <!-- CABEÇALHO DO CARD + BARRA DE PROGRESSO -->
-                    <div class="mb-6 pt-1">
-                        <div class="flex items-center justify-between mb-4">
-                            <span id="badgeServicoTopo" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-blue bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
-                                Agendamento Online
-                            </span>
-                            <span class="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
-                                <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-                                Vagas em Tempo Real
-                            </span>
-                        </div>
-
-                        <div class="px-2">
-                            <div class="flex items-center justify-between relative">
-                                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 rounded-full -z-10"></div>
-                                <div id="progressBar" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-brand-orange rounded-full -z-10 transition-all duration-300" style="width: 0%;"></div>
-                                
-                                <div id="pStep1" class="w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors border-2 border-white z-10">1</div>
-                                <div id="pStep2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">2</div>
-                                <div id="pStep3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">3</div>
-                                <div id="pStep4" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">4</div>
-                            </div>
-                            <div class="flex justify-between mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                <span class="text-brand-orange">Serviço</span>
-                                <span>Região</span>
-                                <span>Horário</span>
-                                <span>Veículo</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ETAPA 1: TIPO DE SERVIÇO -->
-                    <div id="step1" class="space-y-4 transition-all">
-                        <div>
-                            <h2 class="font-display text-xl font-extrabold text-brand-blue">Qual serviço vamos agendar?</h2>
-                            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Selecione o atendimento técnico para o seu veículo</p>
-                        </div>
-                        
-                        <div class="flex flex-col gap-3">
-                            <button type="button" onclick="window.selecionarServico('Instalação')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-brand-blue hover:bg-blue-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
-                                <div class="flex items-center gap-3.5">
-                                    <div class="w-12 h-12 bg-brand-blue/10 group-hover:bg-brand-blue text-brand-blue group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
-                                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-brand-blue">Instalação</h3>
-                                            <span class="text-[10px] font-bold bg-blue-100/80 text-brand-blue px-2 py-0.5 rounded-md">Novo Rastreador</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 mt-0.5">Implantação e ativação de equipamento de telemetria.</p>
-                                    </div>
-                                </div>
-                                <svg class="w-5 h-5 text-slate-300 group-hover:text-brand-blue transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                            </button>
-
-                            <button type="button" onclick="window.selecionarServico('Manutenção')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-brand-orange hover:bg-orange-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
-                                <div class="flex items-center gap-3.5">
-                                    <div class="w-12 h-12 bg-brand-orange/10 group-hover:bg-brand-orange text-brand-orange group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
-                                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-brand-orange">Manutenção</h3>
-                                            <span class="text-[10px] font-bold bg-orange-100/80 text-brand-orange px-2 py-0.5 rounded-md">Revisão Técnica</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 mt-0.5">Diagnóstico de sinal, ajuste ou substituição de módulo.</p>
-                                    </div>
-                                </div>
-                                <svg class="w-5 h-5 text-slate-300 group-hover:text-brand-orange transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                            </button>
-
-                            <button type="button" onclick="window.selecionarServico('Remoção')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-rose-500 hover:bg-rose-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
-                                <div class="flex items-center gap-3.5">
-                                    <div class="w-12 h-12 bg-rose-100 group-hover:bg-rose-600 text-rose-600 group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
-                                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-rose-600">Remoção</h3>
-                                            <span class="text-[10px] font-bold bg-rose-100/80 text-rose-600 px-2 py-0.5 rounded-md">Desinstalação</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 mt-0.5">Retirada completa para venda ou substituição de veículo.</p>
-                                    </div>
-                                </div>
-                                <svg class="w-5 h-5 text-slate-300 group-hover:text-rose-600 transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- ETAPA 2: CEP / LOCAL -->
-                    <div id="step2" class="hidden space-y-5 animate-fade-in">
-                        <div class="flex items-center gap-3">
-                            <button type="button" onclick="window.voltarPara(1)" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                            </button>
-                            <div>
-                                <h2 class="font-display text-xl font-extrabold text-brand-blue">Onde você está?</h2>
-                                <p class="text-xs text-slate-500">Localizando unidade credenciada ou técnico na sua região</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
-                            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Informe o seu CEP</label>
-                            <div class="flex flex-col gap-3">
-                                <input type="tel" id="inputCEP" placeholder="Ex: 13010-140" maxlength="9" oninput="window.mascaraCEP(this)" 
-                                       onkeydown="if(event.key==='Enter'){event.preventDefault();window.buscarEAnalisarCEP();}"
-                                       class="w-full p-3.5 border-2 border-slate-200 bg-white rounded-xl font-mono text-base font-bold text-center tracking-widest focus:border-brand-blue focus:ring-0 outline-none transition-colors">
-                                <button type="button" onclick="window.buscarEAnalisarCEP()" id="btnBuscarCep" class="w-full bg-brand-blue hover:bg-brand-light text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md cursor-pointer">
-                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                                    Verificar Disponibilidade
-                                </button>
-                            </div>
-                            <div id="cepFeedback" class="mt-3 text-xs sm:text-sm text-center font-medium min-h-[20px]"></div>
-                        </div>
-
-                        <!-- TÉCNICO EXTERNO -->
-                        <div id="boxTecnicoExterno" class="hidden pt-1">
-                            <button type="button" onclick="window.encaminharParaTecnicoParceiro()" 
-                                    class="w-full bg-gradient-to-r from-brand-orange to-brand-darkorange hover:opacity-95 text-white font-bold text-sm p-5 rounded-2xl shadow-lg transition-all transform hover:scale-[1.01] flex flex-col items-center gap-2.5 text-center cursor-pointer">
-                                <div class="w-11 h-11 bg-white/20 rounded-full flex items-center justify-center">
-                                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
-                                </div>
-                                <span class="leading-relaxed">Pela sua localização, encaminharemos um <b>Técnico Parceiro Cooperlink</b> para agendar diretamente com você.<br><span class="underline mt-1 inline-block">Toque aqui para confirmar seus dados →</span></span>
-                            </button>
-                        </div>
-
-                        <!-- POSTO FIXO (HENRICAR - SÓ APARECE QUANDO O CEP É DE CAMPINAS/HORTOLÂNDIA) -->
-                        <div id="boxPostosFixos" class="hidden pt-1">
-                            <button type="button" onclick="window.confirmarPostoParceiro('Henricar - Av. Benjamin Constant, 550, Campinas/SP (CEP 13010-140)')" 
-                                    class="w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-all hover:bg-blue-50 group flex items-start gap-3.5 cursor-pointer">
-                                <div class="w-10 h-10 bg-brand-blue text-white rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-extrabold tracking-wider text-brand-orange uppercase mb-0.5 block">Unidade Credenciada Disponível</span>
-                                    <h3 class="font-display font-extrabold text-brand-blue text-base">Henricar — Campinas</h3>
-                                    <p class="text-xs text-slate-600 font-medium mt-0.5 leading-relaxed">Av. Benjamin Constant, 550 • Centro, Campinas/SP</p>
-                                    <div class="mt-2.5 inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-orange group-hover:translate-x-1 transition-transform">
-                                        Escolher Data e Horário →
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- ETAPA 3: DATA E HORÁRIO (COM SALTO AUTOMÁTICO + LIVRE ESCOLHA) -->
-                    <div id="step3" class="hidden space-y-4 animate-fade-in">
-                        <div class="flex items-center gap-3">
-                            <button type="button" onclick="window.voltarPara(2)" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                            </button>
-                            <div>
-                                <h2 class="font-display text-xl font-extrabold text-brand-blue">Data e Horário</h2>
-                                <p class="text-xs text-slate-500">Exibindo o próximo dia com vagas (altere se preferir)</p>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label for="dataAgendamento" class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Dia do Atendimento (Seg a Sex)</label>
-                                <span class="text-[10px] font-semibold text-brand-blue bg-blue-50 px-2 py-0.5 rounded border border-blue-100">Livre Escolha</span>
-                            </div>
-                            <input type="date" id="dataAgendamento" onchange="window.aoMudarDataManual()"
-                                   class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-slate-800 font-bold focus:border-brand-blue focus:ring-0 outline-none transition-colors shadow-sm bg-slate-50 cursor-pointer">
-                            
-                            <!-- Aviso de Fim de Semana -->
-                            <p id="avisoFimDeSemana" class="text-xs text-rose-600 font-bold mt-2 hidden">⚠️ Não realizamos atendimentos na unidade física aos finais de semana. Selecione um dia útil.</p>
-                            
-                            <!-- Aviso Inteligente de Avanço Automático -->
-                            <div id="avisoAutoAvanco" class="hidden mt-2.5 bg-amber-50 border border-amber-200/90 text-amber-900 rounded-xl p-3 flex items-start gap-2.5 text-xs leading-relaxed">
-                                <svg class="w-4 h-4 text-brand-orange shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                                <span id="textoAutoAvanco" class="font-medium"></span>
-                            </div>
-                        </div>
-
-                        <!-- ALERTA DE SINCRONIZAÇÃO -->
-                        <div id="loadingSincronizacao" class="hidden flex-col items-center justify-center py-6 text-brand-blue">
-                            <svg class="w-7 h-7 animate-spin mb-2 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                            <span class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Localizando horários disponíveis...</span>
-                        </div>
-
-                        <div id="containerHorarios" class="pt-2 border-t border-slate-100 hidden">
-                            <div class="mb-3.5">
-                                <div class="flex items-center gap-1.5 mb-2">
-                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                                    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-600">Manhã (09:00 às 11:30)</span>
-                                </div>
-                                <div id="gridHorariosManha" class="grid grid-cols-3 gap-2"></div>
-                            </div>
-
-                            <div>
-                                <div class="flex items-center gap-1.5 mb-2">
-                                    <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
-                                    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-600">Tarde (13:00 às 17:20)</span>
-                                </div>
-                                <div id="gridHorariosTarde" class="grid grid-cols-3 gap-2"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ETAPA 4: FORMULÁRIO DE DADOS -->
-                    <div id="step4" class="hidden space-y-4 animate-fade-in">
-                        <div class="flex items-center gap-3">
-                            <button type="button" id="btnVoltarEtapa4" onclick="window.voltarDeEtapa4()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                            </button>
-                            <div>
-                                <h2 class="font-display text-xl font-extrabold text-brand-blue">Identificação do Associado</h2>
-                                <p class="text-xs text-slate-500">Preencha os dados para emissão da O.S.</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-blue-50/80 border border-blue-200/80 p-3.5 rounded-xl flex items-start gap-2.5">
-                            <svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                            <div class="text-xs text-brand-blue leading-relaxed">
-                                <div>Modalidade: <b><span id="resumoModalidade"></span></b></div>
-                                <div id="resumoDataHoraExtra" class="text-[11px] text-slate-600 font-semibold mt-0.5"></div>
-                            </div>
-                        </div>
-
-                        <!-- ALERTA DE ERRO / CONFLITO -->
-                        <div id="alertaConflito" class="hidden bg-rose-50 border-2 border-rose-200 p-3.5 rounded-xl flex items-start gap-3">
-                            <svg class="w-5 h-5 text-rose-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
-                            <div>
-                                <h4 id="tituloErroForm" class="text-xs font-extrabold text-rose-800 uppercase">Atenção</h4>
-                                <p id="msgErroForm" class="text-xs text-rose-600 mt-0.5"></p>
-                            </div>
-                        </div>
-
-                        <form id="formAgendamento" onsubmit="window.finalizarAgendamento(event)" class="space-y-3.5 pt-1" autocomplete="on">
-                            <input type="text" id="website_hp" name="website_hp" class="hp-field" tabindex="-1" autocomplete="off">
-
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nome Completo do Associado</label>
-                                <input type="text" id="inputNome" required minlength="3" maxlength="80" placeholder="Ex: João Carlos da Silva" 
-                                       class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-sm text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
-                            </div>
-
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
-                                <input type="tel" id="inputTelefone" required placeholder="(19) 99999-9999" maxlength="15" oninput="window.mascaraTelefone(this)" 
-                                       class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-sm text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
-                            </div>
-
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Placa do Veículo (Padrão ou Mercosul)</label>
-                                <input type="text" id="inputPlaca" required placeholder="ABC1D23" maxlength="7" oninput="window.formatarPlaca(this)" 
-                                       class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-extrabold text-slate-800 uppercase focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white text-center tracking-widest text-lg">
-                            </div>
-
-                            <button type="submit" id="btnConfirmar" class="w-full bg-gradient-to-r from-brand-orange to-brand-darkorange hover:opacity-95 text-white font-display font-extrabold text-base py-4 rounded-xl shadow-lg shadow-brand-orange/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-2 cursor-pointer">
-                                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                Confirmar Agendamento
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- ETAPA 5: SUCESSO -->
-                    <div id="stepSucesso" class="hidden text-center py-5 space-y-5 animate-fade-in">
-                        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
-                            <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                        </div>
-                        <div>
-                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Protocolo Registrado</span>
-                            <h2 class="font-display text-2xl font-extrabold text-slate-800 tracking-tight mt-2">Tudo Certo!</h2>
-                            <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-[270px] mx-auto">Sua solicitação já está sincronizada com a equipe técnica da Cooperlink Brasil.</p>
-                        </div>
-
-                        <div class="bg-blue-50 border-2 border-brand-blue/20 p-4 rounded-2xl text-brand-blue flex items-center justify-center gap-3 shadow-sm">
-                            <svg class="w-6 h-6 shrink-0 text-brand-orange animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
-                            <span class="text-xs sm:text-sm font-bold text-left leading-snug">Você receberá os detalhes da Ordem de Serviço diretamente no seu WhatsApp!</span>
-                        </div>
-
-                        <div class="pt-2">
-                            <button type="button" onclick="window.reiniciarFluxo()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 rounded-xl text-sm transition-colors cursor-pointer">
-                                Realizar Outro Agendamento
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2.5">
+            <h1 class="font-display text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-none">
+              Cooperlink<span class="text-brand-orange">Brasil</span>
+            </h1>
+            <span class="hidden sm:inline-flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-md">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> SUSEP & AAAPV
+            </span>
+          </div>
+          <span class="text-[10px] font-semibold tracking-widest text-blue-200/75 uppercase mt-1">
+            Proteção Veicular • Central de Telemetria
+          </span>
         </div>
-    </main>
+      </div>
 
-    <!-- RODAPÉ OFICIAL COOPERLINK BRASIL -->
-    <footer class="relative z-10 border-t border-white/10 bg-[#030c18]/90 text-blue-200/60 text-xs py-5 px-4 sm:px-8 mt-8">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+      <div class="hidden md:flex items-center gap-3.5 text-xs text-blue-100">
+        <div class="flex items-center gap-2.5 bg-white/5 px-3.5 py-2 rounded-xl border border-white/10">
+          <svg class="w-4 h-4 text-brand-orange shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <div>
+            <span class="text-[10px] text-blue-300/80 block leading-none">Central de Atendimento</span>
+            <strong class="text-white font-mono font-bold">(19) 2042-3966</strong>
+          </div>
+        </div>
+        <div class="flex items-center gap-2.5 bg-white/5 px-3.5 py-2 rounded-xl border border-white/10">
+          <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+          <div>
+            <span class="text-[10px] text-blue-300/80 block leading-none">Assistência 24h</span>
+            <strong class="text-white font-mono font-bold">0800 941 9571</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="relative z-10 flex-grow max-w-7xl mx-auto w-full px-4 sm:px-8 py-6 lg:py-10 flex items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-center">
+
+      <!-- COLUNA ESQUERDA: VITRINE COOPERLINK & CERTIFICAÇÕES -->
+      <div class="lg:col-span-7 space-y-5 text-white order-2 lg:order-1">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-brand-orange/15 border border-brand-orange/35 text-orange-200 text-xs font-bold tracking-wide">
+          <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
+          <span>PORTAL OFICIAL DO ASSOCIADO • TELEMETRIA E RASTREAMENTO</span>
+        </div>
+
+        <div class="space-y-2.5">
+          <h2 class="font-display text-3xl sm:text-4xl lg:text-[40px] font-extrabold tracking-tight leading-[1.14] text-white">
+            Mais de <span class="text-brand-orange">20 mil veículos protegidos</span> rodando tranquilos pelo Brasil.
+          </h2>
+          <p class="text-blue-100/80 text-sm sm:text-base leading-relaxed max-w-2xl">
+            Na Cooperlink você não é um número: por trás de cada veículo existe uma família. Agende sua instalação, manutenção ou revisão do equipamento rastreador em menos de 1 minuto.
+          </p>
+        </div>
+
+        <!-- CARROSSEL DE CAMPANHAS -->
+        <div class="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl bg-[#061830] h-[300px] sm:h-[330px] group">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,#145293_0%,#041020_75%)] opacity-80"></div>
+
+          <!-- SLIDE 1 -->
+          <div id="slide0" class="hero-slide absolute inset-0 opacity-100">
+            <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1200&q=85" alt="Veículo Monitorado Cooperlink Brasil" class="w-full h-full object-cover object-center opacity-55 mix-blend-luminosity" onerror="this.style.display='none'">
+            <div class="absolute inset-0 bg-gradient-to-tr from-[#041020] via-[#0c3b6d]/65 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#041020] via-[#041020]/40 to-transparent"></div>
+
+            <div class="absolute top-4 left-4 telemetry-hud px-3.5 py-2 rounded-xl flex items-center gap-3 z-10">
+              <div class="relative w-3 h-3 rounded-full bg-emerald-400 radar-ring"></div>
+              <div class="font-mono text-[10px] leading-tight">
+                <span class="text-emerald-300 font-bold block">TELEMETRIA 4G ATIVA</span>
+                <span class="text-slate-300">SINAL GPS/GPRS • MONITORAMENTO 24H</span>
+              </div>
+            </div>
+
+            <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 flex flex-col justify-end">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="bg-brand-orange text-white text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded">Jeito Cooperlink</span>
+                <span class="text-xs font-semibold text-amber-300">Proteção Sem Letra Miúda</span>
+              </div>
+              <p class="text-white font-display font-bold text-base sm:text-lg leading-snug max-w-xl">
+                “Ninguém lê letra miúda porque ela costuma esconder problema. A nossa esconde solução: atendimento rápido, humano e sem burocracia.”
+              </p>
+              <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-white/15 text-xs text-blue-200/90">
+                <span><strong>Central de Rastreamento 24h</strong> • Equipe Própria</span>
+                <span class="font-mono text-[11px] text-emerald-300 font-semibold">● Pronta Resposta Nacional</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 2 -->
+          <div id="slide1" class="hero-slide absolute inset-0 opacity-0 pointer-events-none">
+            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=85" alt="Cobertura Nacional Cooperlink" class="w-full h-full object-cover object-center opacity-55 mix-blend-luminosity" onerror="this.style.display='none'">
+            <div class="absolute inset-0 bg-gradient-to-tr from-[#041020] via-[#0c3b6d]/65 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#041020] via-[#041020]/45 to-transparent"></div>
+
+            <div class="absolute top-4 left-4 telemetry-hud px-3.5 py-2 rounded-xl flex items-center gap-3 z-10">
+              <span class="w-2.5 h-2.5 rounded-full bg-brand-orange"></span>
+              <div class="font-mono text-[10px] leading-tight">
+                <span class="text-orange-300 font-bold block">COBERTURA EM 23 ESTADOS</span>
+                <span class="text-slate-300">+13.000 ASSISTÊNCIAS REALIZADAS</span>
+              </div>
+            </div>
+
+            <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 flex flex-col justify-end">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="bg-blue-500/40 border border-blue-400/50 text-blue-100 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded">Imprevisto Não Escolhe Cidade</span>
+              </div>
+              <p class="text-white font-display font-bold text-base sm:text-lg leading-snug max-w-xl">
+                “É a leveza de dirigir sabendo que, aconteça o que acontecer, a Cooperlink está do seu lado em qualquer rodovia ou cidade do Brasil.”
+              </p>
+              <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-white/15 text-xs text-blue-200/90">
+                <span><strong>Assistência 24 Horas</strong> • Roubo, Furto, Colisão e Pane</span>
+                <span class="font-mono text-[11px] text-amber-300 font-semibold">0800 941 9571</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 3 -->
+          <div id="slide2" class="hero-slide absolute inset-0 opacity-0 pointer-events-none">
+            <img src="https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=85" alt="Telemetria Avançada Cooperlink" class="w-full h-full object-cover object-center opacity-55 mix-blend-luminosity" onerror="this.style.display='none'">
+            <div class="absolute inset-0 bg-gradient-to-tr from-[#041020] via-[#0c3b6d]/65 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#041020] via-[#041020]/45 to-transparent"></div>
+
+            <div class="absolute top-4 left-4 telemetry-hud px-3.5 py-2 rounded-xl flex items-center gap-3 z-10">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+              <div class="font-mono text-[10px] leading-tight">
+                <span class="text-emerald-300 font-bold block">MÓDULOS HOMOLOGADOS ANATEL</span>
+                <span class="text-slate-300">INSTALAÇÃO NÃO-INVASIVA • GARANTIA PRESERVADA</span>
+              </div>
+            </div>
+
+            <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 flex flex-col justify-end">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="bg-emerald-600/40 border border-emerald-400/50 text-emerald-100 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded">Padrão Técnico Cooperlink</span>
+              </div>
+              <p class="text-white font-display font-bold text-base sm:text-lg leading-snug max-w-xl">
+                “Equipamentos de telemetria de última geração instalados por especialistas credenciados, mantendo 100% da originalidade elétrica do veículo.”
+              </p>
+              <div class="flex items-center justify-between mt-3 pt-2.5 border-t border-white/15 text-xs text-blue-200/90">
+                <span><strong>Unidades Credenciadas & Técnicos Móveis</strong></span>
+                <span class="font-mono text-[11px] text-blue-300 font-semibold">Alta Precisão GPS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seletores do Carrossel -->
+          <div class="absolute top-4 right-4 flex items-center gap-2 bg-[#041020]/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 z-20">
+            <button type="button" onclick="window.trocarSlideMarketing(0)" id="dot0" class="w-5 h-2 rounded-full bg-brand-orange transition-all cursor-pointer" aria-label="Slide 1"></button>
+            <button type="button" onclick="window.trocarSlideMarketing(1)" id="dot1" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all cursor-pointer" aria-label="Slide 2"></button>
+            <button type="button" onclick="window.trocarSlideMarketing(2)" id="dot2" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all cursor-pointer" aria-label="Slide 3"></button>
+          </div>
+        </div>
+
+        <!-- CERTIFICAÇÕES OFICIAIS COOPERLINK -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          <div class="glass-panel p-3.5 rounded-xl flex items-start gap-3">
+            <div class="w-9 h-9 rounded-lg bg-brand-orange/20 border border-brand-orange/40 flex items-center justify-center shrink-0 mt-0.5 text-brand-orange">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+            </div>
             <div>
-                <strong class="text-white/90">Cooperlink Brasil — Proteção Veicular</strong> • CNPJ: 27.160.300/0001-94 • Av. Brasil, 172, Vila Itapura, Campinas/SP
+              <div class="flex items-center gap-1.5">
+                <h4 class="font-display font-bold text-xs text-white">Cadastrada SUSEP</h4>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              </div>
+              <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">Adequada à Lei Complementar Federal nº 213/2025.</p>
             </div>
-            <div class="flex items-center gap-4 text-[11px]">
-                <span>Cadastrada <strong>SUSEP (LC 213/2025)</strong></span>
-                <span>•</span>
-                <span>Afiliada <strong>AAAPV</strong></span>
-                <span>•</span>
-                <span>Assistência 24h: <strong>0800 941 9571</strong></span>
+          </div>
+
+          <div class="glass-panel p-3.5 rounded-xl flex items-start gap-3">
+            <div class="w-9 h-9 rounded-lg bg-blue-500/20 border border-blue-400/40 flex items-center justify-center shrink-0 mt-0.5 text-blue-300">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
             </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h4 class="font-display font-bold text-xs text-white">Afiliada à AAAPV</h4>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              </div>
+              <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">Autorregulamentação e excelência patrimonial.</p>
+            </div>
+          </div>
+
+          <div class="glass-panel p-3.5 rounded-xl flex items-start gap-3">
+            <div class="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center shrink-0 mt-0.5 text-emerald-300">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h4 class="font-display font-bold text-xs text-white">Desde 2017</h4>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              </div>
+              <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">Sede própria em Campinas/SP • Telemetria ANATEL.</p>
+            </div>
+          </div>
         </div>
-    </footer>
+      </div>
 
-    <!-- MODAL DE LOGIN ADMIN -->
-    <div id="modalAdminLogin" class="fixed inset-0 bg-slate-900/80 z-[60] hidden flex-col justify-center items-center animate-fade-in backdrop-blur-sm px-4">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative">
-            <button type="button" onclick="window.fecharAdminLogin()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">
-                ✕
-            </button>
-            
-            <div class="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-4 mx-auto">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <!-- COLUNA DIREITA: CARD DE AGENDAMENTO INTERATIVO -->
+      <div class="lg:col-span-5 order-1 lg:order-2">
+        <div class="bg-white/95 backdrop-blur-xl rounded-[24px] form-card-shadow p-5 sm:p-7 overflow-hidden relative border border-white">
+          <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-brand-blue via-brand-orange to-amber-500"></div>
+
+          <!-- CABEÇALHO DO CARD + BARRA DE PROGRESSO -->
+          <div class="mb-6 pt-1">
+            <div class="flex items-center justify-between mb-4">
+              <span id="badgeServicoTopo" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-blue bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
+                Agendamento Online
+              </span>
+              <span class="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                Vagas em Tempo Real
+              </span>
+            </div>
+
+            <div class="px-2">
+              <div class="flex items-center justify-between relative">
+                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 rounded-full -z-10"></div>
+                <div id="progressBar" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-brand-orange rounded-full -z-10 transition-all duration-300" style="width: 0%;"></div>
+                <div id="pStep1" class="w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors border-2 border-white z-10">1</div>
+                <div id="pStep2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">2</div>
+                <div id="pStep3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">3</div>
+                <div id="pStep4" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">4</div>
+              </div>
+              <div class="flex justify-between mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <span class="text-brand-orange">Serviço</span>
+                <span>Região</span>
+                <span>Horário</span>
+                <span>Veículo</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ETAPA 1: TIPO DE SERVIÇO -->
+          <div id="step1" class="space-y-4 transition-all">
+            <div>
+              <h2 class="font-display text-xl font-extrabold text-brand-blue">Qual serviço vamos agendar?</h2>
+              <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Selecione o atendimento técnico para o seu veículo</p>
             </div>
             
-            <h2 class="text-xl font-extrabold text-center text-brand-blue mb-2">Área Restrita</h2>
-            <p class="text-xs text-center text-slate-500 mb-6">Acesso exclusivo para colaboradores Cooperlink.</p>
-
-            <form onsubmit="window.verificarSenha(event)" class="space-y-4">
-                <div>
-                    <input type="password" id="inputSenhaAdmin" placeholder="Digite a senha de acesso" 
-                           class="w-full p-3 border-2 border-slate-200 rounded-xl font-semibold text-center text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 tracking-widest">
-                    <p id="erroSenha" class="text-xs text-rose-500 font-bold text-center mt-2 hidden">Senha incorreta.</p>
-                </div>
-                <button type="submit" id="btnEntrarAdmin" class="w-full bg-brand-blue hover:bg-brand-light text-white font-bold py-3 rounded-xl transition-colors cursor-pointer">
-                    Autenticar
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DE CONFIGURAÇÕES ADMIN -->
-    <div id="modalAdmin" class="fixed inset-0 bg-slate-900/60 z-[50] hidden flex-col justify-end sm:justify-center animate-fade-in backdrop-blur-sm px-4">
-        <div class="bg-white w-full max-w-md mx-auto rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button type="button" onclick="window.fecharSettings()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">
-                ✕
-            </button>
-            
-            <h2 class="text-xl font-extrabold text-brand-blue mb-6 flex items-center gap-2">
-                Controle Interno Cooperlink
-            </h2>
-
-            <div class="space-y-5">
-                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200">
-                    <label class="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">URL do Google Apps Script (/exec)</label>
-                    <input type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" 
-                           class="w-full p-3 border border-amber-300 rounded-xl text-xs focus:outline-none focus:border-brand-blue bg-white mb-3">
-                    <div class="flex flex-col gap-2">
-                        <button type="button" onclick="window.salvarEtestar()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
-                            Salvar URL e Enviar Teste p/ Planilha
-                        </button>
-                        <button type="button" onclick="window.limparCacheLocal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition-colors cursor-pointer">
-                            Limpar Cache de Horários / Destravar Espera
-                        </button>
+            <div class="flex flex-col gap-3">
+              <button type="button" onclick="window.selecionarServico('Instalação')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-brand-blue hover:bg-blue-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-12 h-12 bg-brand-blue/10 group-hover:bg-brand-blue text-brand-blue group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-brand-blue">Instalação</h3>
+                      <span class="text-[10px] font-bold bg-blue-100/80 text-brand-blue px-2 py-0.5 rounded-md">Novo Rastreador</span>
                     </div>
-                    <div id="statusTesteAdmin" class="mt-2.5 text-xs font-bold text-center text-emerald-700 hidden"></div>
+                    <p class="text-xs text-slate-500 mt-0.5">Implantação e ativação de equipamento de telemetria.</p>
+                  </div>
                 </div>
+                <svg class="w-5 h-5 text-slate-300 group-hover:text-brand-blue transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+
+              <button type="button" onclick="window.selecionarServico('Manutenção')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-brand-orange hover:bg-orange-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-12 h-12 bg-brand-orange/10 group-hover:bg-brand-orange text-brand-orange group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-brand-orange">Manutenção</h3>
+                      <span class="text-[10px] font-bold bg-orange-100/80 text-brand-orange px-2 py-0.5 rounded-md">Revisão Técnica</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">Diagnóstico de sinal, ajuste ou substituição de módulo.</p>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-slate-300 group-hover:text-brand-orange transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+
+              <button type="button" onclick="window.selecionarServico('Remoção')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-rose-500 hover:bg-rose-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-12 h-12 bg-rose-100 group-hover:bg-rose-600 text-rose-600 group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-rose-600">Remoção</h3>
+                      <span class="text-[10px] font-bold bg-rose-100/80 text-rose-600 px-2 py-0.5 rounded-md">Desinstalação</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-0.5">Retirada completa para venda ou substituição de veículo.</p>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-slate-300 group-hover:text-rose-600 transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
             </div>
+          </div>
+
+          <!-- ETAPA 2: CEP / LOCAL -->
+          <div id="step2" class="hidden space-y-5 animate-fade-in">
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="window.voltarPara(1)" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              </button>
+              <div>
+                <h2 class="font-display text-xl font-extrabold text-brand-blue">Onde você está?</h2>
+                <p class="text-xs text-slate-500">Localizando unidade credenciada ou técnico na sua região</p>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+              <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Informe o seu CEP</label>
+              <div class="flex flex-col gap-3">
+                <input type="tel" id="inputCEP" placeholder="Ex: 13010-140" maxlength="9" oninput="window.mascaraCEP(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();window.buscarEAnalisarCEP();}" class="w-full p-3.5 border-2 border-slate-200 bg-white rounded-xl font-mono text-base font-bold text-center tracking-widest focus:border-brand-blue focus:ring-0 outline-none transition-colors">
+                <button type="button" onclick="window.buscarEAnalisarCEP()" id="btnBuscarCep" class="w-full bg-brand-blue hover:bg-brand-light text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md cursor-pointer">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  Verificar Disponibilidade
+                </button>
+              </div>
+              <div id="cepFeedback" class="mt-3 text-xs sm:text-sm text-center font-medium min-h-[20px]"></div>
+            </div>
+
+            <!-- TÉCNICO EXTERNO -->
+            <div id="boxTecnicoExterno" class="hidden pt-1">
+              <button type="button" onclick="window.encaminharParaTecnicoParceiro()" class="w-full bg-gradient-to-r from-brand-orange to-brand-darkorange hover:opacity-95 text-white font-bold text-sm p-5 rounded-2xl shadow-lg transition-all transform hover:scale-[1.01] flex flex-col items-center gap-2.5 text-center cursor-pointer">
+                <div class="w-11 h-11 bg-white/20 rounded-full flex items-center justify-center">
+                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
+                </div>
+                <span class="leading-relaxed">Pela sua localização, encaminharemos um <b>Técnico Parceiro Cooperlink</b> para agendar diretamente com você.<br><span class="underline mt-1 inline-block">Toque aqui para confirmar seus dados →</span></span>
+              </button>
+            </div>
+
+            <!-- POSTO FIXO (HENRICAR) -->
+            <div id="boxPostosFixos" class="hidden pt-1">
+              <button type="button" onclick="window.confirmarPostoParceiro('Henricar - Av. Benjamin Constant, 550, Campinas/SP (CEP 13010-140)')" class="w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-all hover:bg-blue-50 group flex items-start gap-3.5 cursor-pointer">
+                <div class="w-10 h-10 bg-brand-blue text-white rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div>
+                  <span class="text-[10px] font-extrabold tracking-wider text-brand-orange uppercase mb-0.5 block">Unidade Credenciada Disponível</span>
+                  <h3 class="font-display font-extrabold text-brand-blue text-base">Henricar — Campinas</h3>
+                  <p class="text-xs text-slate-600 font-medium mt-0.5 leading-relaxed">Av. Benjamin Constant, 550 • Centro, Campinas/SP</p>
+                  <div class="mt-2.5 inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-orange group-hover:translate-x-1 transition-transform">
+                    Escolher Data e Horário →
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- ETAPA 3: DATA E HORÁRIO -->
+          <div id="step3" class="hidden space-y-4 animate-fade-in">
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="window.voltarPara(2)" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              </button>
+              <div>
+                <h2 class="font-display text-xl font-extrabold text-brand-blue">Data e Horário</h2>
+                <p class="text-xs text-slate-500">Exibindo o próximo dia com vagas (altere se preferir)</p>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label for="dataAgendamento" class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Dia do Atendimento (Seg a Sex)</label>
+                <span class="text-[10px] font-semibold text-brand-blue bg-blue-50 px-2 py-0.5 rounded border border-blue-100">Livre Escolha</span>
+              </div>
+              <input type="date" id="dataAgendamento" onchange="window.aoMudarDataManual()" class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-slate-800 font-bold focus:border-brand-blue focus:ring-0 outline-none transition-colors shadow-sm bg-slate-50 cursor-pointer">
+              
+              <p id="avisoFimDeSemana" class="text-xs text-rose-600 font-bold mt-2 hidden">⚠️ Não realizamos atendimentos na unidade física aos finais de semana. Selecione um dia útil.</p>
+              
+              <div id="avisoAutoAvanco" class="hidden mt-2.5 bg-amber-50 border border-amber-200/90 text-amber-900 rounded-xl p-3 flex items-start gap-2.5 text-xs leading-relaxed">
+                <svg class="w-4 h-4 text-brand-orange shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                <span id="textoAutoAvanco" class="font-medium"></span>
+              </div>
+            </div>
+
+            <div id="loadingSincronizacao" class="hidden flex-col items-center justify-center py-6 text-brand-blue">
+              <svg class="w-7 h-7 animate-spin mb-2 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              <span class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Localizando horários disponíveis...</span>
+            </div>
+
+            <div id="containerHorarios" class="pt-2 border-t border-slate-100 hidden">
+              <div class="mb-3.5">
+                <div class="flex items-center gap-1.5 mb-2">
+                  <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-slate-600">Manhã (09:00 às 11:30)</span>
+                </div>
+                <div id="gridHorariosManha" class="grid grid-cols-3 gap-2"></div>
+              </div>
+
+              <div>
+                <div class="flex items-center gap-1.5 mb-2">
+                  <span class="w-2 h-2 rounded-full bg-brand-orange"></span>
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-slate-600">Tarde (13:00 às 17:20)</span>
+                </div>
+                <div id="gridHorariosTarde" class="grid grid-cols-3 gap-2"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ETAPA 4: FORMULÁRIO DE DADOS -->
+          <div id="step4" class="hidden space-y-4 animate-fade-in">
+            <div class="flex items-center gap-3">
+              <button type="button" id="btnVoltarEtapa4" onclick="window.voltarDeEtapa4()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+              </button>
+              <div>
+                <h2 class="font-display text-xl font-extrabold text-brand-blue">Identificação do Associado</h2>
+                <p class="text-xs text-slate-500">Preencha os dados para emissão da O.S.</p>
+              </div>
+            </div>
+
+            <div class="bg-blue-50/80 border border-blue-200/80 p-3.5 rounded-xl flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-brand-blue shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <div class="text-xs text-brand-blue leading-relaxed">
+                <div>Modalidade: <b><span id="resumoModalidade"></span></b></div>
+                <div id="resumoDataHoraExtra" class="text-[11px] text-slate-600 font-semibold mt-0.5"></div>
+              </div>
+            </div>
+
+            <div id="alertaConflito" class="hidden bg-rose-50 border-2 border-rose-200 p-3.5 rounded-xl flex items-start gap-3">
+              <svg class="w-5 h-5 text-rose-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+              <div>
+                <h4 id="tituloErroForm" class="text-xs font-extrabold text-rose-800 uppercase">Atenção</h4>
+                <p id="msgErroForm" class="text-xs text-rose-600 mt-0.5"></p>
+              </div>
+            </div>
+
+            <form id="formAgendamento" onsubmit="window.finalizarAgendamento(event)" class="space-y-3.5 pt-1" autocomplete="on">
+              <input type="text" id="website_hp" name="website_hp" class="hp-field" tabindex="-1" autocomplete="off">
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nome Completo do Associado</label>
+                <input type="text" id="inputNome" required minlength="3" maxlength="80" placeholder="Ex: João Carlos da Silva" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-sm text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
+                <input type="tel" id="inputTelefone" required placeholder="(19) 99999-9999" maxlength="15" oninput="window.mascaraTelefone(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-sm text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Placa do Veículo (Padrão ou Mercosul)</label>
+                <input type="text" id="inputPlaca" required placeholder="ABC1D23" maxlength="7" oninput="window.formatarPlaca(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-extrabold text-slate-800 uppercase focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white text-center tracking-widest text-lg">
+              </div>
+
+              <button type="submit" id="btnConfirmar" class="w-full bg-gradient-to-r from-brand-orange to-brand-darkorange hover:opacity-95 text-white font-display font-extrabold text-base py-4 rounded-xl shadow-lg shadow-brand-orange/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-2 cursor-pointer">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Confirmar Agendamento
+              </button>
+            </form>
+          </div>
+
+          <!-- ETAPA 5: SUCESSO -->
+          <div id="stepSucesso" class="hidden text-center py-5 space-y-5 animate-fade-in">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+              <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Protocolo Registrado</span>
+              <h2 class="font-display text-2xl font-extrabold text-slate-800 tracking-tight mt-2">Tudo Certo!</h2>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-[270px] mx-auto">Sua solicitação já está sincronizada com a equipe técnica da Cooperlink Brasil.</p>
+            </div>
+
+            <div class="bg-blue-50 border-2 border-brand-blue/20 p-4 rounded-2xl text-brand-blue flex items-center justify-center gap-3 shadow-sm">
+              <svg class="w-6 h-6 shrink-0 text-brand-orange animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+              <span class="text-xs sm:text-sm font-bold text-left leading-snug">Você receberá os detalhes da Ordem de Serviço diretamente no seu WhatsApp!</span>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" onclick="window.reiniciarFluxo()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 rounded-xl text-sm transition-colors cursor-pointer">
+                Realizar Outro Agendamento
+              </button>
+            </div>
+          </div>
+
         </div>
+      </div>
+
     </div>
+  </main>
 
-    <!-- SCRIPT PRINCIPAL BLINDADO E PRÉ-CONFIGURADO -->
-    <script>
-        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKpqBTom5p0x7dgMXSSZ7a2c8298HPZKfAeVsa414hcR-DMLhn5yTY_xuAfhp0ts7d/exec";
-        const ADMIN_HASH = "4c708e7f7bd4de24e427e3e890629745557b4213362119c2ad6e118cc12743d2";
+  <!-- RODAPÉ OFICIAL COOPERLINK BRASIL -->
+  <footer class="relative z-10 border-t border-white/10 bg-[#030c18]/90 text-blue-200/60 text-xs py-5 px-4 sm:px-8 mt-8">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+      <div>
+        <strong class="text-white/90">Cooperlink Brasil — Proteção Veicular</strong> • CNPJ: 27.160.300/0001-94 • Av. Brasil, 172, Vila Itapura, Campinas/SP
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <span>Cadastrada <strong>SUSEP (LC 213/2025)</strong></span>
+        <span>•</span>
+        <span>Afiliada <strong>AAAPV</strong></span>
+        <span>•</span>
+        <span>Assistência 24h: <strong>0800 941 9571</strong></span>
+      </div>
+    </div>
+  </footer>
 
-        const POSTO_HENRICAR = {
-            nome: "Henricar - Av. Benjamin Constant, 550, Campinas/SP (CEP 13010-140)",
-            cidade: "Campinas - SP",
-            cep: "13010-140"
-        };
-        const horariosManha = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
-        const horariosTarde = ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:20"];
-        const todosHorarios = horariosManha.concat(horariosTarde);
+  <!-- MODAL DE LOGIN ADMIN -->
+  <div id="modalAdminLogin" class="fixed inset-0 bg-slate-900/80 z-[60] hidden flex-col justify-center items-center animate-fade-in backdrop-blur-sm px-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative">
+      <button type="button" onclick="window.fecharAdminLogin()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">✕</button>
+      <div class="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-4 mx-auto">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h2 class="text-xl font-extrabold text-center text-brand-blue mb-2">Área Restrita</h2>
+      <p class="text-xs text-center text-slate-500 mb-6">Acesso exclusivo para colaboradores Cooperlink.</p>
+      <form onsubmit="window.verificarSenha(event)" class="space-y-4">
+        <div>
+          <input type="password" id="inputSenhaAdmin" placeholder="Digite a senha de acesso" class="w-full p-3 border-2 border-slate-200 rounded-xl font-semibold text-center text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 tracking-widest">
+          <p id="erroSenha" class="text-xs text-rose-500 font-bold text-center mt-2 hidden">Senha incorreta.</p>
+        </div>
+        <button type="submit" id="btnEntrarAdmin" class="w-full bg-brand-blue hover:bg-brand-light text-white font-bold py-3 rounded-xl transition-colors cursor-pointer">Autenticar</button>
+      </form>
+    </div>
+  </div>
 
-        let estadoAgendamento = {
-            servico: "",
-            posto: null,
-            cep: "",
-            cepFormatado: "",
-            enderecoFormatado: "",
-            isTecnicoExterno: false,
-            data: "",
-            horario: ""
-        };
+  <!-- MODAL DE CONFIGURAÇÕES ADMIN -->
+  <div id="modalAdmin" class="fixed inset-0 bg-slate-900/60 z-[50] hidden flex-col justify-end sm:justify-center animate-fade-in backdrop-blur-sm px-4">
+    <div class="bg-white w-full max-w-md mx-auto rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button type="button" onclick="window.fecharSettings()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">✕</button>
+      <h2 class="text-xl font-extrabold text-brand-blue mb-6 flex items-center gap-2">Controle Interno Cooperlink</h2>
+      <div class="space-y-5">
+        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200">
+          <label class="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">URL do Google Apps Script (/exec)</label>
+          <input type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-3 border border-amber-300 rounded-xl text-xs focus:outline-none focus:border-brand-blue bg-white mb-3">
+          <div class="flex flex-col gap-2">
+            <button type="button" onclick="window.salvarEtestar()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer">Salvar URL e Enviar Teste p/ Planilha</button>
+            <button type="button" onclick="window.limparCacheLocal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition-colors cursor-pointer">Limpar Cache de Horários / Destravar Espera</button>
+          </div>
+          <div id="statusTesteAdmin" class="mt-2.5 text-xs font-bold text-center text-emerald-700 hidden"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        let slotsOcupadosNaNuvem = [];
-        let ultimaSincronizacao = 0;
-        let tentativasLogin = 0;
-        let slideAtual = 0;
-        let intervaloCarrossel = null;
+  <!-- SCRIPT PRINCIPAL BLINDADO E PRÉ-CONFIGURADO -->
+  <script>
+    const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKpqBTom5p0x7dgMXSSZ7a2c8298HPZKfAeVsa414hcR-DMLhn5yTY_xuAfhp0ts7d/exec";
+    const ADMIN_HASH = "4c708e7f7bd4de24e427e3e890629745557b4213362119c2ad6e118cc12743d2";
 
-        function lerStorageSeguro(tipo, chave, valorPadrao) {
-            try {
-                const st = (tipo === 'session') ? window.sessionStorage : window.localStorage;
-                const val = st.getItem(chave);
-                return val !== null ? val : valorPadrao;
-            } catch (e) {
-                return valorPadrao;
-            }
+    const POSTO_HENRICAR = {
+      nome: "Henricar - Av. Benjamin Constant, 550, Campinas/SP (CEP 13010-140)",
+      cidade: "Campinas - SP",
+      cep: "13010-140"
+    };
+    const horariosManha = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
+    const horariosTarde = ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:20"];
+    const todosHorarios = horariosManha.concat(horariosTarde);
+
+    let estadoAgendamento = {
+      servico: "",
+      posto: null,
+      cep: "",
+      cepFormatado: "",
+      enderecoFormatado: "",
+      isTecnicoExterno: false,
+      data: "",
+      horario: ""
+    };
+
+    let slotsOcupadosNaNuvem = [];
+    let ultimaSincronizacao = 0;
+    let tentativasLogin = 0;
+    let slideAtual = 0;
+    let intervaloCarrossel = null;
+
+    function lerStorageSeguro(tipo, chave, valorPadrao) {
+      try {
+        const st = (tipo === 'session') ? window.sessionStorage : window.localStorage;
+        const val = st.getItem(chave);
+        return val !== null ? val : valorPadrao;
+      } catch (e) {
+        return valorPadrao;
+      }
+    }
+
+    function salvarStorageSeguro(tipo, chave, valor) {
+      try {
+        const st = (tipo === 'session') ? window.sessionStorage : window.localStorage;
+        st.setItem(chave, valor);
+      } catch (e) {}
+    }
+
+    function removerStorageSeguro(tipo, chave) {
+      try {
+        const st = (tipo === 'session') ? window.sessionStorage : window.localStorage;
+        st.removeItem(chave);
+      } catch (e) {}
+    }
+
+    window.trocarSlideMarketing = function(novoIndice) {
+      for (let i = 0; i < 3; i++) {
+        const s = document.getElementById('slide' + i);
+        const d = document.getElementById('dot' + i);
+        if (!s || !d) continue;
+        if (i === novoIndice) {
+          s.classList.remove('opacity-0', 'pointer-events-none');
+          s.classList.add('opacity-100');
+          d.className = "w-5 h-2 rounded-full bg-brand-orange transition-all cursor-pointer";
+        } else {
+          s.classList.remove('opacity-100');
+          s.classList.add('opacity-0', 'pointer-events-none');
+          d.className = "w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all cursor-pointer";
         }
-
-        function salvarStorageSeguro(tipo, chave, valor) {
-            try {
-                const st = (tipo === 'session') ? window.sessionStorage : window.localStorage;
-                st.setItem(chave, valor);
-            } catch (e) {}
-        }
-
-        function removerStorageSeguro(tipo, chave) {
-            try {
-                const st = (tipo === 'session') ? window.sessionStorage : window.localStorage;
-                st.removeItem(chave);
-            } catch (e) {}
-        }
-
-        window.trocarSlideMarketing = function(novoIndice) {
-            for (let i = 0; i < 3; i++) {
-                const s = document.getElementById('slide' + i);
-                const d = document.getElementById('dot' + i);
-                if (!s || !d) continue;
-                if (i === novoIndice) {
-                    s.classList.remove('opacity-0', 'pointer-events-none');
-                    s.classList.add('opacity-100');
-                    d.className = "w-5 h-2 rounded-full bg-brand-orange transition-all cursor-pointer";
-                } else {
-                    s.classList.remove('opacity-100');
-                    s.classList.add('opacity-0', 'pointer-events-none');
-                    d.className = "w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all cursor-pointer";
-                }
-            }
-            slideAtual = novoIndice;
-        };
-
-        function iniciarCarrosselMarketing() {
-            if (intervaloCarrossel) clearInterval(intervaloCarrossel);
-            intervaloCarrossel = setInterval(function() {
-                window.trocarSlideMarketing((slideAtual + 1) % 3);
-            }, 6500);
-        }
-
-        function sanitizarInput(str) {
-            if (!str) return "";
-            return str.toString().trim()
-                .replace(/[<>]/g, "")
-                .replace(/^[=+\-@]+/, "");
-        }
-
-        function obterDataHojeBrasil() {
-            const agora = new Date();
-            const ano = agora.getFullYear();
-            const mes = String(agora.getMonth() + 1).padStart(2, '0');
-            const dia = String(agora.getDate()).padStart(2, '0');
-            return ano + "-" + mes + "-" + dia;
-        }
-
-        function formatarDataBR(dataYYYYMMDD) {
-            if (!dataYYYYMMDD) return "";
-            const partes = dataYYYYMMDD.split('-');
-            if (partes.length !== 3) return dataYYYYMMDD;
-            return partes[2] + "/" + partes[1] + "/" + partes[0];
-        }
-
-        function horarioJaPassouHoje(dataEscolhida, horarioStr) {
-            const hojeStr = obterDataHojeBrasil();
-            if (dataEscolhida !== hojeStr) return false;
-
-            const agora = new Date();
-            const partesHora = horarioStr.split(':');
-            const horaSlot = Number(partesHora[0]);
-            const minSlot = Number(partesHora[1]);
-            const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
-            const minutosSlot = horaSlot * 60 + minSlot;
-
-            return minutosSlot <= (minutosAgora + 15);
-        }
-
-        function diaPossuiVagaDisponivel(dataStr) {
-            if (!dataStr) return false;
-            const partes = dataStr.split('-').map(Number);
-            if (partes.length !== 3 || partes[0] < 2026) return false;
-
-            const dt = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
-            const diaSemana = dt.getDay();
-            if (diaSemana === 0 || diaSemana === 6) return false;
-
-            let dbLocal = [];
-            try {
-                dbLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
-            } catch (e) {}
-
-            return todosHorarios.some(function(horario) {
-                const ocupadoNuvem = slotsOcupadosNaNuvem.some(function(vaga) {
-                    return vaga.data === dataStr && vaga.horario === horario;
-                });
-                const ocupadoLocal = dbLocal.some(function(vaga) {
-                    return vaga.data === dataStr && vaga.horario === horario;
-                });
-                const jaPassou = horarioJaPassouHoje(dataStr, horario);
-                return !ocupadoNuvem && !ocupadoLocal && !jaPassou;
-            });
-        }
-
-        function encontrarProximoDiaDisponivel(dataBaseStr) {
-            const base = dataBaseStr || obterDataHojeBrasil();
-            const partes = base.split('-').map(Number);
-            const dt = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
-
-            for (let tentativa = 0; tentativa < 45; tentativa++) {
-                const a = dt.getFullYear();
-                const m = String(dt.getMonth() + 1).padStart(2, '0');
-                const d = String(dt.getDate()).padStart(2, '0');
-                const dataCandidata = a + "-" + m + "-" + d;
-
-                if (diaPossuiVagaDisponivel(dataCandidata)) {
-                    return dataCandidata;
-                }
-                dt.setDate(dt.getDate() + 1);
-            }
-            return base;
-        }
-
-        function definirDataMinimaLocal() {
-            const hoje = obterDataHojeBrasil();
-            const diaInicial = encontrarProximoDiaDisponivel(hoje);
-            const elem = document.getElementById('dataAgendamento');
-            if (elem) {
-                elem.min = hoje;
-                elem.value = diaInicial;
-            }
-            estadoAgendamento.data = diaInicial;
-        }
-
-        async function fetchComTimeout(url, options, timeoutMs) {
-            const controller = new AbortController();
-            const id = setTimeout(function() { controller.abort(); }, timeoutMs || 9000);
-            try {
-                const opts = Object.assign({}, options || {}, { signal: controller.signal });
-                const response = await fetch(url, opts);
-                clearTimeout(id);
-                return response;
-            } catch (err) {
-                clearTimeout(id);
-                throw err;
-            }
-        }
-
-        window.voltarPara = function(etapa) {
-            const idsEtapas = ['step1', 'step2', 'step3', 'step4', 'stepSucesso'];
-            idsEtapas.forEach(function(id) {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.classList.add('hidden');
-                    el.classList.remove('animate-fade-in');
-                }
-            });
-
-            const alvo = document.getElementById('step' + etapa);
-            if (alvo) {
-                alvo.classList.remove('hidden');
-                setTimeout(function() { alvo.classList.add('animate-fade-in'); }, 10);
-            }
-            atualizarTracker(etapa);
-
-            const badgeTopo = document.getElementById('badgeServicoTopo');
-            if (badgeTopo) {
-                badgeTopo.innerText = (etapa > 1 && estadoAgendamento.servico)
-                    ? "Serviço: " + estadoAgendamento.servico
-                    : "Agendamento Online";
-            }
-        };
-
-        window.voltarDeEtapa4 = function() {
-            if (estadoAgendamento.isTecnicoExterno) {
-                window.voltarPara(2);
-            } else {
-                window.voltarPara(3);
-            }
-        };
-
-        function atualizarTracker(etapaAtual) {
-            const numEtapa = Number(etapaAtual) || 1;
-            const percentage = ((numEtapa - 1) / 3) * 100;
-            const bar = document.getElementById('progressBar');
-            if (bar) bar.style.width = Math.min(100, Math.max(0, percentage)) + '%';
-
-            for (let i = 1; i <= 4; i++) {
-                const el = document.getElementById('pStep' + i);
-                if (!el) continue;
-                if (i <= numEtapa) {
-                    el.className = "w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors border-2 border-white z-10";
-                } else {
-                    el.className = "w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10";
-                }
-            }
-        }
-
-        function atualizarResumoExtraStep4() {
-            const elExtra = document.getElementById('resumoDataHoraExtra');
-            if (!elExtra) return;
-            if (estadoAgendamento.isTecnicoExterno) {
-                elExtra.innerText = "Serviço: " + estadoAgendamento.servico + " • CEP: " + estadoAgendamento.cepFormatado;
-            } else {
-                const dataBr = formatarDataBR(estadoAgendamento.data);
-                elExtra.innerText = "Serviço: " + estadoAgendamento.servico + " • Data: " + dataBr + " às " + estadoAgendamento.horario;
-            }
-        }
-
-        window.mascaraCEP = function(input) {
-            let v = input.value.replace(/\D/g, "");
-            v = v.replace(/^(\d{5})(\d)/, "$1-$2");
-            input.value = v;
-        };
-
-        window.mascaraTelefone = function(input) {
-            let v = input.value.replace(/\D/g, "");
-            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
-            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
-            input.value = v;
-        };
-
-        window.formatarPlaca = function(input) {
-            input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-        };
-
-        window.selecionarServico = function(servico) {
-            estadoAgendamento.servico = servico;
-            window.voltarPara(2);
-        };
-
-        function normalizarTexto(texto) {
-            if (!texto) return "";
-            return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-        }
-
-        window.buscarEAnalisarCEP = async function() {
-            const inputEl = document.getElementById('inputCEP');
-            const rawCep = (inputEl ? inputEl.value : "").replace(/\D/g, '');
-            const maskedCep = inputEl ? inputEl.value : "";
-            const feedback = document.getElementById('cepFeedback');
-            const boxTecnico = document.getElementById('boxTecnicoExterno');
-            const boxPostos = document.getElementById('boxPostosFixos');
-            const btn = document.getElementById('btnBuscarCep');
-
-            boxTecnico.classList.add('hidden');
-            boxPostos.classList.add('hidden');
-
-            if (rawCep.length !== 8) {
-                feedback.innerHTML = '<span class="text-rose-500 font-semibold">CEP inválido. Digite os 8 números do CEP.</span>';
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerText = "Consultando CEP...";
-            feedback.innerHTML = "";
-
-            try {
-                const res = await fetchComTimeout("https://viacep.com.br/ws/" + rawCep + "/json/", {}, 7000);
-                const data = await res.json();
-
-                btn.disabled = false;
-                btn.innerText = "Verificar Disponibilidade";
-
-                if (data.erro) {
-                    feedback.innerHTML = '<span class="text-rose-500 font-semibold">CEP não encontrado. Verifique os números digitados.</span>';
-                    return;
-                }
-
-                estadoAgendamento.cep = rawCep;
-                estadoAgendamento.cepFormatado = sanitizarInput(maskedCep);
-                estadoAgendamento.enderecoFormatado = sanitizarInput((data.logradouro || 'Bairro') + ", " + (data.bairro || '') + " - " + data.localidade + "/" + data.uf);
-
-                const cidadeNorm = normalizarTexto(data.localidade);
-                const isRegiaoAtendida = (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");
-
-                if (!isRegiaoAtendida) {
-                    estadoAgendamento.isTecnicoExterno = true;
-                    feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + sanitizarInput(data.localidade) + '/' + sanitizarInput(data.uf) + ') é atendida via Técnico Parceiro:</span>';
-                    boxTecnico.classList.remove('hidden');
-                } else {
-                    estadoAgendamento.isTecnicoExterno = false;
-                    feedback.innerHTML = '<span class="text-emerald-600 font-semibold">Atendimento liberado na unidade credenciada local:</span>';
-                    boxPostos.classList.remove('hidden');
-                }
-
-            } catch (error) {
-                btn.disabled = false;
-                btn.innerText = "Verificar Disponibilidade";
-                feedback.innerHTML = '<span class="text-rose-500 font-semibold">Oscilação na rede ao buscar o CEP. Toque novamente.</span>';
-            }
-        };
-
-        window.encaminharParaTecnicoParceiro = function() {
-            estadoAgendamento.posto = { nome: "Agend. Tecnico Parceiro - CEP: " + estadoAgendamento.cepFormatado };
-            estadoAgendamento.isTecnicoExterno = true;
-            estadoAgendamento.data = "A agendar via técnico";
-            estadoAgendamento.horario = "A agendar";
-            
-            document.getElementById('resumoModalidade').innerText = "Técnico Parceiro (Atendimento Externo)";
-            document.getElementById('alertaConflito').classList.add('hidden');
-            atualizarResumoExtraStep4();
-            window.voltarPara(4);
-        };
-
-        window.confirmarPostoParceiro = function(nomePosto) {
-            estadoAgendamento.posto = { nome: nomePosto };
-            estadoAgendamento.isTecnicoExterno = false;
-            document.getElementById('resumoModalidade').innerText = "Unidade Credenciada Henricar (Campinas)";
-            
-            const hoje = obterDataHojeBrasil();
-            estadoAgendamento.data = hoje;
-            const inputData = document.getElementById('dataAgendamento');
-            if (inputData) inputData.value = hoje;
-            
-            document.getElementById('avisoFimDeSemana').classList.add('hidden');
-            document.getElementById('avisoAutoAvanco').classList.add('hidden');
-
-            window.voltarPara(3);
-            dispararBuscaDeHorariosNaNuvem(false, true);
-        };
-
-        window.aoMudarDataManual = function() {
-            const inputEl = document.getElementById('dataAgendamento');
-            const inputData = inputEl ? inputEl.value : "";
-            const avisoFds = document.getElementById('avisoFimDeSemana');
-            const avisoAuto = document.getElementById('avisoAutoAvanco');
-            const containerHorarios = document.getElementById('containerHorarios');
-
-            if (!inputData) return;
-
-            const partes = inputData.split('-').map(Number);
-            if (partes.length !== 3 || partes[0] < 2026) return;
-
-            const dataObj = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
-            const diaSemana = dataObj.getDay();
-
-            avisoAuto.classList.add('hidden');
-
-            if (diaSemana === 0 || diaSemana === 6) {
-                avisoFds.classList.remove('hidden');
-                containerHorarios.classList.add('hidden');
-                return;
-            }
-
-            avisoFds.classList.add('hidden');
-            estadoAgendamento.data = inputData;
-            dispararBuscaDeHorariosNaNuvem(false, true);
-        };
-
-        function verificarEAplicarSaltoAutomatico(dataOriginalSolicitada) {
-            const inputEl = document.getElementById('dataAgendamento');
-            const avisoAuto = document.getElementById('avisoAutoAvanco');
-            const textoAuto = document.getElementById('textoAutoAvanco');
-            const avisoFds = document.getElementById('avisoFimDeSemana');
-
-            if (!diaPossuiVagaDisponivel(dataOriginalSolicitada)) {
-                const proximoLivre = encontrarProximoDiaDisponivel(dataOriginalSolicitada);
-                if (proximoLivre && proximoLivre !== dataOriginalSolicitada) {
-                    estadoAgendamento.data = proximoLivre;
-                    if (inputEl) inputEl.value = proximoLivre;
-                    if (avisoFds) avisoFds.classList.add('hidden');
-
-                    if (avisoAuto && textoAuto) {
-                        const hoje = obterDataHojeBrasil();
-                        const motivo = (dataOriginalSolicitada === hoje)
-                            ? "Os horários de hoje (" + formatarDataBR(dataOriginalSolicitada) + ") já encerraram ou estão completos."
-                            : "O dia " + formatarDataBR(dataOriginalSolicitada) + " já está com todos os horários completos.";
-                        
-                        textoAuto.innerHTML = motivo + " Avançamos automaticamente para o próximo dia disponível: <b>" + formatarDataBR(proximoLivre) + "</b>. <span class='text-slate-600 block mt-0.5'>Você pode selecionar qualquer outra data no calendário acima se preferir.</span>";
-                        avisoAuto.classList.remove('hidden');
-                    }
-                }
-            }
-        }
-
-        async function dispararBuscaDeHorariosNaNuvem(forcarRecarga, autoAvancarSeLotado) {
-            const containerHorarios = document.getElementById('containerHorarios');
-            const loading = document.getElementById('loadingSincronizacao');
-            const dataSolicitada = estadoAgendamento.data || obterDataHojeBrasil();
-            
-            const agora = Date.now();
-            if (!forcarRecarga && (agora - ultimaSincronizacao < 20000) && slotsOcupadosNaNuvem.length > 0) {
-                if (autoAvancarSeLotado) {
-                    verificarEAplicarSaltoAutomatico(dataSolicitada);
-                }
-                containerHorarios.classList.remove('hidden');
-                renderizarGradeHorarios();
-                return;
-            }
-
-            containerHorarios.classList.add('hidden');
-            loading.classList.remove('hidden');
-            loading.classList.add('flex');
-
-            const url = lerStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL) || DEFAULT_SCRIPT_URL;
-
-            try {
-                const response = await fetchComTimeout(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: "buscar" })
-                }, 8000);
-                
-                const texto = await response.text();
-                const resultado = JSON.parse(texto);
-                if (resultado && resultado.result === "success") {
-                    slotsOcupadosNaNuvem = resultado.ocupados || [];
-                    ultimaSincronizacao = Date.now();
-                }
-            } catch (err) {
-                console.log("Modo de leitura direta ativo.");
-            }
-
-            if (autoAvancarSeLotado) {
-                verificarEAplicarSaltoAutomatico(dataSolicitada);
-            }
-
-            loading.classList.remove('flex');
-            loading.classList.add('hidden');
-            containerHorarios.classList.remove('hidden');
-            
-            renderizarGradeHorarios();
-        }
-
-        function renderizarGradeHorarios() {
-            const gridM = document.getElementById('gridHorariosManha');
-            const gridT = document.getElementById('gridHorariosTarde');
-
-            let dbLocal = [];
-            try {
-                dbLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
-            } catch (e) {}
-
-            const renderBloco = function(listaHorarios) {
-                return listaHorarios.map(function(horario) {
-                    const ocupadoNuvem = slotsOcupadosNaNuvem.some(function(vaga) {
-                        return vaga.data === estadoAgendamento.data && vaga.horario === horario;
-                    });
-                    const ocupadoLocal = dbLocal.some(function(vaga) {
-                        return vaga.data === estadoAgendamento.data && vaga.horario === horario;
-                    });
-                    const jaPassou = horarioJaPassouHoje(estadoAgendamento.data, horario);
-                    const bloqueado = ocupadoNuvem || ocupadoLocal || jaPassou;
-
-                    const classesBtn = bloqueado
-                        ? "border-slate-200 bg-slate-100 text-slate-400"
-                        : "border-slate-200 bg-white text-brand-blue hover:border-brand-orange hover:bg-orange-50/50 cursor-pointer";
-
-                    return '<button type="button" onclick="window.selecionarHorario(\'' + horario + '\')" ' + (bloqueado ? 'disabled' : '') + ' class="slot-btn font-mono border-2 ' + classesBtn + ' py-2.5 px-2 rounded-xl text-center transition-all font-bold text-sm shadow-sm">' + horario + '</button>';
-                }).join('');
-            };
-
-            gridM.innerHTML = renderBloco(horariosManha);
-            gridT.innerHTML = renderBloco(horariosTarde);
-        }
-
-        window.selecionarHorario = function(horario) {
-            estadoAgendamento.horario = horario;
-            document.getElementById('alertaConflito').classList.add('hidden');
-            atualizarResumoExtraStep4();
-            window.voltarPara(4);
-        };
-
-        function exibirErroFormulario(titulo, msg) {
-            document.getElementById('tituloErroForm').innerText = titulo;
-            document.getElementById('msgErroForm').innerText = msg;
-            document.getElementById('alertaConflito').classList.remove('hidden');
-        }
-
-        window.finalizarAgendamento = async function(event) {
-            event.preventDefault();
-            document.getElementById('alertaConflito').classList.add('hidden');
-            
-            const hp = document.getElementById('website_hp').value;
-            if (hp !== "") return;
-
-            const nomeLimpo = sanitizarInput(document.getElementById('inputNome').value);
-            const telLimpo = sanitizarInput(document.getElementById('inputTelefone').value);
-            const telApenasNumeros = telLimpo.replace(/\D/g, "");
-            const placaLimpa = sanitizarInput(document.getElementById('inputPlaca').value).toUpperCase();
-
-            if (nomeLimpo.length < 3) {
-                exibirErroFormulario("Nome inválido", "Por favor, digite seu nome completo.");
-                return;
-            }
-
-            if (telApenasNumeros.length < 10 || telApenasNumeros.length > 11) {
-                exibirErroFormulario("WhatsApp inválido", "Digite o DDD seguido do número completo (ex: 19 99999-9999).");
-                return;
-            }
-
-            const regexPlaca = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
-            if (!regexPlaca.test(placaLimpa)) {
-                exibirErroFormulario("Placa inválida", "Digite uma placa válida de 7 caracteres (Ex: ABC1234 ou ABC1D23).");
-                return;
-            }
-
-            const btn = document.getElementById('btnConfirmar');
-            btn.disabled = true;
-            btn.innerText = "Confirmando Agendamento...";
-
-            const payload = {
-                action: "salvar",
-                dataRegistro: new Date().toLocaleString('pt-BR'),
-                servico: sanitizarInput(estadoAgendamento.servico),
-                posto: estadoAgendamento.posto ? sanitizarInput(estadoAgendamento.posto.nome) : POSTO_HENRICAR.nome,
-                isTecnicoExterno: Boolean(estadoAgendamento.isTecnicoExterno),
-                cep: estadoAgendamento.cepFormatado, 
-                endereco: estadoAgendamento.enderecoFormatado,
-                data: sanitizarInput(estadoAgendamento.data),
-                horario: sanitizarInput(estadoAgendamento.horario),
-                nome: nomeLimpo,
-                telefone: telLimpo,
-                placa: placaLimpa
-            };
-
-            const url = lerStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL) || DEFAULT_SCRIPT_URL;
-
-            try {
-                const response = await fetchComTimeout(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
-                }, 10000);
-                
-                const textoResp = await response.text();
-                let resultado = null;
-                try { resultado = JSON.parse(textoResp); } catch (e) {}
-
-                if (resultado && resultado.result === "conflict") {
-                    btn.disabled = false;
-                    btn.innerText = "Confirmar Agendamento";
-                    exibirErroFormulario("Horário Esgotado!", "Outro associado acabou de reservar este horário segundos atrás. Volte e escolha outro horário.");
-                    dispararBuscaDeHorariosNaNuvem(true, true);
-                    return;
-                }
-            } catch (err) {
-                try {
-                    await fetch(url, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify(payload)
-                    });
-                } catch (e2) {}
-            }
-
-            try {
-                const listaLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
-                listaLocal.push(payload);
-                salvarStorageSeguro('local', 'agendamentos_db', JSON.stringify(listaLocal));
-            } catch (e) {}
-
-            slotsOcupadosNaNuvem.push({ data: payload.data, horario: payload.horario });
-
-            document.getElementById('step4').classList.add('hidden');
-            const stepSucesso = document.getElementById('stepSucesso');
-            stepSucesso.classList.remove('hidden');
-            setTimeout(function() { stepSucesso.classList.add('animate-fade-in'); }, 10);
-        };
-
-        window.reiniciarFluxo = function() {
-            document.getElementById('formAgendamento').reset();
-            document.getElementById('stepSucesso').classList.add('hidden');
-            document.getElementById('stepSucesso').classList.remove('animate-fade-in');
-            document.getElementById('inputCEP').value = "";
-            document.getElementById('cepFeedback').innerHTML = "";
-            document.getElementById('boxTecnicoExterno').classList.add('hidden');
-            document.getElementById('boxPostosFixos').classList.add('hidden');
-            document.getElementById('alertaConflito').classList.add('hidden');
-            document.getElementById('avisoAutoAvanco').classList.add('hidden');
-            definirDataMinimaLocal();
-            
-            const btn = document.getElementById('btnConfirmar');
-            btn.disabled = false;
-            btn.innerText = "Confirmar Agendamento";
-            
-            window.voltarPara(1);
-        };
-
-        let contadorToquesLogo = 0;
-        let timerToquesLogo = null;
-
-        window.cliqueMultiploLogo = function() {
-            contadorToquesLogo++;
-            if (timerToquesLogo) clearTimeout(timerToquesLogo);
-            if (contadorToquesLogo >= 3) {
-                contadorToquesLogo = 0;
-                window.toggleAdminLogin();
-                return;
-            }
-            timerToquesLogo = setTimeout(function() {
-                contadorToquesLogo = 0;
-            }, 600);
-        };
-
-        window.toggleAdminLogin = function() {
-            const modal = document.getElementById('modalAdminLogin');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.getElementById('inputSenhaAdmin').value = '';
-            document.getElementById('erroSenha').classList.add('hidden');
-        };
-
-        window.fecharAdminLogin = function() {
-            document.getElementById('modalAdminLogin').classList.add('hidden');
-            document.getElementById('modalAdminLogin').classList.remove('flex');
-        };
-
-        async function gerarHashSHA256(mensagem) {
-            if (window.crypto && window.crypto.subtle) {
-                const msgBuffer = new TextEncoder().encode(mensagem);
-                const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-            }
-            return null;
-        }
-
-        window.verificarSenha = async function(e) {
-            e.preventDefault();
-            if (tentativasLogin >= 5) {
-                const erroEl = document.getElementById('erroSenha');
-                erroEl.innerText = "Muitas tentativas. Recarregue a página.";
-                erroEl.classList.remove('hidden');
-                return;
-            }
-
-            const senhaDigitada = document.getElementById('inputSenhaAdmin').value.trim();
-            const hashDigitado = await gerarHashSHA256(senhaDigitada);
-            const autenticado = (hashDigitado === ADMIN_HASH) || (hashDigitado === null && senhaDigitada === "cooperlink2026");
-
-            if (autenticado) {
-                tentativasLogin = 0;
-                window.fecharAdminLogin();
-                const modal = document.getElementById('modalAdmin');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            } else {
-                tentativasLogin++;
-                const erroEl = document.getElementById('erroSenha');
-                erroEl.innerText = "Senha incorreta (Tentativa " + tentativasLogin + "/5).";
-                erroEl.classList.remove('hidden');
-            }
-        };
-
-        window.fecharSettings = function() {
-            document.getElementById('modalAdmin').classList.add('hidden');
-            document.getElementById('modalAdmin').classList.remove('flex');
-        };
-
-        window.salvarEtestar = async function() {
-            const url = document.getElementById('scriptUrlInput').value.trim();
-            const statusEl = document.getElementById('statusTesteAdmin');
-            if (!url) { alert("Insira uma URL válida."); return; }
-            
-            salvarStorageSeguro('local', 'google_script_url', url);
-            statusEl.innerText = "Enviando linha de teste para a planilha...";
-            statusEl.classList.remove('hidden');
-
-            const dadosTeste = {
-                action: "salvar",
-                dataRegistro: new Date().toLocaleString('pt-BR'),
-                servico: "Teste Painel",
-                posto: "Teste de Conexão",
-                isTecnicoExterno: true,
-                cep: "13023-075",
-                endereco: "Av. Brasil, 172 - Campinas/SP",
-                data: obterDataHojeBrasil(),
-                horario: "Teste",
-                nome: "Teste Sistema Cooperlink",
-                telefone: "(19) 99999-9999",
-                placa: "TST2A26"
-            };
-
-            try {
-                await fetch(url, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(dadosTeste)
-                });
-                statusEl.innerText = "✓ URL salva e teste disparado para a planilha!";
-            } catch (e) {
-                statusEl.innerText = "URL salva localmente.";
-            }
-        };
-
-        window.limparCacheLocal = function() {
-            slotsOcupadosNaNuvem = [];
-            ultimaSincronizacao = 0;
-            removerStorageSeguro('local', 'agendamentos_db');
-            removerStorageSeguro('session', 'ultimo_envio_ts');
-            const statusEl = document.getElementById('statusTesteAdmin');
-            statusEl.innerText = "✓ Cache de horários limpo com sucesso!";
-            statusEl.classList.remove('hidden');
-        };
-
-        function carregarUrlSalva() {
-            // Garante que a nova URL oficial atualize mesmo se o navegador tinha a antiga salva
-            salvarStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL);
-            const input = document.getElementById('scriptUrlInput');
-            if (input) input.value = DEFAULT_SCRIPT_URL;
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            definirDataMinimaLocal();
-            carregarUrlSalva();
-            iniciarCarrosselMarketing();
+      }
+      slideAtual = novoIndice;
+    };
+
+    function iniciarCarrosselMarketing() {
+      if (intervaloCarrossel) clearInterval(intervaloCarrossel);
+      intervaloCarrossel = setInterval(function() {
+        window.trocarSlideMarketing((slideAtual + 1) % 3);
+      }, 6500);
+    }
+
+    function sanitizarInput(str) {
+      if (!str) return "";
+      return str.toString().trim()
+        .replace(/[<>]/g, "")
+        .replace(/^[=+\-@]+/, "");
+    }
+
+    function obterDataHojeBrasil() {
+      const agora = new Date();
+      const ano = agora.getFullYear();
+      const mes = String(agora.getMonth() + 1).padStart(2, '0');
+      const dia = String(agora.getDate()).padStart(2, '0');
+      return ano + "-" + mes + "-" + dia;
+    }
+
+    function formatarDataBR(dataYYYYMMDD) {
+      if (!dataYYYYMMDD) return "";
+      const partes = dataYYYYMMDD.split('-');
+      if (partes.length !== 3) return dataYYYYMMDD;
+      return partes[2] + "/" + partes[1] + "/" + partes[0];
+    }
+
+    function horarioJaPassouHoje(dataEscolhida, horarioStr) {
+      const hojeStr = obterDataHojeBrasil();
+      if (dataEscolhida !== hojeStr) return false;
+
+      const agora = new Date();
+      const partesHora = horarioStr.split(':');
+      const horaSlot = Number(partesHora[0]);
+      const minSlot = Number(partesHora[1]);
+      const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
+      const minutosSlot = horaSlot * 60 + minSlot;
+
+      return minutosSlot <= (minutosAgora + 15);
+    }
+
+    function diaPossuiVagaDisponivel(dataStr) {
+      if (!dataStr) return false;
+      const partes = dataStr.split('-').map(Number);
+      if (partes.length !== 3 || partes[0] < 2026) return false;
+
+      const dt = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
+      const diaSemana = dt.getDay();
+      if (diaSemana === 0 || diaSemana === 6) return false;
+
+      let dbLocal = [];
+      try {
+        dbLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
+      } catch (e) {}
+
+      return todosHorarios.some(function(horario) {
+        const ocupadoNuvem = slotsOcupadosNaNuvem.some(function(vaga) {
+          return vaga.data === dataStr && vaga.horario === horario;
         });
-    </script>
+        const ocupadoLocal = dbLocal.some(function(vaga) {
+          return vaga.data === dataStr && vaga.horario === horario;
+        });
+        const jaPassou = horarioJaPassouHoje(dataStr, horario);
+        return !ocupadoNuvem && !ocupadoLocal && !jaPassou;
+      });
+    }
+
+    function encontrarProximoDiaDisponivel(dataBaseStr) {
+      const base = dataBaseStr || obterDataHojeBrasil();
+      const partes = base.split('-').map(Number);
+      const dt = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
+
+      for (let tentativa = 0; tentativa < 45; tentativa++) {
+        const a = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const d = String(dt.getDate()).padStart(2, '0');
+        const dataCandidata = a + "-" + m + "-" + d;
+
+        if (diaPossuiVagaDisponivel(dataCandidata)) {
+          return dataCandidata;
+        }
+        dt.setDate(dt.getDate() + 1);
+      }
+      return base;
+    }
+
+    function definirDataMinimaLocal() {
+      const hoje = obterDataHojeBrasil();
+      const diaInicial = encontrarProximoDiaDisponivel(hoje);
+      const elem = document.getElementById('dataAgendamento');
+      if (elem) {
+        elem.min = hoje;
+        elem.value = diaInicial;
+      }
+      estadoAgendamento.data = diaInicial;
+    }
+
+    async function fetchComTimeout(url, options, timeoutMs) {
+      const controller = new AbortController();
+      const id = setTimeout(function() { controller.abort(); }, timeoutMs || 9000);
+      try {
+        const opts = Object.assign({}, options || {}, { signal: controller.signal });
+        const response = await fetch(url, opts);
+        clearTimeout(id);
+        return response;
+      } catch (err) {
+        clearTimeout(id);
+        throw err;
+      }
+    }
+
+    window.voltarPara = function(etapa) {
+      const idsEtapas = ['step1', 'step2', 'step3', 'step4', 'stepSucesso'];
+      idsEtapas.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('hidden');
+          el.classList.remove('animate-fade-in');
+        }
+      });
+
+      const alvo = document.getElementById('step' + etapa);
+      if (alvo) {
+        alvo.classList.remove('hidden');
+        setTimeout(function() { alvo.classList.add('animate-fade-in'); }, 10);
+      }
+      atualizarTracker(etapa);
+
+      const badgeTopo = document.getElementById('badgeServicoTopo');
+      if (badgeTopo) {
+        badgeTopo.innerText = (etapa > 1 && estadoAgendamento.servico)
+          ? "Serviço: " + estadoAgendamento.servico
+          : "Agendamento Online";
+      }
+    };
+
+    window.voltarDeEtapa4 = function() {
+      if (estadoAgendamento.isTecnicoExterno) {
+        window.voltarPara(2);
+      } else {
+        window.voltarPara(3);
+      }
+    };
+
+    function atualizarTracker(etapaAtual) {
+      const numEtapa = Number(etapaAtual) || 1;
+      const percentage = ((numEtapa - 1) / 3) * 100;
+      const bar = document.getElementById('progressBar');
+      if (bar) bar.style.width = Math.min(100, Math.max(0, percentage)) + '%';
+
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById('pStep' + i);
+        if (!el) continue;
+        if (i <= numEtapa) {
+          el.className = "w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors border-2 border-white z-10";
+        } else {
+          el.className = "w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10";
+        }
+      }
+    }
+
+    function atualizarResumoExtraStep4() {
+      const elExtra = document.getElementById('resumoDataHoraExtra');
+      if (!elExtra) return;
+      if (estadoAgendamento.isTecnicoExterno) {
+        elExtra.innerText = "Serviço: " + estadoAgendamento.servico + " • CEP: " + estadoAgendamento.cepFormatado;
+      } else {
+        const dataBr = formatarDataBR(estadoAgendamento.data);
+        elExtra.innerText = "Serviço: " + estadoAgendamento.servico + " • Data: " + dataBr + " às " + estadoAgendamento.horario;
+      }
+    }
+
+    window.mascaraCEP = function(input) {
+      let v = input.value.replace(/\D/g, "");
+      v = v.replace(/^(\d{5})(\d)/, "$1-$2");
+      input.value = v;
+    };
+
+    window.mascaraTelefone = function(input) {
+      let v = input.value.replace(/\D/g, "");
+      v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+      v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+      input.value = v;
+    };
+
+    window.formatarPlaca = function(input) {
+      input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    };
+
+    window.selecionarServico = function(servico) {
+      estadoAgendamento.servico = servico;
+      window.voltarPara(2);
+    };
+
+    function normalizarTexto(texto) {
+      if (!texto) return "";
+      return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    window.buscarEAnalisarCEP = async function() {
+      const inputEl = document.getElementById('inputCEP');
+      const rawCep = (inputEl ? inputEl.value : "").replace(/\D/g, '');
+      const maskedCep = inputEl ? inputEl.value : "";
+      const feedback = document.getElementById('cepFeedback');
+      const boxTecnico = document.getElementById('boxTecnicoExterno');
+      const boxPostos = document.getElementById('boxPostosFixos');
+      const btn = document.getElementById('btnBuscarCep');
+
+      boxTecnico.classList.add('hidden');
+      boxPostos.classList.add('hidden');
+
+      if (rawCep.length !== 8) {
+        feedback.innerHTML = '<span class="text-rose-500 font-semibold">CEP inválido. Digite os 8 números do CEP.</span>';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "Consultando CEP...";
+      feedback.innerHTML = "";
+
+      try {
+        const res = await fetchComTimeout("https://viacep.com.br/ws/" + rawCep + "/json/", {}, 7000);
+        const data = await res.json();
+
+        btn.disabled = false;
+        btn.innerText = "Verificar Disponibilidade";
+
+        if (data.erro) {
+          feedback.innerHTML = '<span class="text-rose-500 font-semibold">CEP não encontrado. Verifique os números digitados.</span>';
+          return;
+        }
+
+        estadoAgendamento.cep = rawCep;
+        estadoAgendamento.cepFormatado = sanitizarInput(maskedCep);
+        estadoAgendamento.enderecoFormatado = sanitizarInput((data.logradouro || 'Bairro') + ", " + (data.bairro || '') + " - " + data.localidade + "/" + data.uf);
+
+        const cidadeNorm = normalizarTexto(data.localidade);
+        const isRegiaoAtendida = (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");
+
+        if (!isRegiaoAtendida) {
+          estadoAgendamento.isTecnicoExterno = true;
+          feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + sanitizarInput(data.localidade) + '/' + sanitizarInput(data.uf) + ') é atendida via Técnico Parceiro:</span>';
+          boxTecnico.classList.remove('hidden');
+        } else {
+          estadoAgendamento.isTecnicoExterno = false;
+          feedback.innerHTML = '<span class="text-emerald-600 font-semibold">Atendimento liberado na unidade credenciada local:</span>';
+          boxPostos.classList.remove('hidden');
+        }
+      } catch (error) {
+        btn.disabled = false;
+        btn.innerText = "Verificar Disponibilidade";
+        feedback.innerHTML = '<span class="text-rose-500 font-semibold">Oscilação na rede ao buscar o CEP. Toque novamente.</span>';
+      }
+    };
+
+    window.encaminharParaTecnicoParceiro = function() {
+      estadoAgendamento.posto = { nome: "Agend. Tecnico Parceiro - CEP: " + estadoAgendamento.cepFormatado };
+      estadoAgendamento.isTecnicoExterno = true;
+      estadoAgendamento.data = "A agendar via técnico";
+      estadoAgendamento.horario = "A agendar";
+      
+      document.getElementById('resumoModalidade').innerText = "Técnico Parceiro (Atendimento Externo)";
+      document.getElementById('alertaConflito').classList.add('hidden');
+      atualizarResumoExtraStep4();
+      window.voltarPara(4);
+    };
+
+    window.confirmarPostoParceiro = function(nomePosto) {
+      estadoAgendamento.posto = { nome: nomePosto };
+      estadoAgendamento.isTecnicoExterno = false;
+      document.getElementById('resumoModalidade').innerText = "Unidade Credenciada Henricar (Campinas)";
+      
+      const hoje = obterDataHojeBrasil();
+      estadoAgendamento.data = hoje;
+      const inputData = document.getElementById('dataAgendamento');
+      if (inputData) inputData.value = hoje;
+      
+      document.getElementById('avisoFimDeSemana').classList.add('hidden');
+      document.getElementById('avisoAutoAvanco').classList.add('hidden');
+
+      window.voltarPara(3);
+      dispararBuscaDeHorariosNaNuvem(false, true);
+    };
+
+    window.aoMudarDataManual = function() {
+      const inputEl = document.getElementById('dataAgendamento');
+      const inputData = inputEl ? inputEl.value : "";
+      const avisoFds = document.getElementById('avisoFimDeSemana');
+      const avisoAuto = document.getElementById('avisoAutoAvanco');
+      const containerHorarios = document.getElementById('containerHorarios');
+
+      if (!inputData) return;
+
+      const partes = inputData.split('-').map(Number);
+      if (partes.length !== 3 || partes[0] < 2026) return;
+
+      const dataObj = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
+      const diaSemana = dataObj.getDay();
+
+      avisoAuto.classList.add('hidden');
+
+      if (diaSemana === 0 || diaSemana === 6) {
+        avisoFds.classList.remove('hidden');
+        containerHorarios.classList.add('hidden');
+        return;
+      }
+
+      avisoFds.classList.add('hidden');
+      estadoAgendamento.data = inputData;
+      dispararBuscaDeHorariosNaNuvem(false, true);
+    };
+
+    function verificarEAplicarSaltoAutomatico(dataOriginalSolicitada) {
+      const inputEl = document.getElementById('dataAgendamento');
+      const avisoAuto = document.getElementById('avisoAutoAvanco');
+      const textoAuto = document.getElementById('textoAutoAvanco');
+      const avisoFds = document.getElementById('avisoFimDeSemana');
+
+      if (!diaPossuiVagaDisponivel(dataOriginalSolicitada)) {
+        const proximoLivre = encontrarProximoDiaDisponivel(dataOriginalSolicitada);
+        if (proximoLivre && proximoLivre !== dataOriginalSolicitada) {
+          estadoAgendamento.data = proximoLivre;
+          if (inputEl) inputEl.value = proximoLivre;
+          if (avisoFds) avisoFds.classList.add('hidden');
+
+          if (avisoAuto && textoAuto) {
+            const hoje = obterDataHojeBrasil();
+            const motivo = (dataOriginalSolicitada === hoje)
+              ? "Os horários de hoje (" + formatarDataBR(dataOriginalSolicitada) + ") já encerraram ou estão completos."
+              : "O dia " + formatarDataBR(dataOriginalSolicitada) + " já está com todos os horários completos.";
+            
+            textoAuto.innerHTML = motivo + " Avançamos automaticamente para o próximo dia disponível: <b>" + formatarDataBR(proximoLivre) + "</b>. <span class='text-slate-600 block mt-0.5'>Você pode selecionar qualquer outra data no calendário acima se preferir.</span>";
+            avisoAuto.classList.remove('hidden');
+          }
+        }
+      }
+    }
+
+    async function dispararBuscaDeHorariosNaNuvem(forcarRecarga, autoAvancarSeLotado) {
+      const containerHorarios = document.getElementById('containerHorarios');
+      const loading = document.getElementById('loadingSincronizacao');
+      const dataSolicitada = estadoAgendamento.data || obterDataHojeBrasil();
+      
+      const agora = Date.now();
+      if (!forcarRecarga && (agora - ultimaSincronizacao < 20000) && slotsOcupadosNaNuvem.length > 0) {
+        if (autoAvancarSeLotado) {
+          verificarEAplicarSaltoAutomatico(dataSolicitada);
+        }
+        containerHorarios.classList.remove('hidden');
+        renderizarGradeHorarios();
+        return;
+      }
+
+      containerHorarios.classList.add('hidden');
+      loading.classList.remove('hidden');
+      loading.classList.add('flex');
+
+      const url = lerStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL) || DEFAULT_SCRIPT_URL;
+
+      try {
+        const response = await fetchComTimeout(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: "buscar" })
+        }, 8000);
+        
+        const texto = await response.text();
+        const resultado = JSON.parse(texto);
+        if (resultado && resultado.result === "success") {
+          slotsOcupadosNaNuvem = resultado.ocupados || [];
+          ultimaSincronizacao = Date.now();
+        }
+      } catch (err) {
+        console.log("Modo de leitura direta ativo.");
+      }
+
+      if (autoAvancarSeLotado) {
+        verificarEAplicarSaltoAutomatico(dataSolicitada);
+      }
+
+      loading.classList.remove('flex');
+      loading.classList.add('hidden');
+      containerHorarios.classList.remove('hidden');
+      
+      renderizarGradeHorarios();
+    }
+
+    function renderizarGradeHorarios() {
+      const gridM = document.getElementById('gridHorariosManha');
+      const gridT = document.getElementById('gridHorariosTarde');
+
+      let dbLocal = [];
+      try {
+        dbLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
+      } catch (e) {}
+
+      const renderBloco = function(listaHorarios) {
+        return listaHorarios.map(function(horario) {
+          const ocupadoNuvem = slotsOcupadosNaNuvem.some(function(vaga) {
+            return vaga.data === estadoAgendamento.data && vaga.horario === horario;
+          });
+          const ocupadoLocal = dbLocal.some(function(vaga) {
+            return vaga.data === estadoAgendamento.data && vaga.horario === horario;
+          });
+          const jaPassou = horarioJaPassouHoje(estadoAgendamento.data, horario);
+          const bloqueado = ocupadoNuvem || ocupadoLocal || jaPassou;
+
+          const classesBtn = bloqueado
+            ? "border-slate-200 bg-slate-100 text-slate-400"
+            : "border-slate-200 bg-white text-brand-blue hover:border-brand-orange hover:bg-orange-50/50 cursor-pointer";
+
+          return '<button type="button" onclick="window.selecionarHorario(\'' + horario + '\')" ' + (bloqueado ? 'disabled' : '') + ' class="slot-btn font-mono border-2 ' + classesBtn + ' py-2.5 px-2 rounded-xl text-center transition-all font-bold text-sm shadow-sm">' + horario + '</button>';
+        }).join('');
+      };
+
+      gridM.innerHTML = renderBloco(horariosManha);
+      gridT.innerHTML = renderBloco(horariosTarde);
+    }
+
+    window.selecionarHorario = function(horario) {
+      estadoAgendamento.horario = horario;
+      document.getElementById('alertaConflito').classList.add('hidden');
+      atualizarResumoExtraStep4();
+      window.voltarPara(4);
+    };
+
+    function exibirErroFormulario(titulo, msg) {
+      document.getElementById('tituloErroForm').innerText = titulo;
+      document.getElementById('msgErroForm').innerText = msg;
+      document.getElementById('alertaConflito').classList.remove('hidden');
+    }
+
+    window.finalizarAgendamento = async function(event) {
+      event.preventDefault();
+      document.getElementById('alertaConflito').classList.add('hidden');
+      
+      const hp = document.getElementById('website_hp').value;
+      if (hp !== "") return;
+
+      const nomeLimpo = sanitizarInput(document.getElementById('inputNome').value);
+      const telLimpo = sanitizarInput(document.getElementById('inputTelefone').value);
+      const telApenasNumeros = telLimpo.replace(/\D/g, "");
+      const placaLimpa = sanitizarInput(document.getElementById('inputPlaca').value).toUpperCase();
+
+      if (nomeLimpo.length < 3) {
+        exibirErroFormulario("Nome inválido", "Por favor, digite seu nome completo.");
+        return;
+      }
+
+      if (telApenasNumeros.length < 10 || telApenasNumeros.length > 11) {
+        exibirErroFormulario("WhatsApp inválido", "Digite o DDD seguido do número completo (ex: 19 99999-9999).");
+        return;
+      }
+
+      const regexPlaca = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
+      if (!regexPlaca.test(placaLimpa)) {
+        exibirErroFormulario("Placa inválida", "Digite uma placa válida de 7 caracteres (Ex: ABC1234 ou ABC1D23).");
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmar');
+      btn.disabled = true;
+      btn.innerText = "Confirmando Agendamento...";
+
+      const payload = {
+        action: "salvar",
+        dataRegistro: new Date().toLocaleString('pt-BR'),
+        servico: sanitizarInput(estadoAgendamento.servico),
+        posto: estadoAgendamento.posto ? sanitizarInput(estadoAgendamento.posto.nome) : POSTO_HENRICAR.nome,
+        isTecnicoExterno: Boolean(estadoAgendamento.isTecnicoExterno),
+        cep: estadoAgendamento.cepFormatado,
+        endereco: estadoAgendamento.enderecoFormatado,
+        data: sanitizarInput(estadoAgendamento.data),
+        horario: sanitizarInput(estadoAgendamento.horario),
+        nome: nomeLimpo,
+        telefone: telLimpo,
+        placa: placaLimpa
+      };
+
+      const url = lerStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL) || DEFAULT_SCRIPT_URL;
+
+      try {
+        const response = await fetchComTimeout(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        }, 10000);
+        
+        const textoResp = await response.text();
+        let resultado = null;
+        try { resultado = JSON.parse(textoResp); } catch (e) {}
+
+        if (resultado && resultado.result === "conflict") {
+          btn.disabled = false;
+          btn.innerText = "Confirmar Agendamento";
+          exibirErroFormulario("Horário Esgotado!", "Outro associado acabou de reservar este horário segundos atrás. Volte e escolha outro horário.");
+          dispararBuscaDeHorariosNaNuvem(true, true);
+          return;
+        }
+      } catch (err) {
+        try {
+          await fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+        } catch (e2) {}
+      }
+
+      try {
+        const listaLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
+        listaLocal.push(payload);
+        salvarStorageSeguro('local', 'agendamentos_db', JSON.stringify(listaLocal));
+      } catch (e) {}
+
+      slotsOcupadosNaNuvem.push({ data: payload.data, horario: payload.horario });
+
+      document.getElementById('step4').classList.add('hidden');
+      const stepSucesso = document.getElementById('stepSucesso');
+      stepSucesso.classList.remove('hidden');
+      setTimeout(function() { stepSucesso.classList.add('animate-fade-in'); }, 10);
+    };
+
+    window.reiniciarFluxo = function() {
+      document.getElementById('formAgendamento').reset();
+      document.getElementById('stepSucesso').classList.add('hidden');
+      document.getElementById('stepSucesso').classList.remove('animate-fade-in');
+      document.getElementById('inputCEP').value = "";
+      document.getElementById('cepFeedback').innerHTML = "";
+      document.getElementById('boxTecnicoExterno').classList.add('hidden');
+      document.getElementById('boxPostosFixos').classList.add('hidden');
+      document.getElementById('alertaConflito').classList.add('hidden');
+      document.getElementById('avisoAutoAvanco').classList.add('hidden');
+      definirDataMinimaLocal();
+      
+      const btn = document.getElementById('btnConfirmar');
+      btn.disabled = false;
+      btn.innerText = "Confirmar Agendamento";
+      
+      window.voltarPara(1);
+    };
+
+    let contadorToquesLogo = 0;
+    let timerToquesLogo = null;
+
+    window.cliqueMultiploLogo = function() {
+      contadorToquesLogo++;
+      if (timerToquesLogo) clearTimeout(timerToquesLogo);
+      if (contadorToquesLogo >= 3) {
+        contadorToquesLogo = 0;
+        window.toggleAdminLogin();
+        return;
+      }
+      timerToquesLogo = setTimeout(function() {
+        contadorToquesLogo = 0;
+      }, 600);
+    };
+
+    window.toggleAdminLogin = function() {
+      const modal = document.getElementById('modalAdminLogin');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('inputSenhaAdmin').value = '';
+      document.getElementById('erroSenha').classList.add('hidden');
+    };
+
+    window.fecharAdminLogin = function() {
+      document.getElementById('modalAdminLogin').classList.add('hidden');
+      document.getElementById('modalAdminLogin').classList.remove('flex');
+    };
+
+    async function gerarHashSHA256(mensagem) {
+      if (window.crypto && window.crypto.subtle) {
+        const msgBuffer = new TextEncoder().encode(mensagem);
+        const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+      }
+      return null;
+    }
+
+    window.verificarSenha = async function(e) {
+      e.preventDefault();
+      if (tentativasLogin >= 5) {
+        const erroEl = document.getElementById('erroSenha');
+        erroEl.innerText = "Muitas tentativas. Recarregue a página.";
+        erroEl.classList.remove('hidden');
+        return;
+      }
+
+      const senhaDigitada = document.getElementById('inputSenhaAdmin').value.trim();
+      const hashDigitado = await gerarHashSHA256(senhaDigitada);
+      const autenticado = (hashDigitado === ADMIN_HASH) || (hashDigitado === null && senhaDigitada === "cooperlink2026");
+
+      if (autenticado) {
+        tentativasLogin = 0;
+        window.fecharAdminLogin();
+        const modal = document.getElementById('modalAdmin');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        tentativasLogin++;
+        const erroEl = document.getElementById('erroSenha');
+        erroEl.innerText = "Senha incorreta (Tentativa " + tentativasLogin + "/5).";
+        erroEl.classList.remove('hidden');
+      }
+    };
+
+    window.fecharSettings = function() {
+      document.getElementById('modalAdmin').classList.add('hidden');
+      document.getElementById('modalAdmin').classList.remove('flex');
+    };
+
+    window.salvarEtestar = async function() {
+      const url = document.getElementById('scriptUrlInput').value.trim();
+      const statusEl = document.getElementById('statusTesteAdmin');
+      if (!url) { alert("Insira uma URL válida."); return; }
+      
+      salvarStorageSeguro('local', 'google_script_url', url);
+      statusEl.innerText = "Enviando linha de teste para a planilha...";
+      statusEl.classList.remove('hidden');
+
+      const dadosTeste = {
+        action: "salvar",
+        dataRegistro: new Date().toLocaleString('pt-BR'),
+        servico: "Teste Painel",
+        posto: "Teste de Conexão",
+        isTecnicoExterno: true,
+        cep: "13023-075",
+        endereco: "Av. Brasil, 172 - Campinas/SP",
+        data: obterDataHojeBrasil(),
+        horario: "Teste",
+        nome: "Teste Sistema Cooperlink",
+        telefone: "(19) 99999-9999",
+        placa: "TST2A26"
+      };
+
+      try {
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(dadosTeste)
+        });
+        statusEl.innerText = "✓ URL salva e teste disparado para a planilha!";
+      } catch (e) {
+        statusEl.innerText = "URL salva localmente.";
+      }
+    };
+
+    window.limparCacheLocal = function() {
+      slotsOcupadosNaNuvem = [];
+      ultimaSincronizacao = 0;
+      removerStorageSeguro('local', 'agendamentos_db');
+      removerStorageSeguro('session', 'ultimo_envio_ts');
+      const statusEl = document.getElementById('statusTesteAdmin');
+      statusEl.innerText = "✓ Cache de horários limpo com sucesso!";
+      statusEl.classList.remove('hidden');
+    };
+
+    function carregarUrlSalva() {
+      salvarStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL);
+      const input = document.getElementById('scriptUrlInput');
+      if (input) input.value = DEFAULT_SCRIPT_URL;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      definirDataMinimaLocal();
+      carregarUrlSalva();
+      iniciarCarrosselMarketing();
+    });
+  </script>
 </body>
 </html>
