@@ -111,7 +111,7 @@
   <!-- TOP BAR OFICIAL COOPERLINK BRASIL -->
   <header class="border-b border-white/10 bg-[#041020]/85 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between">
-      <div id="logoAdminTrigger" onclick="window.cliqueMultiploLogo()" ondblclick="window.toggleAdminLogin()" class="flex items-center gap-3.5 cursor-pointer select-none" title="Cooperlink Brasil">
+      <div class="flex items-center gap-3.5 select-none" title="Cooperlink Brasil">
         <div class="w-11 h-11 bg-gradient-to-br from-brand-blue to-[#062344] rounded-xl flex items-center justify-center shrink-0 shadow-lg border border-white/15 relative overflow-hidden">
           <div class="absolute -bottom-2 -right-2 w-6 h-6 bg-brand-orange/30 rounded-full blur-sm"></div>
           <svg class="w-7 h-7 relative z-10" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -478,6 +478,7 @@
               <input type="date" id="dataAgendamento" onchange="window.aoMudarDataManual()" class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-slate-800 font-bold focus:border-brand-blue focus:ring-0 outline-none transition-colors shadow-sm bg-slate-50 cursor-pointer">
               
               <p id="avisoFimDeSemana" class="text-xs text-rose-600 font-bold mt-2 hidden">⚠️ Não realizamos atendimentos na unidade física aos finais de semana. Selecione um dia útil.</p>
+              <p id="avisoDataForaJanela" class="text-xs text-rose-600 font-bold mt-2 hidden">⚠️ Agendamos a partir de hoje e com até 60 dias de antecedência. Selecione outra data.</p>
               
               <div id="avisoAutoAvanco" class="hidden mt-2.5 bg-amber-50 border border-amber-200/90 text-amber-900 rounded-xl p-3 flex items-start gap-2.5 text-xs leading-relaxed">
                 <svg class="w-4 h-4 text-brand-orange shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
@@ -559,6 +560,10 @@
                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 Confirmar Agendamento
               </button>
+
+              <p class="text-[11px] text-slate-500 leading-relaxed text-center pt-1">
+                Usamos seu nome, WhatsApp, placa e CEP apenas para agendar e realizar o atendimento técnico, conforme a LGPD. Dúvidas: <span class="font-semibold whitespace-nowrap">(19) 2042-3966</span>.
+              </p>
             </form>
           </div>
 
@@ -607,54 +612,19 @@
     </div>
   </footer>
 
-  <!-- MODAL DE LOGIN ADMIN -->
-  <div id="modalAdminLogin" class="fixed inset-0 bg-slate-900/80 z-[60] hidden flex-col justify-center items-center animate-fade-in backdrop-blur-sm px-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative">
-      <button type="button" onclick="window.fecharAdminLogin()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">✕</button>
-      <div class="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mb-4 mx-auto">
-        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
-      <h2 class="text-xl font-extrabold text-center text-brand-blue mb-2">Área Restrita</h2>
-      <p class="text-xs text-center text-slate-500 mb-6">Acesso exclusivo para colaboradores Cooperlink.</p>
-      <form onsubmit="window.verificarSenha(event)" class="space-y-4">
-        <div>
-          <input type="password" id="inputSenhaAdmin" placeholder="Digite a senha de acesso" class="w-full p-3 border-2 border-slate-200 rounded-xl font-semibold text-center text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 tracking-widest">
-          <p id="erroSenha" class="text-xs text-rose-500 font-bold text-center mt-2 hidden">Senha incorreta.</p>
-        </div>
-        <button type="submit" id="btnEntrarAdmin" class="w-full bg-brand-blue hover:bg-brand-light text-white font-bold py-3 rounded-xl transition-colors cursor-pointer">Autenticar</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL DE CONFIGURAÇÕES ADMIN -->
-  <div id="modalAdmin" class="fixed inset-0 bg-slate-900/60 z-[50] hidden flex-col justify-end sm:justify-center animate-fade-in backdrop-blur-sm px-4">
-    <div class="bg-white w-full max-w-md mx-auto rounded-3xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-      <button type="button" onclick="window.fecharSettings()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 cursor-pointer">✕</button>
-      <h2 class="text-xl font-extrabold text-brand-blue mb-6 flex items-center gap-2">Controle Interno Cooperlink</h2>
-      <div class="space-y-5">
-        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200">
-          <label class="block text-xs font-bold text-amber-900 uppercase tracking-wider mb-2">URL do Google Apps Script (/exec)</label>
-          <input type="url" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-3 border border-amber-300 rounded-xl text-xs focus:outline-none focus:border-brand-blue bg-white mb-3">
-          <div class="flex flex-col gap-2">
-            <button type="button" onclick="window.salvarEtestar()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer">Salvar URL e Enviar Teste p/ Planilha</button>
-            <button type="button" onclick="window.limparCacheLocal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition-colors cursor-pointer">Limpar Cache de Horários / Destravar Espera</button>
-          </div>
-          <div id="statusTesteAdmin" class="mt-2.5 text-xs font-bold text-center text-emerald-700 hidden"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- SCRIPT PRINCIPAL BLINDADO E PRÉ-CONFIGURADO -->
   <script>
-    const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKpqBTom5p0x7dgMXSSZ7a2c8298HPZKfAeVsa414hcR-DMLhn5yTY_xuAfhp0ts7d/exec";
-    const ADMIN_HASH = "4c708e7f7bd4de24e427e3e890629745557b4213362119c2ad6e118cc12743d2";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKpqBTom5p0x7dgMXSSZ7a2c8298HPZKfAeVsa414hcR-DMLhn5yTY_xuAfhp0ts7d/exec";
+    const TELEFONE_CENTRAL = "(19) 2042-3966";
+    const DIAS_MAXIMOS_AGENDAMENTO = 60;
 
     const POSTO_HENRICAR = {
       nome: "Henricar - Av. Benjamin Constant, 550, Campinas/SP (CEP 13010-140)",
       cidade: "Campinas - SP",
       cep: "13010-140"
     };
+    // Postos com agenda própria (data e horário). Novos postos entram aqui e no Apps Script.
+    const POSTOS_COM_AGENDA = [POSTO_HENRICAR.nome];
     const horariosManha = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
     const horariosTarde = ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:20"];
     const todosHorarios = horariosManha.concat(horariosTarde);
@@ -672,7 +642,6 @@
 
     let slotsOcupadosNaNuvem = [];
     let ultimaSincronizacao = 0;
-    let tentativasLogin = 0;
     let slideAtual = 0;
     let intervaloCarrossel = null;
 
@@ -698,6 +667,37 @@
         const st = (tipo === 'session') ? window.sessionStorage : window.localStorage;
         st.removeItem(chave);
       } catch (e) {}
+    }
+
+    // Reservas feitas neste aparelho: guarda apenas data, horário e posto (nada pessoal).
+    function lerReservasLocais() {
+      try {
+        const lista = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
+        return Array.isArray(lista) ? lista : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function guardarReservaLocal(data, horario, posto) {
+      const lista = lerReservasLocais();
+      lista.push({ data: data, horario: horario, posto: posto });
+      salvarStorageSeguro('local', 'agendamentos_db', JSON.stringify(lista.slice(-20)));
+    }
+
+    // Versões anteriores do site guardavam nome, telefone e placa no navegador.
+    // Ao abrir, reescreve a lista só com data, horário e posto e apaga chaves antigas.
+    function limparDadosPessoaisAntigos() {
+      const limpa = lerReservasLocais()
+        .filter(function(r) { return r && r.data && r.horario; })
+        .map(function(r) { return { data: String(r.data), horario: String(r.horario), posto: String(r.posto || '') }; });
+      if (limpa.length) {
+        salvarStorageSeguro('local', 'agendamentos_db', JSON.stringify(limpa.slice(-20)));
+      } else {
+        removerStorageSeguro('local', 'agendamentos_db');
+      }
+      removerStorageSeguro('local', 'google_script_url');
+      removerStorageSeguro('session', 'ultimo_envio_ts');
     }
 
     window.trocarSlideMarketing = function(novoIndice) {
@@ -740,6 +740,14 @@
       return ano + "-" + mes + "-" + dia;
     }
 
+    function obterDataMaximaBrasil() {
+      const limite = new Date();
+      limite.setDate(limite.getDate() + DIAS_MAXIMOS_AGENDAMENTO);
+      const mes = String(limite.getMonth() + 1).padStart(2, '0');
+      const dia = String(limite.getDate()).padStart(2, '0');
+      return limite.getFullYear() + "-" + mes + "-" + dia;
+    }
+
     function formatarDataBR(dataYYYYMMDD) {
       if (!dataYYYYMMDD) return "";
       const partes = dataYYYYMMDD.split('-');
@@ -769,22 +777,32 @@
       const dt = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
       const diaSemana = dt.getDay();
       if (diaSemana === 0 || diaSemana === 6) return false;
+      if (dataStr > obterDataMaximaBrasil()) return false;
 
-      let dbLocal = [];
-      try {
-        dbLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
-      } catch (e) {}
-
+      const reservasLocais = lerReservasLocais();
       return todosHorarios.some(function(horario) {
-        const ocupadoNuvem = slotsOcupadosNaNuvem.some(function(vaga) {
-          return vaga.data === dataStr && vaga.horario === horario;
-        });
-        const ocupadoLocal = dbLocal.some(function(vaga) {
-          return vaga.data === dataStr && vaga.horario === horario;
-        });
-        const jaPassou = horarioJaPassouHoje(dataStr, horario);
-        return !ocupadoNuvem && !ocupadoLocal && !jaPassou;
+        return !horarioIndisponivel(dataStr, horario, reservasLocais);
       });
+    }
+
+    function nomePostoAtual() {
+      return (estadoAgendamento.posto && estadoAgendamento.posto.nome) || POSTO_HENRICAR.nome;
+    }
+
+    // Uma vaga ocupada em outro posto não bloqueia este. Vaga sem posto (versão
+    // antiga da planilha) ou de posto desconhecido bloqueia por segurança.
+    function vagaBloqueiaPosto(vaga, postoAtual) {
+      return !vaga.posto || vaga.posto === postoAtual || POSTOS_COM_AGENDA.indexOf(vaga.posto) === -1;
+    }
+
+    function horarioIndisponivel(dataStr, horario, reservasLocais) {
+      const postoAtual = nomePostoAtual();
+      const mesmoHorario = function(vaga) {
+        return vaga && vaga.data === dataStr && vaga.horario === horario && vagaBloqueiaPosto(vaga, postoAtual);
+      };
+      return slotsOcupadosNaNuvem.some(mesmoHorario) ||
+        (reservasLocais || lerReservasLocais()).some(mesmoHorario) ||
+        horarioJaPassouHoje(dataStr, horario);
     }
 
     function encontrarProximoDiaDisponivel(dataBaseStr) {
@@ -812,6 +830,7 @@
       const elem = document.getElementById('dataAgendamento');
       if (elem) {
         elem.min = hoje;
+        elem.max = obterDataMaximaBrasil();
         elem.value = diaInicial;
       }
       estadoAgendamento.data = diaInicial;
@@ -998,6 +1017,7 @@
       if (inputData) inputData.value = hoje;
       
       document.getElementById('avisoFimDeSemana').classList.add('hidden');
+      document.getElementById('avisoDataForaJanela').classList.add('hidden');
       document.getElementById('avisoAutoAvanco').classList.add('hidden');
 
       window.voltarPara(3);
@@ -1019,7 +1039,16 @@
       const dataObj = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
       const diaSemana = dataObj.getDay();
 
+      const avisoJanela = document.getElementById('avisoDataForaJanela');
       avisoAuto.classList.add('hidden');
+      avisoJanela.classList.add('hidden');
+
+      if (inputData < obterDataHojeBrasil() || inputData > obterDataMaximaBrasil()) {
+        avisoFds.classList.add('hidden');
+        avisoJanela.classList.remove('hidden');
+        containerHorarios.classList.add('hidden');
+        return;
+      }
 
       if (diaSemana === 0 || diaSemana === 6) {
         avisoFds.classList.remove('hidden');
@@ -1077,14 +1106,14 @@
       loading.classList.remove('hidden');
       loading.classList.add('flex');
 
-      const url = lerStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL) || DEFAULT_SCRIPT_URL;
+      const url = SCRIPT_URL;
 
       try {
         const response = await fetchComTimeout(url, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ action: "buscar" })
-        }, 8000);
+        }, 15000);
         
         const texto = await response.text();
         const resultado = JSON.parse(texto);
@@ -1111,21 +1140,10 @@
       const gridM = document.getElementById('gridHorariosManha');
       const gridT = document.getElementById('gridHorariosTarde');
 
-      let dbLocal = [];
-      try {
-        dbLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
-      } catch (e) {}
-
+      const reservasLocais = lerReservasLocais();
       const renderBloco = function(listaHorarios) {
         return listaHorarios.map(function(horario) {
-          const ocupadoNuvem = slotsOcupadosNaNuvem.some(function(vaga) {
-            return vaga.data === estadoAgendamento.data && vaga.horario === horario;
-          });
-          const ocupadoLocal = dbLocal.some(function(vaga) {
-            return vaga.data === estadoAgendamento.data && vaga.horario === horario;
-          });
-          const jaPassou = horarioJaPassouHoje(estadoAgendamento.data, horario);
-          const bloqueado = ocupadoNuvem || ocupadoLocal || jaPassou;
+          const bloqueado = horarioIndisponivel(estadoAgendamento.data, horario, reservasLocais);
 
           const classesBtn = bloqueado
             ? "border-slate-200 bg-slate-100 text-slate-400"
@@ -1145,6 +1163,34 @@
       atualizarResumoExtraStep4();
       window.voltarPara(4);
     };
+
+    // Traduz a resposta da planilha em mensagem para o associado.
+    // Devolve null quando é sucesso (ou resposta desconhecida de uma versão antiga da planilha).
+    function mensagemDeRecusa(resultado) {
+      const codigo = resultado && resultado.result;
+      const ligar = " Se preferir, ligue para " + TELEFONE_CENTRAL + ".";
+
+      if (codigo === "conflict") {
+        return { titulo: "Horário Esgotado!", mensagem: "Outro associado acabou de reservar este horário segundos atrás. Volte e escolha outro horário.", atualizarHorarios: true };
+      }
+      if (codigo === "invalid") {
+        const campo = resultado.campo;
+        if (campo === "nome") return { titulo: "Nome inválido", mensagem: "Por favor, digite seu nome completo." };
+        if (campo === "telefone") return { titulo: "WhatsApp inválido", mensagem: "Digite o DDD seguido do número completo (ex: 19 99999-9999)." };
+        if (campo === "placa") return { titulo: "Placa inválida", mensagem: "Digite uma placa válida de 7 caracteres (Ex: ABC1234 ou ABC1D23)." };
+        if (campo === "data" || campo === "horario" || campo === "posto") {
+          return { titulo: "Horário indisponível", mensagem: "Este dia ou horário não está mais disponível. Volte e escolha outro horário.", atualizarHorarios: true };
+        }
+        return { titulo: "Não foi possível agendar", mensagem: "Alguns dados do agendamento não conferem. Volte ao início e faça o agendamento novamente." + ligar };
+      }
+      if (codigo === "rate_limited") {
+        return { titulo: "Muitos agendamentos agora", mensagem: "Recebemos muitas solicitações neste momento. Tente novamente em alguns minutos. Se você já agendou, aguarde nossa mensagem no WhatsApp." + ligar };
+      }
+      if (codigo === "busy" || codigo === "error" || codigo === "invalid_action" || codigo === "unauthorized") {
+        return { titulo: "Sistema ocupado", mensagem: "Não conseguimos registrar seu agendamento agora. Toque em Confirmar novamente em instantes." + ligar };
+      }
+      return null;
+    }
 
     function exibirErroFormulario(titulo, msg) {
       document.getElementById('tituloErroForm').innerText = titulo;
@@ -1199,27 +1245,34 @@
         placa: placaLimpa
       };
 
-      const url = lerStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL) || DEFAULT_SCRIPT_URL;
+      const url = SCRIPT_URL;
+      const liberarBotao = function() {
+        btn.disabled = false;
+        btn.innerText = "Confirmar Agendamento";
+      };
 
       try {
+        // A planilha pode levar alguns segundos quando há vários envios ao mesmo tempo.
         const response = await fetchComTimeout(url, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
-        }, 10000);
-        
+        }, 25000);
+
         const textoResp = await response.text();
         let resultado = null;
         try { resultado = JSON.parse(textoResp); } catch (e) {}
 
-        if (resultado && resultado.result === "conflict") {
-          btn.disabled = false;
-          btn.innerText = "Confirmar Agendamento";
-          exibirErroFormulario("Horário Esgotado!", "Outro associado acabou de reservar este horário segundos atrás. Volte e escolha outro horário.");
-          dispararBuscaDeHorariosNaNuvem(true, true);
+        const recusa = resultado ? mensagemDeRecusa(resultado) : null;
+        if (recusa) {
+          liberarBotao();
+          exibirErroFormulario(recusa.titulo, recusa.mensagem);
+          if (recusa.atualizarHorarios) dispararBuscaDeHorariosNaNuvem(true, true);
           return;
         }
       } catch (err) {
+        // Sem resposta (internet instável): reenvia uma vez sem esperar retorno.
+        // A planilha recusa horário duplicado, então o reenvio não ocupa a vaga duas vezes.
         try {
           await fetch(url, {
             method: 'POST',
@@ -1227,16 +1280,18 @@
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
           });
-        } catch (e2) {}
+        } catch (e2) {
+          liberarBotao();
+          exibirErroFormulario("Sem conexão", "Não conseguimos enviar seu agendamento. Verifique sua internet e toque em Confirmar novamente, ou ligue para " + TELEFONE_CENTRAL + ".");
+          return;
+        }
       }
 
-      try {
-        const listaLocal = JSON.parse(lerStorageSeguro('local', 'agendamentos_db', '[]') || '[]');
-        listaLocal.push(payload);
-        salvarStorageSeguro('local', 'agendamentos_db', JSON.stringify(listaLocal));
-      } catch (e) {}
+      if (!payload.isTecnicoExterno) {
+        guardarReservaLocal(payload.data, payload.horario, payload.posto);
+      }
 
-      slotsOcupadosNaNuvem.push({ data: payload.data, horario: payload.horario });
+      slotsOcupadosNaNuvem.push({ data: payload.data, horario: payload.horario, posto: payload.posto });
 
       document.getElementById('step4').classList.add('hidden');
       const stepSucesso = document.getElementById('stepSucesso');
@@ -1263,133 +1318,9 @@
       window.voltarPara(1);
     };
 
-    let contadorToquesLogo = 0;
-    let timerToquesLogo = null;
-
-    window.cliqueMultiploLogo = function() {
-      contadorToquesLogo++;
-      if (timerToquesLogo) clearTimeout(timerToquesLogo);
-      if (contadorToquesLogo >= 3) {
-        contadorToquesLogo = 0;
-        window.toggleAdminLogin();
-        return;
-      }
-      timerToquesLogo = setTimeout(function() {
-        contadorToquesLogo = 0;
-      }, 600);
-    };
-
-    window.toggleAdminLogin = function() {
-      const modal = document.getElementById('modalAdminLogin');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      document.getElementById('inputSenhaAdmin').value = '';
-      document.getElementById('erroSenha').classList.add('hidden');
-    };
-
-    window.fecharAdminLogin = function() {
-      document.getElementById('modalAdminLogin').classList.add('hidden');
-      document.getElementById('modalAdminLogin').classList.remove('flex');
-    };
-
-    async function gerarHashSHA256(mensagem) {
-      if (window.crypto && window.crypto.subtle) {
-        const msgBuffer = new TextEncoder().encode(mensagem);
-        const hashBuffer = await window.crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-      }
-      return null;
-    }
-
-    window.verificarSenha = async function(e) {
-      e.preventDefault();
-      if (tentativasLogin >= 5) {
-        const erroEl = document.getElementById('erroSenha');
-        erroEl.innerText = "Muitas tentativas. Recarregue a página.";
-        erroEl.classList.remove('hidden');
-        return;
-      }
-
-      const senhaDigitada = document.getElementById('inputSenhaAdmin').value.trim();
-      const hashDigitado = await gerarHashSHA256(senhaDigitada);
-      const autenticado = (hashDigitado === ADMIN_HASH) || (hashDigitado === null && senhaDigitada === "cooperlink2026");
-
-      if (autenticado) {
-        tentativasLogin = 0;
-        window.fecharAdminLogin();
-        const modal = document.getElementById('modalAdmin');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-      } else {
-        tentativasLogin++;
-        const erroEl = document.getElementById('erroSenha');
-        erroEl.innerText = "Senha incorreta (Tentativa " + tentativasLogin + "/5).";
-        erroEl.classList.remove('hidden');
-      }
-    };
-
-    window.fecharSettings = function() {
-      document.getElementById('modalAdmin').classList.add('hidden');
-      document.getElementById('modalAdmin').classList.remove('flex');
-    };
-
-    window.salvarEtestar = async function() {
-      const url = document.getElementById('scriptUrlInput').value.trim();
-      const statusEl = document.getElementById('statusTesteAdmin');
-      if (!url) { alert("Insira uma URL válida."); return; }
-      
-      salvarStorageSeguro('local', 'google_script_url', url);
-      statusEl.innerText = "Enviando linha de teste para a planilha...";
-      statusEl.classList.remove('hidden');
-
-      const dadosTeste = {
-        action: "salvar",
-        dataRegistro: new Date().toLocaleString('pt-BR'),
-        servico: "Teste Painel",
-        posto: "Teste de Conexão",
-        isTecnicoExterno: true,
-        cep: "13023-075",
-        endereco: "Av. Brasil, 172 - Campinas/SP",
-        data: obterDataHojeBrasil(),
-        horario: "Teste",
-        nome: "Teste Sistema Cooperlink",
-        telefone: "(19) 99999-9999",
-        placa: "TST2A26"
-      };
-
-      try {
-        await fetch(url, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(dadosTeste)
-        });
-        statusEl.innerText = "✓ URL salva e teste disparado para a planilha!";
-      } catch (e) {
-        statusEl.innerText = "URL salva localmente.";
-      }
-    };
-
-    window.limparCacheLocal = function() {
-      slotsOcupadosNaNuvem = [];
-      ultimaSincronizacao = 0;
-      removerStorageSeguro('local', 'agendamentos_db');
-      removerStorageSeguro('session', 'ultimo_envio_ts');
-      const statusEl = document.getElementById('statusTesteAdmin');
-      statusEl.innerText = "✓ Cache de horários limpo com sucesso!";
-      statusEl.classList.remove('hidden');
-    };
-
-    function carregarUrlSalva() {
-      salvarStorageSeguro('local', 'google_script_url', DEFAULT_SCRIPT_URL);
-      const input = document.getElementById('scriptUrlInput');
-      if (input) input.value = DEFAULT_SCRIPT_URL;
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
+      limparDadosPessoaisAntigos();
       definirDataMinimaLocal();
-      carregarUrlSalva();
       iniciarCarrosselMarketing();
     });
   </script>
