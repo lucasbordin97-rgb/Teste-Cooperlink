@@ -1,0 +1,69 @@
+/* Estilos da Central de Agendamento (Tailwind vem do CDN no index.html) */
+body {
+  background-color: #041020;
+  color: #1e293b;
+  overflow-x: hidden;
+}
+.cooperlink-bg {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(243, 102, 33, 0.14) 0%, transparent 42%),
+    radial-gradient(circle at 88% 80%, rgba(30, 107, 196, 0.25) 0%, transparent 50%),
+    linear-gradient(135deg, #030c18 0%, #071c36 48%, #0c3b6d 100%);
+  position: relative;
+}
+.cooperlink-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 26px 26px;
+  pointer-events: none;
+  z-index: 0;
+}
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  transition: all 0.25s ease;
+}
+.glass-panel:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(243, 102, 33, 0.35);
+}
+.telemetry-hud {
+  background: rgba(4, 16, 32, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.form-card-shadow {
+  box-shadow: 0 25px 55px -12px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+.slot-btn:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+.animate-fade-in { animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes radarPulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.radar-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1.5px solid #10b981;
+  animation: radarPulse 2s infinite ease-out;
+}
+.hp-field { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; pointer-events: none; }
+.hero-slide { transition: opacity 0.6s ease-in-out; }
