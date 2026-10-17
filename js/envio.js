@@ -10,9 +10,9 @@ function mensagemDeRecusa(resultado) {
   }
   if (codigo === "invalid") {
     const campo = resultado.campo;
-    if (campo === "nome") return { titulo: "Nome inválido", mensagem: "Por favor, digite seu nome completo." };
-    if (campo === "telefone") return { titulo: "WhatsApp inválido", mensagem: "Digite o DDD seguido do número completo (ex: 19 99999-9999)." };
-    if (campo === "placa") return { titulo: "Placa inválida", mensagem: "Digite uma placa válida de 7 caracteres (Ex: ABC1234 ou ABC1D23)." };
+    if (campo === "nome") return { titulo: "Nome inválido", mensagem: "Por favor, digite seu nome completo.", campoId: "inputNome" };
+    if (campo === "telefone") return { titulo: "WhatsApp inválido", mensagem: "Digite o DDD seguido do número completo (ex: 19 99999-9999).", campoId: "inputTelefone" };
+    if (campo === "placa") return { titulo: "Placa inválida", mensagem: "Digite uma placa válida de 7 caracteres (Ex: ABC1234 ou ABC1D23).", campoId: "inputPlaca" };
     if (campo === "data" || campo === "horario" || campo === "posto") {
       return { titulo: "Horário indisponível", mensagem: "Este dia ou horário não está mais disponível. Volte e escolha outro horário.", atualizarHorarios: true };
     }
@@ -30,15 +30,21 @@ function mensagemDeRecusa(resultado) {
   return null;
 }
 
-function exibirErroFormulario(titulo, msg) {
+function exibirErroFormulario(titulo, msg, campoId) {
   document.getElementById('tituloErroForm').innerText = titulo;
   document.getElementById('msgErroForm').innerText = msg;
   document.getElementById('alertaConflito').classList.remove('hidden');
+  const campo = campoId ? document.getElementById(campoId) : null;
+  if (campo) {
+    campo.setAttribute('aria-invalid', 'true');
+    campo.focus();
+  }
 }
 
 window.finalizarAgendamento = async function(event) {
   event.preventDefault();
   document.getElementById('alertaConflito').classList.add('hidden');
+  ['inputNome', 'inputTelefone', 'inputPlaca'].forEach(function(id) { document.getElementById(id).removeAttribute('aria-invalid'); });
   
   const hp = document.getElementById('website_hp').value;
   if (hp !== "") return;
@@ -49,24 +55,24 @@ window.finalizarAgendamento = async function(event) {
   const placaLimpa = sanitizarInput(document.getElementById('inputPlaca').value).toUpperCase();
 
   if (nomeLimpo.length < 3) {
-    exibirErroFormulario("Nome inválido", "Por favor, digite seu nome completo.");
+    exibirErroFormulario("Nome inválido", "Por favor, digite seu nome completo.", "inputNome");
     return;
   }
 
   if (telApenasNumeros.length < 10 || telApenasNumeros.length > 11) {
-    exibirErroFormulario("WhatsApp inválido", "Digite o DDD seguido do número completo (ex: 19 99999-9999).");
+    exibirErroFormulario("WhatsApp inválido", "Digite o DDD seguido do número completo (ex: 19 99999-9999).", "inputTelefone");
     return;
   }
 
   const regexPlaca = /^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/;
   if (!regexPlaca.test(placaLimpa)) {
-    exibirErroFormulario("Placa inválida", "Digite uma placa válida de 7 caracteres (Ex: ABC1234 ou ABC1D23).");
+    exibirErroFormulario("Placa inválida", "Digite uma placa válida de 7 caracteres (Ex: ABC1234 ou ABC1D23).", "inputPlaca");
     return;
   }
 
   const btn = document.getElementById('btnConfirmar');
   btn.disabled = true;
-  btn.innerText = "Confirmando Agendamento...";
+  btn.innerText = "Confirmando Agendamento…";
 
   const payload = {
     action: "salvar",
@@ -104,7 +110,7 @@ window.finalizarAgendamento = async function(event) {
     const recusa = resultado ? mensagemDeRecusa(resultado) : null;
     if (recusa) {
       liberarBotao();
-      exibirErroFormulario(recusa.titulo, recusa.mensagem);
+      exibirErroFormulario(recusa.titulo, recusa.mensagem, recusa.campoId);
       if (recusa.atualizarHorarios) dispararBuscaDeHorariosNaNuvem(true, true);
       return;
     }
