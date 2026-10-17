@@ -97,6 +97,23 @@ const caixas = async page => ({
   t('página sem erros de JavaScript', erros.length === 0, erros);
   await ctx.close();
 
+  // 1b) Placa que já tem agendamento ativo (o Apps Script responde "duplicate")
+  ({ page, ctx, envios } = await novaPagina(browser, { resposta: { result: 'duplicate' } }));
+  await consultar(page, '08391-710');
+  await page.click('#listaPostosSP button[data-posto="st"]');
+  await page.waitForFunction(() => !document.getElementById('containerHorarios').classList.contains('hidden'));
+  await page.evaluate(() => window.selecionarHorario('09:30'));
+  await page.fill('#inputNome', 'Maria da Silva');
+  await page.fill('#inputTelefone', '11999990001');
+  await page.fill('#inputPlaca', 'abc1d23');
+  await page.evaluate(() => document.getElementById('formAgendamento').requestSubmit());
+  await page.waitForFunction(() => !document.getElementById('alertaConflito').classList.contains('hidden'));
+  const tituloDup = await page.evaluate(() => document.getElementById('tituloErroForm').innerText + ' | ' + document.getElementById('msgErroForm').innerText);
+  t('placa já agendada: avisa o associado (24 horas / telefone) e NÃO mostra sucesso', /já tem um agendamento/.test(tituloDup) && /24 horas/.test(tituloDup) && !(await visivel(page, 'stepSucesso')), tituloDup);
+  t('placa já agendada: o botão de confirmar volta a ficar livre', await page.evaluate(() => !document.getElementById('btnConfirmar').disabled));
+  t('placa já agendada: a reserva não fica guardada no navegador', await page.evaluate(() => (localStorage.getItem('agendamentos_db') || '').indexOf('09:30') === -1));
+  await ctx.close();
+
   // 2) Grande SP acima de 30 minutos: técnico externo
   ({ page, ctx } = await novaPagina(browser));
   await consultar(page, '08840-220');

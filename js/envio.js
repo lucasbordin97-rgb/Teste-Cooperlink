@@ -18,6 +18,9 @@ function mensagemDeRecusa(resultado) {
     }
     return { titulo: "Não foi possível agendar", mensagem: "Alguns dados do agendamento não conferem. Volte ao início e faça o agendamento novamente." + ligar };
   }
+  if (codigo === "duplicate") {
+    return { titulo: "Você já tem um agendamento", mensagem: "Já existe um agendamento ativo para esta placa, então não é possível agendar outro agora. Se precisar alterar, você poderá reagendar 24 horas depois do agendamento ou ligar para " + TELEFONE_CENTRAL + "." };
+  }
   if (codigo === "rate_limited") {
     return { titulo: "Muitos agendamentos agora", mensagem: "Recebemos muitas solicitações neste momento. Tente novamente em alguns minutos. Se você já agendou, aguarde nossa mensagem no WhatsApp." + ligar };
   }

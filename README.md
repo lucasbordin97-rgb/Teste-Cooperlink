@@ -34,6 +34,6 @@ Para a Grande SP, o site pode escolher o posto pelo **tempo de carro** até ele 
 
 ## Testes
 `node tests/site.test.js index.html` roda 30 verificações do site num navegador de teste, sem internet: fluxo de agendamento, mensagens de erro, técnico externo, janela de 60 dias, LGPD e violações da política de segurança (CSP).
-`node tests/cobertura.test.js index.html` roda 17 verificações da cobertura por tempo de carro (posto perto, técnico externo, fora da cobertura com consentimento, tabela fora do ar e chave desligada).
+`node tests/cobertura.test.js index.html` roda 20 verificações da cobertura por tempo de carro (posto perto, técnico externo, fora da cobertura com consentimento, placa já agendada, tabela fora do ar e chave desligada).
 Precisa do pacote `playwright` e do Chromium (use `CHROMIUM_PATH` se o caminho for outro).
 Os testes do Apps Script não estão aqui, porque o código do script não fica neste repositório público.
