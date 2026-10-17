@@ -1,5 +1,5 @@
 // Constantes do site e estado do agendamento. O SCRIPT_URL aponta para o Apps Script.
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKpqBTom5p0x7dgMXSSZ7a2c8298HPZKfAeVsa414hcR-DMLhn5yTY_xuAfhp0ts7d/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/COLE_AQUI_A_URL_DA_COPIA_DE_TESTE/exec"; // SÓ NA PRÉVIA: não aponta para a planilha real
 const TELEFONE_CENTRAL = "(19) 2042-3966";
 const DIAS_MAXIMOS_AGENDAMENTO = 60;
 
@@ -23,7 +23,7 @@ const POSTOS_SP = {
   jp: { nome: "JP Som e Acessórios Automotivos - Rua Estevão de Fabri, 02 - Parque Atlântico, São Paulo/SP (CEP 04803-000)", curto: "JP Som e Acessórios Automotivos", local: "Grajaú", endereco: "Rua Estevão de Fabri, 02 • Parque Atlântico, São Paulo/SP" }
 };
 // Chave de segurança: com false o site usa só a regra antiga (Campinas/Hortolândia = Henricar, o resto = técnico).
-const USAR_TABELA_COBERTURA = false;
+const USAR_TABELA_COBERTURA = true; // SÓ NA PRÉVIA
 // Até quantos minutos de carro um posto ainda atende; acima disso vai para técnico externo.
 const LIMITE_MINUTOS_POSTO = 30;
 
