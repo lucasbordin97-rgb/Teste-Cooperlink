@@ -7,6 +7,7 @@ window.reiniciarFluxo = function() {
   document.getElementById('cepFeedback').innerHTML = "";
   document.getElementById('boxTecnicoExterno').classList.add('hidden');
   document.getElementById('boxPostosFixos').classList.add('hidden');
+  esconderCaixasCobertura();
   document.getElementById('alertaConflito').classList.add('hidden');
   document.getElementById('avisoAutoAvanco').classList.add('hidden');
   definirDataMinimaLocal();

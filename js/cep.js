@@ -15,6 +15,7 @@ window.buscarEAnalisarCEP = async function() {
 
   boxTecnico.classList.add('hidden');
   boxPostos.classList.add('hidden');
+  esconderCaixasCobertura();
 
   if (rawCep.length !== 8) {
     feedback.innerHTML = '<span class="text-rose-500 font-semibold">CEP inválido. Digite os 8 números do CEP.</span>';
@@ -44,6 +45,14 @@ window.buscarEAnalisarCEP = async function() {
     const cidadeNorm = normalizarTexto(data.localidade);
     const isRegiaoAtendida = (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");
 
+    if (!isRegiaoAtendida && USAR_TABELA_COBERTURA) {
+      const cobertura = await consultarCoberturaSegura(rawCep);
+      if (cobertura) {
+        aplicarCobertura(cobertura, data, feedback, boxTecnico);
+        return;
+      }
+    }
+
     if (!isRegiaoAtendida) {
       estadoAgendamento.isTecnicoExterno = true;
       feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + sanitizarInput(data.localidade) + '/' + sanitizarInput(data.uf) + ') é atendida via Técnico Parceiro:</span>';
@@ -72,10 +81,10 @@ window.encaminharParaTecnicoParceiro = function() {
   window.voltarPara(4);
 };
 
-window.confirmarPostoParceiro = function(nomePosto) {
+window.confirmarPostoParceiro = function(nomePosto, rotulo) {
   estadoAgendamento.posto = { nome: nomePosto };
   estadoAgendamento.isTecnicoExterno = false;
-  document.getElementById('resumoModalidade').innerText = "Unidade Credenciada Henricar (Campinas)";
+  document.getElementById('resumoModalidade').innerText = rotulo || "Unidade Credenciada Henricar (Campinas)";
   
   const hoje = obterDataHojeBrasil();
   estadoAgendamento.data = hoje;
@@ -88,4 +97,103 @@ window.confirmarPostoParceiro = function(nomePosto) {
 
   window.voltarPara(3);
   dispararBuscaDeHorariosNaNuvem(false, true);
+};
+
+// ---- Cobertura por tempo de carro (só com USAR_TABELA_COBERTURA ligado) ----
+function esconderCaixasCobertura() {
+  document.getElementById('boxPostosSP').classList.add('hidden');
+  document.getElementById('boxForaCobertura').classList.add('hidden');
+  document.getElementById('formInteresse').classList.remove('hidden');
+  document.getElementById('interesseSucesso').classList.add('hidden');
+  document.getElementById('interesseErro').classList.add('hidden');
+}
+
+function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
+  const local = sanitizarInput(dadosCep.localidade) + '/' + sanitizarInput(dadosCep.uf);
+
+  if (cobertura.postos.length > 0) {
+    estadoAgendamento.isTecnicoExterno = false;
+    feedback.innerHTML = '<span class="text-emerald-600 font-semibold">Atendimento liberado em unidade credenciada perto de você:</span>';
+    document.getElementById('listaPostosSP').innerHTML = cobertura.postos.map(function(p) {
+      const posto = POSTOS_SP[p.id];
+      return '<button type="button" data-posto="' + p.id + '" onclick="window.escolherPostoSP(this.dataset.posto)" class="w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-all hover:bg-blue-50 flex items-start gap-3.5 cursor-pointer group">' +
+        '<div><span class="text-[10px] font-extrabold tracking-wider text-brand-orange uppercase mb-0.5 block">Unidade Credenciada • cerca de ' + p.minutos + ' min de carro</span>' +
+        '<h3 class="font-display font-extrabold text-brand-blue text-base">' + posto.curto + ' — ' + posto.local + '</h3>' +
+        '<p class="text-xs text-slate-600 font-medium mt-0.5 leading-relaxed">' + posto.endereco + '</p>' +
+        '<div class="mt-2.5 inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-orange group-hover:translate-x-1 transition-transform">Escolher Data e Horário →</div></div></button>';
+    }).join('');
+    document.getElementById('boxPostosSP').classList.remove('hidden');
+    return;
+  }
+
+  if (cobertura.noMapa || cidadeEhGrandeSP(dadosCep.localidade)) {
+    estadoAgendamento.isTecnicoExterno = true;
+    feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + local + ') é atendida via Técnico Parceiro:</span>';
+    boxTecnico.classList.remove('hidden');
+    return;
+  }
+
+  estadoAgendamento.isTecnicoExterno = false;
+  estadoAgendamento.cidadeInteresse = sanitizarInput(dadosCep.localidade);
+  estadoAgendamento.ufInteresse = sanitizarInput(dadosCep.uf);
+  feedback.innerHTML = '<span class="text-amber-600 font-semibold">Ainda não atendemos a sua região (' + local + ').</span>';
+  document.getElementById('boxForaCobertura').classList.remove('hidden');
+}
+
+window.escolherPostoSP = function(id) {
+  const posto = POSTOS_SP[id];
+  if (!posto) return;
+  window.confirmarPostoParceiro(posto.nome, "Unidade Credenciada " + posto.curto + " (" + posto.local + ")");
+};
+
+// Registra o interesse de quem está fora da cobertura. Só envia com o consentimento marcado.
+window.enviarInteresse = async function(event) {
+  event.preventDefault();
+  const erro = document.getElementById('interesseErro');
+  erro.classList.add('hidden');
+
+  const nome = sanitizarInput(document.getElementById('interesseNome').value);
+  const telefone = sanitizarInput(document.getElementById('interesseTelefone').value);
+  const telNumeros = telefone.replace(/\D/g, "");
+  const consentimento = document.getElementById('interesseConsentimento').checked;
+  const mostrarErro = function(msg) { erro.innerText = msg; erro.classList.remove('hidden'); };
+
+  if (document.getElementById('website_hp_interesse').value !== "") return;
+  if (nome.length < 3) return mostrarErro("Por favor, digite seu nome completo.");
+  if (telNumeros.length < 10 || telNumeros.length > 11) return mostrarErro("Digite o DDD seguido do número completo (ex: 19 99999-9999).");
+  if (!consentimento) return mostrarErro("Marque a caixa para autorizar o nosso contato.");
+
+  const btn = document.getElementById('btnInteresse');
+  btn.disabled = true;
+  btn.innerText = "Enviando...";
+  const liberar = function() { btn.disabled = false; btn.innerText = "Quero ser avisado"; };
+
+  try {
+    const response = await fetchComTimeout(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: "interesse",
+        dataRegistro: new Date().toLocaleString('pt-BR'),
+        cep: estadoAgendamento.cepFormatado,
+        cidade: estadoAgendamento.cidadeInteresse || "",
+        uf: estadoAgendamento.ufInteresse || "",
+        nome: nome,
+        telefone: telefone,
+        consentimento: true
+      })
+    }, 25000);
+    const resultado = JSON.parse(await response.text());
+    if (!resultado || resultado.result !== "success") {
+      liberar();
+      return mostrarErro("Não conseguimos registrar agora. Tente novamente em instantes ou ligue para " + TELEFONE_CENTRAL + ".");
+    }
+  } catch (err) {
+    liberar();
+    return mostrarErro("Não conseguimos registrar agora. Verifique sua internet e tente novamente, ou ligue para " + TELEFONE_CENTRAL + ".");
+  }
+
+  liberar();
+  document.getElementById('formInteresse').classList.add('hidden');
+  document.getElementById('interesseSucesso').classList.remove('hidden');
 };
