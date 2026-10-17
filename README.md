@@ -20,3 +20,8 @@ Página de agendamento de instalação, manutenção e remoção de rastreador.
   (o código do script fica na própria planilha, em Extensões > Apps Script).
 - Senhas e tokens **nunca** ficam neste repositório; ficam nas propriedades do script.
 - A Vercel publica automaticamente cada alteração da branch `main`.
+
+## Testes
+`node tests/site.test.js index.html` roda 30 verificações do site num navegador de teste, sem internet: fluxo de agendamento, mensagens de erro, técnico externo, janela de 60 dias, LGPD e violações da política de segurança (CSP).
+Precisa do pacote `playwright` e do Chromium (use `CHROMIUM_PATH` se o caminho for outro).
+Os testes do Apps Script não estão aqui, porque o código do script não fica neste repositório público.
