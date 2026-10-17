@@ -23,7 +23,7 @@ window.buscarEAnalisarCEP = async function() {
   }
 
   btn.disabled = true;
-  btn.innerText = "Consultando CEP...";
+  btn.innerText = "Consultando CEP…";
   feedback.innerHTML = "";
 
   try {
@@ -118,7 +118,7 @@ function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
       const posto = POSTOS_SP[p.id];
       const rotulo = posto.curto + ', ' + posto.local + ', cerca de ' + p.minutos + ' minutos de carro';
       const selo = i === 0 ? '<span class="text-[11px] font-extrabold tracking-wider uppercase text-white bg-brand-orange px-2 py-0.5 rounded-full">Mais próximo</span>' : '';
-      return '<button type="button" data-posto="' + p.id + '" aria-label="Escolher ' + rotulo + '" onclick="window.escolherPostoSP(this.dataset.posto)" class="block w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-all hover:bg-blue-50 hover:shadow-md cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2">' +
+      return '<button type="button" data-posto="' + p.id + '" aria-label="Escolher ' + rotulo + '" onclick="window.escolherPostoSP(this.dataset.posto)" class="block w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-[transform,box-shadow,border-color,background-color,color,opacity] hover:bg-blue-50 hover:shadow-md cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2">' +
         '<div class="trajeto" aria-hidden="true"><span class="text-xs font-bold text-slate-600">Você</span><span class="trajeto-ponto"></span><span class="trajeto-linha"></span><span class="trajeto-chip">cerca de ' + p.minutos + ' min de carro</span><span class="trajeto-linha"></span><span class="trajeto-fim"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2"/></svg></span></div>' +
         '<div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-3.5">' + selo + '<span class="text-[11px] font-extrabold tracking-wider text-[#b8440f] uppercase">Unidade Credenciada</span></div>' +
         '<h3 class="font-display font-extrabold text-brand-blue text-lg leading-snug mt-1">' + posto.curto + ' — ' + posto.local + '</h3>' +
@@ -159,16 +159,22 @@ window.enviarInteresse = async function(event) {
   const telefone = sanitizarInput(document.getElementById('interesseTelefone').value);
   const telNumeros = telefone.replace(/\D/g, "");
   const consentimento = document.getElementById('interesseConsentimento').checked;
-  const mostrarErro = function(msg) { erro.innerText = msg; erro.classList.remove('hidden'); };
+  const mostrarErro = function(msg, campoId) {
+    erro.innerText = msg;
+    erro.classList.remove('hidden');
+    const campo = campoId ? document.getElementById(campoId) : null;
+    if (campo) { campo.setAttribute('aria-invalid', 'true'); campo.focus(); }
+  };
+  ['interesseNome', 'interesseTelefone', 'interesseConsentimento'].forEach(function(id) { document.getElementById(id).removeAttribute('aria-invalid'); });
 
   if (document.getElementById('website_hp_interesse').value !== "") return;
-  if (nome.length < 3) return mostrarErro("Por favor, digite seu nome completo.");
-  if (telNumeros.length < 10 || telNumeros.length > 11) return mostrarErro("Digite o DDD seguido do número completo (ex: 19 99999-9999).");
-  if (!consentimento) return mostrarErro("Marque a caixa para autorizar o nosso contato.");
+  if (nome.length < 3) return mostrarErro("Por favor, digite seu nome completo.", "interesseNome");
+  if (telNumeros.length < 10 || telNumeros.length > 11) return mostrarErro("Digite o DDD seguido do número completo (ex: 19 99999-9999).", "interesseTelefone");
+  if (!consentimento) return mostrarErro("Marque a caixa para autorizar o nosso contato.", "interesseConsentimento");
 
   const btn = document.getElementById('btnInteresse');
   btn.disabled = true;
-  btn.innerText = "Enviando...";
+  btn.innerText = "Enviando…";
   const liberar = function() { btn.disabled = false; btn.innerText = "Quero ser avisado"; };
 
   try {

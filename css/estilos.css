@@ -25,7 +25,7 @@ body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.11);
-  transition: all 0.25s ease;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 .glass-panel:hover {
   background: rgba(255, 255, 255, 0.08);
@@ -100,3 +100,14 @@ body {
 
 /* Texto de exemplo dos campos: contraste suficiente sem parecer texto digitado */
 ::placeholder { color: #64748b; opacity: 0.85; }
+
+/* ---- Detalhes de toque, foco e texto ---- */
+html { scroll-padding-top: 6.5rem; }              /* o cabeçalho fixo não cobre o campo focado */
+a, button, input, select, label { touch-action: manipulation; }
+body { -webkit-tap-highlight-color: rgba(243, 102, 33, 0.18); }
+h1, h2, h3 { text-wrap: balance; }
+input:focus-visible, textarea:focus-visible, select:focus-visible { box-shadow: 0 0 0 4px rgba(12, 59, 109, 0.2); }
+input[aria-invalid="true"] { border-color: #e11d48; }
+/* Bolinhas do carrossel: área de toque maior sem mudar o desenho */
+#dot0, #dot1, #dot2 { position: relative; }
+#dot0::after, #dot1::after, #dot2::after { content: ""; position: absolute; inset: -14px -6px; }

@@ -26,6 +26,7 @@ Página de agendamento de instalação, manutenção e remoção de rastreador.
 Base azul-marinho e laranja da marca. A ideia visual é o **rastreamento**: a barra de etapas é uma rota com pontos de passagem (✓ concluída, laranja atual, cinza pendente) e cada posto mostra o trajeto "Você → posto" com os minutos de carro.
 - Classes da rota em `css/estilos.css` (`.rota*`, `.trajeto*`). O estado das etapas é trocado por `atualizarTracker` em `js/etapas.js`.
 - Acessibilidade: foco visível em tudo (`:focus-visible`), link "Pular para o agendamento", movimento reduzido respeitado, carrossel com botão de pausa, campos com 16 px no celular (evita o zoom do iPhone), telefones que ligam com um toque (inclusive o botão "Ligar" do celular).
+- Carrossel: região nomeada, slides escondidos com `aria-hidden`, pausa pelo botão ou com o mouse/foco em cima, para sozinho com "reduzir movimento", arrastar no celular e setas do teclado. Imagens com largura/altura e `loading="lazy"` a partir da 2ª.
 - Não renomear os ids que o JavaScript usa (`pStep1..4`, `pLabel1..4`, `progressBar`, `step1..4`, `boxPostosSP`, `listaPostosSP`, `boxForaCobertura` e os campos dos formulários).
 
 ## Cobertura por tempo de carro (desligada por padrão)
@@ -40,6 +41,7 @@ Para a Grande SP, o site pode escolher o posto pelo **tempo de carro** até ele 
 
 ## Testes
 `node tests/site.test.js index.html` roda 30 verificações do site num navegador de teste, sem internet: fluxo de agendamento, mensagens de erro, técnico externo, janela de 60 dias, LGPD e violações da política de segurança (CSP).
+`node tests/acessibilidade.test.js index.html` roda 30 verificações de acessibilidade e acabamento: rótulos ligados aos campos, ícones decorativos, sem `transition: all`, atributos dos campos, carrossel (pausa, "reduzir movimento", arrastar, setas, `aria-hidden`), link de pular, barra de etapas e foco no campo com erro.
 `node tests/cobertura.test.js index.html` roda 20 verificações da cobertura por tempo de carro (posto perto, técnico externo, fora da cobertura com consentimento, placa já agendada, tabela fora do ar e chave desligada).
 Precisa do pacote `playwright` e do Chromium (use `CHROMIUM_PATH` se o caminho for outro).
 Os testes do Apps Script não estão aqui, porque o código do script não fica neste repositório público.
