@@ -114,12 +114,16 @@ function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
   if (cobertura.postos.length > 0) {
     estadoAgendamento.isTecnicoExterno = false;
     feedback.innerHTML = '<span class="text-emerald-600 font-semibold">Atendimento liberado em unidade credenciada perto de você:</span>';
-    document.getElementById('listaPostosSP').innerHTML = cobertura.postos.map(function(p) {
+    document.getElementById('listaPostosSP').innerHTML = cobertura.postos.map(function(p, i) {
       const posto = POSTOS_SP[p.id];
-      return '<button type="button" data-posto="' + p.id + '" onclick="window.escolherPostoSP(this.dataset.posto)" class="w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-all hover:bg-blue-50 flex items-start gap-3.5 cursor-pointer group">' +
-        '<div><span class="text-[10px] font-extrabold tracking-wider text-brand-orange uppercase mb-0.5 block">Unidade Credenciada • cerca de ' + p.minutos + ' min de carro</span>' +
+      const rotulo = posto.curto + ', ' + posto.local + ', cerca de ' + p.minutos + ' minutos de carro';
+      const selo = i === 0 ? '<span class="text-[10px] font-extrabold tracking-wider uppercase text-white bg-brand-orange px-2 py-0.5 rounded-full">Mais próximo</span>' : '';
+      return '<button type="button" data-posto="' + p.id + '" aria-label="Escolher ' + rotulo + '" onclick="window.escolherPostoSP(this.dataset.posto)" class="w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-all hover:bg-blue-50 flex items-start gap-3.5 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2">' +
+        '<div class="w-10 h-10 bg-brand-blue text-white rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>' +
+        '<div class="min-w-0 flex-1"><span class="text-[10px] font-extrabold tracking-wider text-brand-orange uppercase mb-0.5 block">Unidade Credenciada</span>' +
         '<h3 class="font-display font-extrabold text-brand-blue text-base">' + posto.curto + ' — ' + posto.local + '</h3>' +
         '<p class="text-xs text-slate-600 font-medium mt-0.5 leading-relaxed">' + posto.endereco + '</p>' +
+        '<div class="mt-2 flex flex-wrap items-center gap-1.5">' + selo + '<span class="text-[11px] font-bold text-brand-blue bg-white border border-blue-200 px-2 py-0.5 rounded-full">cerca de ' + p.minutos + ' min de carro</span></div>' +
         '<div class="mt-2.5 inline-flex items-center gap-1.5 text-xs font-extrabold text-brand-orange group-hover:translate-x-1 transition-transform">Escolher Data e Horário →</div></div></button>';
     }).join('');
     document.getElementById('boxPostosSP').classList.remove('hidden');
