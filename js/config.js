@@ -1,5 +1,5 @@
 // Constantes do site e estado do agendamento. O SCRIPT_URL aponta para o Apps Script.
-const SCRIPT_URL = "https://script.google.com/macros/s/COLE_AQUI_A_URL_DA_COPIA_DE_TESTE/exec"; // SÓ NA PRÉVIA: não aponta para a planilha real
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxG2-_gtgUn2IvtaPiRddFTdDty1GOrzd2P2fRTC72l9WTFRcuiYDyzH-h5wIBXsrwzcQ/exec"; // SÓ NA PRÉVIA: aponta para a planilha de TESTE (cópia)
 const TELEFONE_CENTRAL = "(19) 2042-3966";
 const DIAS_MAXIMOS_AGENDAMENTO = 60;
 
