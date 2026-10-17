@@ -38,14 +38,17 @@ function atualizarTracker(etapaAtual) {
   const bar = document.getElementById('progressBar');
   if (bar) bar.style.width = Math.min(100, Math.max(0, percentage)) + '%';
 
+  const nomes = ['serviço', 'região', 'horário', 'veículo'];
   for (let i = 1; i <= 4; i++) {
-    const el = document.getElementById('pStep' + i);
-    if (!el) continue;
-    if (i <= numEtapa) {
-      el.className = "w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors border-2 border-white z-10";
-    } else {
-      el.className = "w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10";
-    }
+    const no = document.getElementById('pStep' + i);
+    const rotulo = document.getElementById('pLabel' + i);
+    if (!no) continue;
+    const estado = i < numEtapa ? 'is-done' : i === numEtapa ? 'is-current' : 'is-todo';
+    const texto = i < numEtapa ? 'concluída' : i === numEtapa ? 'atual' : 'pendente';
+    no.className = 'rota-no ' + estado;
+    no.setAttribute('aria-label', 'Etapa ' + i + ', ' + nomes[i - 1] + ': ' + texto);
+    if (i === numEtapa) no.setAttribute('aria-current', 'step'); else no.removeAttribute('aria-current');
+    if (rotulo) rotulo.className = 'rota-label' + (estado === 'is-todo' ? '' : ' ' + estado);
   }
 }
 

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#041020">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Central de Agendamento Técnico | Cooperlink Brasil</title>
@@ -15,6 +16,8 @@
 </head>
 
 <body class="cooperlink-bg font-sans antialiased min-h-screen flex flex-col justify-between">
+
+  <a href="#conteudo" class="skip-link">Pular para o agendamento</a>
 
   <!-- TOP BAR OFICIAL COOPERLINK BRASIL -->
   <header class="border-b border-white/10 bg-[#041020]/85 backdrop-blur-md sticky top-0 z-40">
@@ -37,7 +40,7 @@
             </span>
           </div>
           <span class="text-[10px] font-semibold tracking-widest text-blue-200/75 uppercase mt-1">
-            Proteção Veicular • Central de Telemetria
+            Proteção Veicular<span class="hidden sm:inline"> • Central de Telemetria</span>
           </span>
         </div>
       </div>
@@ -46,23 +49,28 @@
         <div class="flex items-center gap-2.5 bg-white/5 px-3.5 py-2 rounded-xl border border-white/10">
           <svg class="w-4 h-4 text-brand-orange shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           <div>
-            <span class="text-[10px] text-blue-300/80 block leading-none">Central de Atendimento</span>
-            <strong class="text-white font-mono font-bold">(19) 2042-3966</strong>
+            <span class="text-[11px] text-blue-200 block leading-none mb-0.5">Central de Atendimento</span>
+            <a href="tel:+551920423966" class="text-white font-mono font-bold hover:text-brand-orange transition-colors">(19) 2042-3966</a>
           </div>
         </div>
         <div class="flex items-center gap-2.5 bg-white/5 px-3.5 py-2 rounded-xl border border-white/10">
           <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
           <div>
-            <span class="text-[10px] text-blue-300/80 block leading-none">Assistência 24h</span>
-            <strong class="text-white font-mono font-bold">0800 941 9571</strong>
+            <span class="text-[11px] text-blue-200 block leading-none mb-0.5">Assistência 24h</span>
+            <a href="tel:08009419571" class="text-white font-mono font-bold hover:text-brand-orange transition-colors">0800 941 9571</a>
           </div>
         </div>
       </div>
+
+      <a href="tel:+551920423966" aria-label="Ligar para a central: (19) 2042-3966" class="md:hidden flex items-center gap-2 bg-brand-orange hover:bg-brand-darkorange text-white font-display font-extrabold text-sm px-3.5 py-2.5 rounded-xl shadow-lg shadow-brand-orange/25 transition-colors">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Ligar
+      </a>
     </div>
   </header>
 
   <!-- CONTEÚDO PRINCIPAL -->
-  <main class="relative z-10 flex-grow max-w-7xl mx-auto w-full px-4 sm:px-8 py-6 lg:py-10 flex items-center">
+  <main id="conteudo" class="relative z-10 flex-grow max-w-7xl mx-auto w-full px-4 sm:px-8 py-6 lg:py-10 flex items-center">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-center">
 
       <!-- COLUNA ESQUERDA: VITRINE COOPERLINK & CERTIFICAÇÕES -->
@@ -175,6 +183,10 @@
             <button type="button" onclick="window.trocarSlideMarketing(0)" id="dot0" class="w-5 h-2 rounded-full bg-brand-orange transition-all cursor-pointer" aria-label="Slide 1"></button>
             <button type="button" onclick="window.trocarSlideMarketing(1)" id="dot1" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all cursor-pointer" aria-label="Slide 2"></button>
             <button type="button" onclick="window.trocarSlideMarketing(2)" id="dot2" class="w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all cursor-pointer" aria-label="Slide 3"></button>
+            <button type="button" id="btnPausaCarrossel" onclick="window.alternarCarrossel()" aria-pressed="false" aria-label="Pausar apresentação" class="ml-1 w-6 h-6 -my-1 rounded-full text-white/80 hover:text-white hover:bg-white/15 flex items-center justify-center transition-colors cursor-pointer">
+              <svg id="iconePausa" class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+              <svg id="iconeTocar" class="w-3 h-3 hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+            </button>
           </div>
         </div>
 
@@ -189,7 +201,7 @@
                 <h4 class="font-display font-bold text-xs text-white">Cadastrada SUSEP</h4>
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
               </div>
-              <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">Adequada à Lei Complementar Federal nº 213/2025.</p>
+              <p class="text-xs text-blue-100/90 leading-snug mt-0.5">Adequada à Lei Complementar Federal nº 213/2025.</p>
             </div>
           </div>
 
@@ -202,7 +214,7 @@
                 <h4 class="font-display font-bold text-xs text-white">Afiliada à AAAPV</h4>
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
               </div>
-              <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">Autorregulamentação e excelência patrimonial.</p>
+              <p class="text-xs text-blue-100/90 leading-snug mt-0.5">Autorregulamentação e excelência patrimonial.</p>
             </div>
           </div>
 
@@ -215,7 +227,7 @@
                 <h4 class="font-display font-bold text-xs text-white">Desde 2017</h4>
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
               </div>
-              <p class="text-[11px] text-blue-100/75 leading-snug mt-0.5">Sede própria em Campinas/SP • Telemetria ANATEL.</p>
+              <p class="text-xs text-blue-100/90 leading-snug mt-0.5">Sede própria em Campinas/SP • Telemetria ANATEL.</p>
             </div>
           </div>
         </div>
@@ -232,81 +244,72 @@
               <span id="badgeServicoTopo" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-blue bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100">
                 Agendamento Online
               </span>
-              <span class="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
+              <span class="text-xs font-semibold text-slate-600 flex items-center gap-1">
                 <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
                 Vagas em Tempo Real
               </span>
             </div>
 
-            <div class="px-2">
-              <div class="flex items-center justify-between relative">
-                <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 rounded-full -z-10"></div>
-                <div id="progressBar" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-brand-orange rounded-full -z-10 transition-all duration-300" style="width: 0%;"></div>
-                <div id="pStep1" class="w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold text-sm shadow-md transition-colors border-2 border-white z-10">1</div>
-                <div id="pStep2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">2</div>
-                <div id="pStep3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">3</div>
-                <div id="pStep4" class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm border-2 border-white transition-colors z-10">4</div>
-              </div>
-              <div class="flex justify-between mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                <span class="text-brand-orange">Serviço</span>
-                <span>Região</span>
-                <span>Horário</span>
-                <span>Veículo</span>
-              </div>
-            </div>
+            <ol class="rota" aria-label="Etapas do agendamento">
+              <li class="rota-trilho" aria-hidden="true"><div id="progressBar" class="rota-progresso" style="width: 0%;"></div></li>
+              <li class="rota-item"><div id="pStep1" class="rota-no is-current" role="img" aria-label="Etapa 1, serviço: atual" aria-current="step">1</div><span id="pLabel1" class="rota-label is-current">Serviço</span></li>
+              <li class="rota-item"><div id="pStep2" class="rota-no is-todo" role="img" aria-label="Etapa 2, região: pendente">2</div><span id="pLabel2" class="rota-label">Região</span></li>
+              <li class="rota-item"><div id="pStep3" class="rota-no is-todo" role="img" aria-label="Etapa 3, horário: pendente">3</div><span id="pLabel3" class="rota-label">Horário</span></li>
+              <li class="rota-item"><div id="pStep4" class="rota-no is-todo" role="img" aria-label="Etapa 4, veículo: pendente">4</div><span id="pLabel4" class="rota-label">Veículo</span></li>
+            </ol>
           </div>
 
           <!-- ETAPA 1: TIPO DE SERVIÇO -->
           <div id="step1" class="space-y-4 transition-all">
             <div>
-              <h2 class="font-display text-xl font-extrabold text-brand-blue">Qual serviço vamos agendar?</h2>
+              <h2 class="font-display text-xl sm:text-2xl font-extrabold text-brand-blue">Qual serviço vamos agendar?</h2>
               <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Selecione o atendimento técnico para o seu veículo</p>
             </div>
             
             <div class="flex flex-col gap-3">
-              <button type="button" onclick="window.selecionarServico('Instalação')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-brand-blue hover:bg-blue-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
+              <button type="button" onclick="window.selecionarServico('Instalação')" class="w-full bg-white border-2 border-slate-200 hover:border-brand-blue hover:shadow-lg hover:-translate-y-0.5 p-4 rounded-2xl text-left transition-all group flex items-center justify-between gap-3 cursor-pointer shadow-sm">
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 bg-brand-blue/10 group-hover:bg-brand-blue text-brand-blue group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                   </div>
                   <div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-brand-blue">Instalação</h3>
-                      <span class="text-[10px] font-bold bg-blue-100/80 text-brand-blue px-2 py-0.5 rounded-md">Novo Rastreador</span>
+                      <span class="text-[11px] font-bold bg-blue-100 text-brand-blue px-2 py-0.5 rounded-md whitespace-nowrap">Novo Rastreador</span>
                     </div>
-                    <p class="text-xs text-slate-500 mt-0.5">Implantação e ativação de equipamento de telemetria.</p>
+                    <p class="text-sm text-slate-600 mt-0.5">Implantação e ativação de equipamento de telemetria.</p>
                   </div>
                 </div>
                 <svg class="w-5 h-5 text-slate-300 group-hover:text-brand-blue transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
               </button>
 
-              <button type="button" onclick="window.selecionarServico('Manutenção')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-brand-orange hover:bg-orange-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
+              <button type="button" onclick="window.selecionarServico('Manutenção')" class="w-full bg-white border-2 border-slate-200 hover:border-brand-orange hover:shadow-lg hover:-translate-y-0.5 p-4 rounded-2xl text-left transition-all group flex items-center justify-between gap-3 cursor-pointer shadow-sm">
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 bg-brand-orange/10 group-hover:bg-brand-orange text-brand-orange group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                   </div>
                   <div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-brand-orange">Manutenção</h3>
-                      <span class="text-[10px] font-bold bg-orange-100/80 text-brand-orange px-2 py-0.5 rounded-md">Revisão Técnica</span>
+                      <span class="text-[11px] font-bold bg-orange-100 text-[#b8440f] px-2 py-0.5 rounded-md whitespace-nowrap">Revisão Técnica</span>
                     </div>
-                    <p class="text-xs text-slate-500 mt-0.5">Diagnóstico de sinal, ajuste ou substituição de módulo.</p>
+                    <p class="text-sm text-slate-600 mt-0.5">Diagnóstico de sinal, ajuste ou substituição de módulo.</p>
                   </div>
                 </div>
                 <svg class="w-5 h-5 text-slate-300 group-hover:text-brand-orange transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
               </button>
 
-              <button type="button" onclick="window.selecionarServico('Remoção')" class="w-full bg-slate-50/70 border-2 border-slate-100 hover:border-rose-500 hover:bg-rose-50/60 p-4 rounded-2xl text-left transition-all group flex items-center justify-between cursor-pointer">
+              <button type="button" onclick="window.selecionarServico('Remoção')" class="w-full bg-white border-2 border-slate-200 hover:border-rose-500 hover:shadow-lg hover:-translate-y-0.5 p-4 rounded-2xl text-left transition-all group flex items-center justify-between gap-3 cursor-pointer shadow-sm">
                 <div class="flex items-center gap-3.5">
                   <div class="w-12 h-12 bg-rose-100 group-hover:bg-rose-600 text-rose-600 group-hover:text-white rounded-xl flex items-center justify-center shrink-0 transition-colors">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                   </div>
                   <div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <h3 class="font-display font-bold text-slate-800 text-base group-hover:text-rose-600">Remoção</h3>
-                      <span class="text-[10px] font-bold bg-rose-100/80 text-rose-600 px-2 py-0.5 rounded-md">Desinstalação</span>
+                      <span class="text-[11px] font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md whitespace-nowrap">Desinstalação</span>
                     </div>
-                    <p class="text-xs text-slate-500 mt-0.5">Retirada completa para venda ou substituição de veículo.</p>
+                    <p class="text-sm text-slate-600 mt-0.5">Retirada completa para venda ou substituição de veículo.</p>
                   </div>
                 </div>
                 <svg class="w-5 h-5 text-slate-300 group-hover:text-rose-600 transition-colors shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -317,11 +320,11 @@
           <!-- ETAPA 2: CEP / LOCAL -->
           <div id="step2" class="hidden space-y-5 animate-fade-in">
             <div class="flex items-center gap-3">
-              <button type="button" onclick="window.voltarPara(1)" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
+              <button type="button" onclick="window.voltarPara(1)" aria-label="Voltar" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
               </button>
               <div>
-                <h2 class="font-display text-xl font-extrabold text-brand-blue">Onde você está?</h2>
+                <h2 class="font-display text-xl sm:text-2xl font-extrabold text-brand-blue">Onde você está?</h2>
                 <p class="text-xs text-slate-500">Localizando unidade credenciada ou técnico na sua região</p>
               </div>
             </div>
@@ -385,12 +388,12 @@
                 <form id="formInteresse" onsubmit="window.enviarInteresse(event)" class="mt-4 space-y-3" novalidate>
                   <input type="text" id="website_hp_interesse" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
                   <div>
-                    <label for="interesseNome" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nome completo</label>
-                    <input type="text" id="interesseNome" maxlength="80" placeholder="Ex: João Carlos da Silva" autocomplete="name" aria-required="true" aria-describedby="interesseErro" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-sm text-slate-800 focus:border-brand-blue outline-none transition-colors bg-white">
+                    <label for="interesseNome" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Nome completo</label>
+                    <input type="text" id="interesseNome" maxlength="80" placeholder="Ex: João Carlos da Silva" autocomplete="name" aria-required="true" aria-describedby="interesseErro" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-white">
                   </div>
                   <div>
-                    <label for="interesseTelefone" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
-                    <input type="tel" id="interesseTelefone" inputmode="tel" maxlength="15" placeholder="(19) 99999-9999" oninput="window.mascaraTelefone(this)" autocomplete="tel" aria-required="true" aria-describedby="interesseErro" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-sm text-slate-800 focus:border-brand-blue outline-none transition-colors bg-white">
+                    <label for="interesseTelefone" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
+                    <input type="tel" id="interesseTelefone" inputmode="tel" maxlength="15" placeholder="(19) 99999-9999" oninput="window.mascaraTelefone(this)" autocomplete="tel" aria-required="true" aria-describedby="interesseErro" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-white">
                   </div>
                   <label for="interesseConsentimento" class="flex items-center gap-3 bg-white border-2 border-slate-200 rounded-xl p-3 min-h-[48px] cursor-pointer text-sm text-slate-700 font-medium has-[:checked]:border-brand-blue transition-colors">
                     <input type="checkbox" id="interesseConsentimento" class="w-5 h-5 shrink-0 accent-brand-orange cursor-pointer">
@@ -410,11 +413,11 @@
           <!-- ETAPA 3: DATA E HORÁRIO -->
           <div id="step3" class="hidden space-y-4 animate-fade-in">
             <div class="flex items-center gap-3">
-              <button type="button" onclick="window.voltarPara(2)" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
+              <button type="button" onclick="window.voltarPara(2)" aria-label="Voltar" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
               </button>
               <div>
-                <h2 class="font-display text-xl font-extrabold text-brand-blue">Data e Horário</h2>
+                <h2 class="font-display text-xl sm:text-2xl font-extrabold text-brand-blue">Data e Horário</h2>
                 <p class="text-xs text-slate-500">Exibindo o próximo dia com vagas (altere se preferir)</p>
               </div>
             </div>
@@ -462,11 +465,11 @@
           <!-- ETAPA 4: FORMULÁRIO DE DADOS -->
           <div id="step4" class="hidden space-y-4 animate-fade-in">
             <div class="flex items-center gap-3">
-              <button type="button" id="btnVoltarEtapa4" onclick="window.voltarDeEtapa4()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
+              <button type="button" id="btnVoltarEtapa4" onclick="window.voltarDeEtapa4()" aria-label="Voltar" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full flex items-center justify-center transition-colors cursor-pointer">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
               </button>
               <div>
-                <h2 class="font-display text-xl font-extrabold text-brand-blue">Identificação do Associado</h2>
+                <h2 class="font-display text-xl sm:text-2xl font-extrabold text-brand-blue">Identificação do Associado</h2>
                 <p class="text-xs text-slate-500">Preencha os dados para emissão da O.S.</p>
               </div>
             </div>
@@ -491,17 +494,17 @@
               <input type="text" id="website_hp" name="website_hp" class="hp-field" tabindex="-1" autocomplete="off">
 
               <div>
-                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nome Completo do Associado</label>
-                <input type="text" id="inputNome" required minlength="3" maxlength="80" placeholder="Ex: João Carlos da Silva" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-sm text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Nome Completo do Associado</label>
+                <input type="text" id="inputNome" required minlength="3" maxlength="80" placeholder="Ex: João Carlos da Silva" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
               </div>
 
               <div>
-                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
-                <input type="tel" id="inputTelefone" required placeholder="(19) 99999-9999" maxlength="15" oninput="window.mascaraTelefone(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-sm text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
+                <input type="tel" id="inputTelefone" required placeholder="(19) 99999-9999" maxlength="15" oninput="window.mascaraTelefone(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
               </div>
 
               <div>
-                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Placa do Veículo (Padrão ou Mercosul)</label>
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Placa do Veículo (Padrão ou Mercosul)</label>
                 <input type="text" id="inputPlaca" required placeholder="ABC1D23" maxlength="7" oninput="window.formatarPlaca(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-extrabold text-slate-800 uppercase focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white text-center tracking-widest text-lg">
               </div>
 

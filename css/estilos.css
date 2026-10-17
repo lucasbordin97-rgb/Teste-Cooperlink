@@ -67,3 +67,36 @@ body {
 }
 .hp-field { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; pointer-events: none; }
 .hero-slide { transition: opacity 0.6s ease-in-out; }
+
+/* ---- Acessibilidade: foco visível, link de pular e movimento reduzido ---- */
+:focus-visible { outline: 3px solid #f36621; outline-offset: 2px; border-radius: 6px; }
+.skip-link { position: absolute; left: -9999px; top: 8px; z-index: 100; background: #fff; color: #0c3b6d; font-weight: 700; padding: 0.6rem 1rem; border-radius: 0.75rem; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+.skip-link:focus { left: 8px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .radar-ring::after { display: none; }
+}
+
+/* ---- Rota: barra de etapas (identidade "rastreamento") ---- */
+.rota { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); list-style: none; margin: 0; padding: 0; }
+.rota-trilho { position: absolute; left: 12.5%; right: 12.5%; top: 16px; height: 4px; background: #e2e8f0; border-radius: 9999px; }
+.rota-progresso { height: 100%; width: 0; background: linear-gradient(90deg, #0c3b6d, #f36621); border-radius: inherit; transition: width 0.35s ease; }
+.rota-item { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
+.rota-no { width: 36px; height: 36px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.875rem; border: 3px solid #fff; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2); transition: background-color 0.2s, color 0.2s, box-shadow 0.2s; }
+.rota-no.is-todo { background: #e2e8f0; color: #475569; }
+.rota-no.is-done { background: #0c3b6d; color: #fff; font-size: 0; }
+.rota-no.is-done::after { content: "\2713"; font-size: 1rem; }
+.rota-no.is-current { background: #f36621; color: #fff; box-shadow: 0 0 0 4px rgba(243, 102, 33, 0.22), 0 3px 8px rgba(243, 102, 33, 0.4); }
+.rota-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #64748b; text-align: center; }
+.rota-label.is-current { color: #b8440f; }
+.rota-label.is-done { color: #0c3b6d; }
+
+/* ---- Rota: trajeto "você -> posto" nos cartões de posto ---- */
+.trajeto { display: flex; align-items: center; gap: 0.4rem; }
+.trajeto-ponto { width: 10px; height: 10px; border-radius: 9999px; border: 2px solid #0c3b6d; background: #fff; flex-shrink: 0; }
+.trajeto-linha { flex: 1; min-width: 12px; border-top: 2px dashed #93b4dc; }
+.trajeto-chip { font-size: 0.75rem; font-weight: 700; color: #0c3b6d; background: #fff; border: 1px solid #bfd3ee; padding: 0.15rem 0.6rem; border-radius: 9999px; white-space: nowrap; }
+.trajeto-fim { width: 22px; height: 22px; border-radius: 9999px; background: #f36621; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* Texto de exemplo dos campos: contraste suficiente sem parecer texto digitado */
+::placeholder { color: #64748b; opacity: 0.85; }

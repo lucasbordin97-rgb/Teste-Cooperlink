@@ -22,6 +22,12 @@ Página de agendamento de instalação, manutenção e remoção de rastreador.
 - Senhas e tokens **nunca** ficam neste repositório; ficam nas propriedades do script.
 - A Vercel publica automaticamente cada alteração da branch `main`.
 
+## Identidade visual ("Rota")
+Base azul-marinho e laranja da marca. A ideia visual é o **rastreamento**: a barra de etapas é uma rota com pontos de passagem (✓ concluída, laranja atual, cinza pendente) e cada posto mostra o trajeto "Você → posto" com os minutos de carro.
+- Classes da rota em `css/estilos.css` (`.rota*`, `.trajeto*`). O estado das etapas é trocado por `atualizarTracker` em `js/etapas.js`.
+- Acessibilidade: foco visível em tudo (`:focus-visible`), link "Pular para o agendamento", movimento reduzido respeitado, carrossel com botão de pausa, campos com 16 px no celular (evita o zoom do iPhone), telefones que ligam com um toque (inclusive o botão "Ligar" do celular).
+- Não renomear os ids que o JavaScript usa (`pStep1..4`, `pLabel1..4`, `progressBar`, `step1..4`, `boxPostosSP`, `listaPostosSP`, `boxForaCobertura` e os campos dos formulários).
+
 ## Cobertura por tempo de carro (desligada por padrão)
 Para a Grande SP, o site pode escolher o posto pelo **tempo de carro** até ele (limite de 30 min; acima disso vai para técnico externo). Quem mora fora da cobertura deixa o contato e a autorização para ser avisado quando o serviço chegar à região.
 

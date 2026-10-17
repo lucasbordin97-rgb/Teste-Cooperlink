@@ -17,9 +17,31 @@ window.trocarSlideMarketing = function(novoIndice) {
   slideAtual = novoIndice;
 };
 
-function iniciarCarrosselMarketing() {
+// O carrossel passa sozinho a cada 6,5 s. Pausa ao passar o mouse/foco, quando a pessoa pede
+// para pausar e sempre que o aparelho está configurado para reduzir movimento.
+let carrosselPausadoPeloUsuario = false;
+function prefereMovimentoReduzido() {
+  return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+}
+function pararCarrossel() {
   if (intervaloCarrossel) clearInterval(intervaloCarrossel);
+  intervaloCarrossel = null;
+}
+function iniciarCarrosselMarketing() {
+  pararCarrossel();
+  if (carrosselPausadoPeloUsuario || prefereMovimentoReduzido()) return;
   intervaloCarrossel = setInterval(function() {
     window.trocarSlideMarketing((slideAtual + 1) % 3);
   }, 6500);
 }
+window.alternarCarrossel = function() {
+  carrosselPausadoPeloUsuario = !carrosselPausadoPeloUsuario;
+  const btn = document.getElementById('btnPausaCarrossel');
+  if (btn) {
+    btn.setAttribute('aria-pressed', String(carrosselPausadoPeloUsuario));
+    btn.setAttribute('aria-label', carrosselPausadoPeloUsuario ? 'Retomar apresentação' : 'Pausar apresentação');
+    document.getElementById('iconePausa').classList.toggle('hidden', carrosselPausadoPeloUsuario);
+    document.getElementById('iconeTocar').classList.toggle('hidden', !carrosselPausadoPeloUsuario);
+  }
+  iniciarCarrosselMarketing();
+};
