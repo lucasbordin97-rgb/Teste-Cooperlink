@@ -1,0 +1,8 @@
+[
+  { "nome": "Lapa", "endereco": "TROQUE: rua, numero, bairro, Sao Paulo, SP" },
+  { "nome": "Sao Bernardo", "endereco": "TROQUE: rua, numero, bairro, Sao Bernardo do Campo, SP" },
+  { "nome": "Suzano", "endereco": "TROQUE: rua, numero, bairro, Suzano, SP" },
+  { "nome": "Sao Miguel Paulista", "endereco": "TROQUE: rua, numero, bairro, Sao Paulo, SP" },
+  { "nome": "Grajau", "endereco": "TROQUE: rua, numero, bairro, Sao Paulo, SP" },
+  { "nome": "Aruja", "endereco": "TROQUE: rua, numero, bairro, Aruja, SP" }
+]

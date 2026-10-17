@@ -1,0 +1,4 @@
+# Um CEP por linha. Depois do ponto e virgula, escreva a sua opiniao (opcional), por exemplo:
+# 07400-000;iria para Aruja
+# 01001-000;so tecnico
+# Use SOMENTE o CEP. Nao coloque nome, telefone ou placa de associado.
