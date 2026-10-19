@@ -14,7 +14,7 @@ const FERIADOS_FIXOS = {
   "12-25": "Natal"
 };
 
-// Feriados da cidade de cada posto (ids de POSTOS_SP em config.js; "henricar" é Campinas).
+// Feriados da cidade de cada posto (ids de POSTOS em config.js; "henricar" é Campinas).
 const FERIADOS_MUNICIPAIS = {
   henricar: { "07-14": "Aniversário de Campinas" },
   h7: { "01-25": "Aniversário de São Paulo" },
@@ -62,8 +62,8 @@ function feriadosMoveis(ano) {
 
 function idDoPosto(nomePosto) {
   if (nomePosto === POSTO_HENRICAR.nome) return "henricar";
-  const ids = Object.keys(POSTOS_SP);
-  for (let i = 0; i < ids.length; i++) if (POSTOS_SP[ids[i]].nome === nomePosto) return ids[i];
+  const ids = Object.keys(POSTOS);
+  for (let i = 0; i < ids.length; i++) if (POSTOS[ids[i]].nome === nomePosto) return ids[i];
   return null;
 }
 

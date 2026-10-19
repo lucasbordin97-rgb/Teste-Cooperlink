@@ -22,13 +22,24 @@ const POSTOS_SP = {
   ex: { nome: "Extreme Som e Acessórios - Av. Ver. João Batista Fitipaldi, 1421 - Vila Maluf, Suzano/SP (CEP 08685-190)", curto: "Extreme Som e Acessórios", local: "Suzano", endereco: "Av. Ver. João Batista Fitipaldi, 1421 • Vila Maluf, Suzano/SP" },
   jp: { nome: "JP Som e Acessórios Automotivos - Rua Estevão de Fabri, 02 - Parque Atlântico, São Paulo/SP (CEP 04803-000)", curto: "JP Som e Acessórios Automotivos", local: "Grajaú", endereco: "Rua Estevão de Fabri, 02 • Parque Atlântico, São Paulo/SP" }
 };
+// Postos fora da Grande SP. Atendem por CIDADE (não precisam da tabela de tempo de carro).
+// Para cadastrar um posto: veja "Como cadastrar um posto novo" no README (ou rode tools/novo_posto.py),
+// copie o modelo abaixo, troque os dados e cadastre o MESMO texto de "nome" no Apps Script.
+// Modelo (tire as barras para usar). Em "cidades", escreva sem acento e em minúsculas, como no ViaCEP:
+//   cu: { nome: "Nome do Posto - Rua X, 100 - Bairro, Curitiba/PR (CEP 80000-000)", curto: "Nome do Posto",
+//         local: "Curitiba", endereco: "Rua X, 100 • Bairro, Curitiba/PR", uf: "PR", cidades: ["curitiba", "sao jose dos pinhais"] },
+const POSTOS_OUTROS = {
+};
+// Todos os postos com agenda própria (Grande SP + outros); a Henricar tem regra própria.
+const POSTOS = Object.assign({}, POSTOS_SP, POSTOS_OUTROS);
+
 // Chave de segurança: com false o site usa só a regra antiga (Campinas/Hortolândia = Henricar, o resto = técnico).
 const USAR_TABELA_COBERTURA = true;
 // Até quantos minutos de carro um posto ainda atende; acima disso vai para técnico externo.
 const LIMITE_MINUTOS_POSTO = 30;
 
 // Postos com agenda própria (data e horário). Novos postos entram aqui e no Apps Script.
-const POSTOS_COM_AGENDA = [POSTO_HENRICAR.nome].concat(Object.keys(POSTOS_SP).map(function(id) { return POSTOS_SP[id].nome; }));
+const POSTOS_COM_AGENDA = [POSTO_HENRICAR.nome].concat(Object.keys(POSTOS).map(function(id) { return POSTOS[id].nome; }));
 const horariosManha = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
 const horariosTarde = ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:20"];
 const todosHorarios = horariosManha.concat(horariosTarde);
