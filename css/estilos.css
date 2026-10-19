@@ -91,11 +91,6 @@ body {
 .rota-label.is-current { color: #b8440f; }
 .rota-label.is-done { color: #0c3b6d; }
 
-/* ---- Rota: trajeto "você -> posto" nos cartões de posto ---- */
-.trajeto { display: flex; align-items: center; gap: 0.4rem; }
-.trajeto-ponto { width: 10px; height: 10px; border-radius: 9999px; border: 2px solid #0c3b6d; background: #fff; flex-shrink: 0; }
-.trajeto-linha { flex: 1; min-width: 12px; border-top: 2px dashed #93b4dc; }
-.trajeto-fim { width: 22px; height: 22px; border-radius: 9999px; background: #f36621; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
 /* Texto de exemplo dos campos: contraste suficiente sem parecer texto digitado */
 ::placeholder { color: #64748b; opacity: 0.85; }

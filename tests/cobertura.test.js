@@ -85,6 +85,7 @@ const caixas = async page => ({
   t('o posto mais próximo (Stop System) vem primeiro, na ordem do tempo de carro', lista.length >= 1 && lista[0].id === 'st' && lista.every((p, i) => i === 0 || p.minutos >= lista[i - 1].minutos), lista);
   t('nenhum posto listado passa de 30 minutos', lista.every(p => p.minutos > 0 && p.minutos <= 30), lista);
   t('o tempo de carro NÃO aparece para o associado (nem no texto, nem no rótulo de leitor de tela)', lista.every(p => !/min|carro|\d+\s*minutos/i.test(p.texto.replace(/MAIS PRÓXIMO/i, '')) && !/min|carro/i.test(p.rotulo)), lista);
+  t('o cartão não tem mais o traço "Você ○ - - 📍"', await page.evaluate(() => !document.querySelector('#listaPostosSP .trajeto') && Array.from(document.querySelectorAll('#listaPostosSP button')).every(b => !/^\s*Você/.test(b.innerText))));
   t('o selo "Mais próximo" continua só no primeiro', /mais pr[óo]ximo/i.test(lista[0].texto) && lista.slice(1).every(p => !/mais pr[óo]ximo/i.test(p.texto)), lista);
   await page.click('#listaPostosSP button[data-arg="st"]');
   await page.waitForFunction(() => !document.getElementById('containerHorarios').classList.contains('hidden'));
