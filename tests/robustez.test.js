@@ -65,7 +65,7 @@ async function novaPagina(browser, cfg) {
       const p = path.join(raiz, new URL(u).pathname);
       if (!fs.existsSync(p)) return route.fulfill({ status: 404, body: 'nao encontrado' });
       let corpo = fs.readFileSync(p);
-      if (p.endsWith('js/config.js') && cfg.flag !== false) corpo = corpo.toString().replace('USAR_TABELA_COBERTURA = false', 'USAR_TABELA_COBERTURA = true');
+      if (p.endsWith('js/config.js')) corpo = corpo.toString().replace(/USAR_TABELA_COBERTURA = (true|false)/, 'USAR_TABELA_COBERTURA = ' + (cfg.flag !== false));
       const tipo = p.endsWith('.css') ? 'text/css' : p.endsWith('.json') ? 'application/json' : 'application/javascript';
       return route.fulfill({ contentType: tipo, headers: H, body: corpo });
     }

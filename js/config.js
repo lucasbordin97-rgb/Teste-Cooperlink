@@ -23,7 +23,7 @@ const POSTOS_SP = {
   jp: { nome: "JP Som e Acessórios Automotivos - Rua Estevão de Fabri, 02 - Parque Atlântico, São Paulo/SP (CEP 04803-000)", curto: "JP Som e Acessórios Automotivos", local: "Grajaú", endereco: "Rua Estevão de Fabri, 02 • Parque Atlântico, São Paulo/SP" }
 };
 // Chave de segurança: com false o site usa só a regra antiga (Campinas/Hortolândia = Henricar, o resto = técnico).
-const USAR_TABELA_COBERTURA = false;
+const USAR_TABELA_COBERTURA = true;
 // Até quantos minutos de carro um posto ainda atende; acima disso vai para técnico externo.
 const LIMITE_MINUTOS_POSTO = 30;
 

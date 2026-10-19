@@ -38,7 +38,7 @@ async function novaPagina(browser, cfg) {
     }
     if (u.startsWith('http://site.local/') && u !== 'http://site.local/') {
       const p = path.join(path.dirname(arquivo), new URL(u).pathname);
-      if (fs.existsSync(p)) return route.fulfill({ contentType: p.endsWith('.css') ? 'text/css' : 'application/javascript', headers: H, body: fs.readFileSync(p) });
+      if (fs.existsSync(p)) return route.fulfill({ contentType: p.endsWith('.css') ? 'text/css' : 'application/javascript', headers: H, body: p.endsWith('js/config.js') ? fs.readFileSync(p, 'utf8').replace(/USAR_TABELA_COBERTURA = (true|false)/, 'USAR_TABELA_COBERTURA = false') : fs.readFileSync(p) });
       return route.fulfill({ status: 404, body: 'nao encontrado' });
     }
     if (u.includes('cdn.tailwindcss.com')) return route.fulfill({ contentType: 'application/javascript', body: 'window.tailwind = {};' });
