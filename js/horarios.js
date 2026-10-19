@@ -15,8 +15,10 @@ window.aoMudarDataManual = function() {
   const diaSemana = dataObj.getDay();
 
   const avisoJanela = document.getElementById('avisoDataForaJanela');
+  const avisoFeriado = document.getElementById('avisoFeriado');
   avisoAuto.classList.add('hidden');
   avisoJanela.classList.add('hidden');
+  avisoFeriado.classList.add('hidden');
 
   if (inputData < obterDataHojeBrasil() || inputData > obterDataMaximaBrasil()) {
     avisoFds.classList.add('hidden');
@@ -27,6 +29,15 @@ window.aoMudarDataManual = function() {
 
   if (diaSemana === 0 || diaSemana === 6) {
     avisoFds.classList.remove('hidden');
+    containerHorarios.classList.add('hidden');
+    return;
+  }
+
+  const feriado = nomeDoFeriado(inputData, nomePostoAtual());
+  if (feriado) {
+    avisoFds.classList.add('hidden');
+    avisoFeriado.textContent = "⚠️ Dia " + formatarDataBR(inputData) + " sem atendimento: " + feriado + ". Selecione outra data.";
+    avisoFeriado.classList.remove('hidden');
     containerHorarios.classList.add('hidden');
     return;
   }
@@ -51,9 +62,12 @@ function verificarEAplicarSaltoAutomatico(dataOriginalSolicitada) {
 
       if (avisoAuto && textoAuto) {
         const hoje = obterDataHojeBrasil();
-        const motivo = (dataOriginalSolicitada === hoje)
-          ? "Os horários de hoje (" + formatarDataBR(dataOriginalSolicitada) + ") já encerraram ou estão completos."
-          : "O dia " + formatarDataBR(dataOriginalSolicitada) + " já está com todos os horários completos.";
+        const feriado = nomeDoFeriado(dataOriginalSolicitada, nomePostoAtual());
+        const motivo = feriado
+          ? "O dia " + formatarDataBR(dataOriginalSolicitada) + " é feriado (" + feriado + ") e não há atendimento."
+          : (dataOriginalSolicitada === hoje)
+            ? "Os horários de hoje (" + formatarDataBR(dataOriginalSolicitada) + ") já encerraram ou estão completos."
+            : "O dia " + formatarDataBR(dataOriginalSolicitada) + " já está com todos os horários completos.";
         
         textoAuto.innerHTML = motivo + " Avançamos automaticamente para o próximo dia disponível: <b>" + formatarDataBR(proximoLivre) + "</b>. <span class='text-slate-600 block mt-0.5'>Você pode selecionar qualquer outra data no calendário acima se preferir.</span>";
         avisoAuto.classList.remove('hidden');

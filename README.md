@@ -16,6 +16,7 @@ Página de agendamento de instalação, manutenção e remoção de rastreador.
   - `envio.js`: validação e envio do agendamento
   - `principal.js`: reinício do fluxo e inicialização
   - `eventos.js`: liga os cliques, digitação e envios marcados no HTML com `data-click`, `data-input`, `data-submit`, `data-change` e `data-enter` (sem scripts dentro do HTML)
+  - `feriados.js`: dias sem atendimento (feriados nacionais, estaduais, pontos facultativos, feriados da cidade de cada posto e fechamentos avulsos); a mesma regra existe no Apps Script
 - `vercel.json`: cabeçalhos de segurança do site.
 - Os agendamentos são gravados numa planilha do Google por um Google Apps Script
   (o código do script fica na própria planilha, em Extensões > Apps Script).
@@ -43,6 +44,7 @@ Para a Grande SP, o site pode escolher o posto pelo **tempo de carro** até ele 
 `node tests/site.test.js index.html` roda 30 verificações do site num navegador de teste, sem internet: fluxo de agendamento, mensagens de erro, técnico externo, janela de 60 dias, LGPD e violações da política de segurança (CSP).
 `node tests/acessibilidade.test.js index.html` roda 30 verificações de acessibilidade e acabamento: rótulos ligados aos campos, ícones decorativos, sem `transition: all`, atributos dos campos, carrossel (pausa, "reduzir movimento", arrastar, setas, `aria-hidden`), link de pular, barra de etapas e foco no campo com erro.
 `node tests/css.test.js` confere se `css/tailwind.css` está em dia com as classes usadas.
+`node tests/feriados.test.js index.html caminho/do/apps-script-v3.2.gs` confere a regra de feriados (inclusive que site e Apps Script concordam em todos os dias de 2026 a 2028) e o comportamento na tela.
 `node tests/robustez.test.js index.html` roda cerca de 55 verificações de resistência: texto hostil, ViaCEP/tabela/Apps Script fora do ar, clique duplo, texto colado, fusos horários, telas de 320 a 1440 px e uso aleatório.
 `node tests/cobertura.test.js index.html` roda 20 verificações da cobertura por tempo de carro (posto perto, técnico externo, fora da cobertura com consentimento, placa já agendada, tabela fora do ar e chave desligada).
 Precisa do pacote `playwright` e do Chromium (use `CHROMIUM_PATH` se o caminho for outro).

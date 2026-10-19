@@ -60,6 +60,7 @@ function diaPossuiVagaDisponivel(dataStr) {
   const dt = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
   const diaSemana = dt.getDay();
   if (diaSemana === 0 || diaSemana === 6) return false;
+  if (nomeDoFeriado(dataStr, nomePostoAtual())) return false;
   if (dataStr > obterDataMaximaBrasil()) return false;
 
   const reservasLocais = lerReservasLocais();
@@ -85,7 +86,8 @@ function horarioIndisponivel(dataStr, horario, reservasLocais) {
   };
   return slotsOcupadosNaNuvem.some(mesmoHorario) ||
     (reservasLocais || lerReservasLocais()).some(mesmoHorario) ||
-    horarioJaPassouHoje(dataStr, horario);
+    horarioJaPassouHoje(dataStr, horario) ||
+    !!nomeDoFeriado(dataStr, postoAtual);
 }
 
 function encontrarProximoDiaDisponivel(dataBaseStr) {

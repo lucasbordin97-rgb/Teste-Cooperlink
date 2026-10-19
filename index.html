@@ -416,6 +416,7 @@
               <input type="date" id="dataAgendamento" data-change="aoMudarDataManual" class="w-full p-3.5 border-2 border-slate-200 rounded-xl text-slate-800 font-bold focus:border-brand-blue focus:ring-0 outline-none transition-colors shadow-sm bg-slate-50 cursor-pointer">
               
               <p id="avisoFimDeSemana" class="text-xs text-rose-600 font-bold mt-2 hidden">⚠️ Não realizamos atendimentos na unidade física aos finais de semana. Selecione um dia útil.</p>
+              <p id="avisoFeriado" role="alert" class="text-xs text-rose-600 font-bold mt-2 hidden"></p>
               <p id="avisoDataForaJanela" class="text-xs text-rose-600 font-bold mt-2 hidden">⚠️ Agendamos a partir de hoje e com até 60 dias de antecedência. Selecione outra data.</p>
               
               <div id="avisoAutoAvanco" class="hidden mt-2.5 bg-amber-50 border border-amber-200/90 text-amber-900 rounded-xl p-3 flex items-start gap-2.5 text-xs leading-relaxed">
@@ -554,6 +555,7 @@
   <script src="js/config.js"></script>
   <script src="js/armazenamento.js"></script>
   <script src="js/carrossel.js"></script>
+  <script src="js/feriados.js"></script>
   <script src="js/agenda.js"></script>
   <script src="js/etapas.js"></script>
   <script src="js/cobertura.js"></script>
