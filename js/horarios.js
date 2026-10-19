@@ -124,7 +124,7 @@ function renderizarGradeHorarios() {
         ? "border-slate-200 bg-slate-100 text-slate-400"
         : "border-slate-200 bg-white text-brand-blue hover:border-brand-orange hover:bg-orange-50/50 cursor-pointer";
 
-      return '<button type="button" onclick="window.selecionarHorario(\'' + horario + '\')" ' + (bloqueado ? 'disabled' : '') + ' class="slot-btn font-mono border-2 ' + classesBtn + ' py-2.5 px-2 rounded-xl text-center transition-[transform,box-shadow,border-color,background-color,color,opacity] font-bold text-sm shadow-sm">' + horario + '</button>';
+      return '<button type="button" data-click="selecionarHorario" data-arg="' + horario + '" ' + (bloqueado ? 'disabled' : '') + ' class="slot-btn font-mono border-2 ' + classesBtn + ' py-2.5 px-2 rounded-xl text-center transition-[transform,box-shadow,border-color,background-color,color,opacity] font-bold text-sm shadow-sm">' + horario + '</button>';
     }).join('');
   };
 

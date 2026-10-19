@@ -15,6 +15,7 @@ Página de agendamento de instalação, manutenção e remoção de rastreador.
   - `horarios.js`: escolha de data e horário
   - `envio.js`: validação e envio do agendamento
   - `principal.js`: reinício do fluxo e inicialização
+  - `eventos.js`: liga os cliques, digitação e envios marcados no HTML com `data-click`, `data-input`, `data-submit`, `data-change` e `data-enter` (sem scripts dentro do HTML)
 - `vercel.json`: cabeçalhos de segurança do site.
 - Os agendamentos são gravados numa planilha do Google por um Google Apps Script
   (o código do script fica na própria planilha, em Extensões > Apps Script).

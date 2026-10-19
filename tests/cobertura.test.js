@@ -81,10 +81,10 @@ const caixas = async page => ({
   await consultar(page, '08391-710');
   let c = await caixas(page);
   t('Grande SP perto: mostra os postos e nenhuma outra caixa', c.postosSP && !c.tecnico && !c.fora && !c.henricar, c);
-  const lista = await page.evaluate(() => Array.from(document.querySelectorAll('#listaPostosSP button')).map(b => ({ id: b.dataset.posto, texto: b.innerText })));
+  const lista = await page.evaluate(() => Array.from(document.querySelectorAll('#listaPostosSP button')).map(b => ({ id: b.dataset.arg, texto: b.innerText })));
   t('o posto mais próximo (Stop System) vem primeiro, com os minutos', lista.length >= 1 && lista[0].id === 'st' && /min de carro/.test(lista[0].texto), lista);
   t('nenhum posto listado passa de 30 minutos', lista.every(p => Number((p.texto.match(/cerca de (\d+) min/) || [])[1]) <= 30), lista);
-  await page.click('#listaPostosSP button[data-posto="st"]');
+  await page.click('#listaPostosSP button[data-arg="st"]');
   await page.waitForFunction(() => !document.getElementById('containerHorarios').classList.contains('hidden'));
   t('escolher o posto leva à data e horário, sem marcar técnico externo', await page.evaluate(() => estadoAgendamento.isTecnicoExterno === false && estadoAgendamento.posto.nome.indexOf('Stop System') === 0));
   await page.evaluate(() => window.selecionarHorario('09:00'));
@@ -100,7 +100,7 @@ const caixas = async page => ({
   // 1b) Placa que já tem agendamento ativo (o Apps Script responde "duplicate")
   ({ page, ctx, envios } = await novaPagina(browser, { resposta: { result: 'duplicate' } }));
   await consultar(page, '08391-710');
-  await page.click('#listaPostosSP button[data-posto="st"]');
+  await page.click('#listaPostosSP button[data-arg="st"]');
   await page.waitForFunction(() => !document.getElementById('containerHorarios').classList.contains('hidden'));
   await page.evaluate(() => window.selecionarHorario('09:30'));
   await page.fill('#inputNome', 'Maria da Silva');

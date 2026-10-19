@@ -166,7 +166,7 @@ const botaoBuscaLivre = page => page.evaluate(() => !document.getElementById('bt
   }
   r = await novaPagina(browser, { shard: p => p.endsWith('/083.json') ? { json: { '91710': 'zz:5,st:6,ho:900,la:abc' } } : null });
   await consultar(r.page, '08391-710');
-  const lista = await r.page.evaluate(() => Array.from(document.querySelectorAll('#listaPostosSP button')).map(b => b.dataset.posto));
+  const lista = await r.page.evaluate(() => Array.from(document.querySelectorAll('#listaPostosSP button')).map(b => b.dataset.arg));
   t('tabela com posto desconhecido/valor estranho: só entra o que é válido (st)', JSON.stringify(lista) === '["st"]', lista);
   await r.ctx.close();
 

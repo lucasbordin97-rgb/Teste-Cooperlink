@@ -31,6 +31,8 @@ t('avisos anunciados: CEP em aria-live, erro em role=alert', /id="cepFeedback" a
 t('imagens do carrossel com largura/altura; 2ª e 3ª com lazy-loading', (html.match(/<img src="https:\/\/images\.unsplash[^>]*width="1200" height="800"/g) || []).length === 3 && (html.match(/<img src="https:\/\/images\.unsplash[^>]*loading="lazy"/g) || []).length === 2);
 t('sem saltos de nível de título (nenhum h4)', !/<h4\b/.test(html));
 
+t('sem scripts dentro do HTML (onclick/oninput/...) e a política de segurança não aceita script inline', !/\son(click|input|change|submit|keydown|error|load)=/.test(html + js.replace(/data-/g, '')) && !/script-src[^;]*'unsafe-inline'/.test(H['Content-Security-Policy']), H['Content-Security-Policy']);
+
 // ---------- 2) Comportamento ----------
 async function novaPagina(browser, opcoes) {
   const ctx = await browser.newContext(Object.assign({ timezoneId: 'America/Sao_Paulo', locale: 'pt-BR', hasTouch: true }, opcoes || {}));
