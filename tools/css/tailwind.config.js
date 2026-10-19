@@ -1,5 +1,6 @@
-// Cores e fontes da marca Cooperlink para o Tailwind (carrega logo depois do CDN)
-tailwind.config = {
+// Cores e fontes da marca Cooperlink. Lê as classes usadas no HTML e nos textos de JavaScript do site.
+module.exports = {
+  content: ['../../index.html', '../../js/**/*.js'],
   theme: {
     extend: {
       colors: {

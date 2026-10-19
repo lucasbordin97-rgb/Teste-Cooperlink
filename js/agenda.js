@@ -6,17 +6,30 @@ function sanitizarInput(str) {
     .replace(/^[=+\-@]+/, "");
 }
 
+// Escapa texto que vem de fora (ex.: cidade devolvida pelo viaCEP) antes de ir para innerHTML.
+function escaparHtml(str) {
+  return String(str === null || str === undefined ? "" : str)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+// Data e hora em Brasília, qualquer que seja o fuso ou o relógio do aparelho.
+function agoraEmBrasilia() {
+  const p = {};
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  }).formatToParts(new Date()).forEach(function(x) { p[x.type] = x.value; });
+  return { data: p.year + "-" + p.month + "-" + p.day, minutos: Number(p.hour) * 60 + Number(p.minute) };
+}
+
 function obterDataHojeBrasil() {
-  const agora = new Date();
-  const ano = agora.getFullYear();
-  const mes = String(agora.getMonth() + 1).padStart(2, '0');
-  const dia = String(agora.getDate()).padStart(2, '0');
-  return ano + "-" + mes + "-" + dia;
+  return agoraEmBrasilia().data;
 }
 
 function obterDataMaximaBrasil() {
-  const limite = new Date();
-  limite.setDate(limite.getDate() + DIAS_MAXIMOS_AGENDAMENTO);
+  const base = agoraEmBrasilia().data.split('-').map(Number);
+  const limite = new Date(base[0], base[1] - 1, base[2] + DIAS_MAXIMOS_AGENDAMENTO, 12, 0, 0);
   const mes = String(limite.getMonth() + 1).padStart(2, '0');
   const dia = String(limite.getDate()).padStart(2, '0');
   return limite.getFullYear() + "-" + mes + "-" + dia;
@@ -30,17 +43,13 @@ function formatarDataBR(dataYYYYMMDD) {
 }
 
 function horarioJaPassouHoje(dataEscolhida, horarioStr) {
-  const hojeStr = obterDataHojeBrasil();
-  if (dataEscolhida !== hojeStr) return false;
+  const agora = agoraEmBrasilia();
+  if (dataEscolhida !== agora.data) return false;
 
-  const agora = new Date();
   const partesHora = horarioStr.split(':');
-  const horaSlot = Number(partesHora[0]);
-  const minSlot = Number(partesHora[1]);
-  const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
-  const minutosSlot = horaSlot * 60 + minSlot;
+  const minutosSlot = Number(partesHora[0]) * 60 + Number(partesHora[1]);
 
-  return minutosSlot <= (minutosAgora + 15);
+  return minutosSlot <= (agora.minutos + 15);
 }
 
 function diaPossuiVagaDisponivel(dataStr) {

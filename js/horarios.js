@@ -97,7 +97,7 @@ async function dispararBuscaDeHorariosNaNuvem(forcarRecarga, autoAvancarSeLotado
       ultimaSincronizacao = Date.now();
     }
   } catch (err) {
-    console.log("Modo de leitura direta ativo.");
+    // Sem resposta da planilha: segue com as reservas guardadas neste aparelho.
   }
 
   if (autoAvancarSeLotado) {

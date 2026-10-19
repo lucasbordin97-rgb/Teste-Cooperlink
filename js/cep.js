@@ -12,6 +12,7 @@ window.buscarEAnalisarCEP = async function() {
   const boxTecnico = document.getElementById('boxTecnicoExterno');
   const boxPostos = document.getElementById('boxPostosFixos');
   const btn = document.getElementById('btnBuscarCep');
+  if (btn.disabled) return;
 
   boxTecnico.classList.add('hidden');
   boxPostos.classList.add('hidden');
@@ -26,21 +27,43 @@ window.buscarEAnalisarCEP = async function() {
   btn.innerText = "Consultando CEP…";
   feedback.innerHTML = "";
 
+  let data = null;
   try {
     const res = await fetchComTimeout("https://viacep.com.br/ws/" + rawCep + "/json/", {}, 7000);
-    const data = await res.json();
+    data = await res.json();
+  } catch (error) {
+    data = null;
+  }
+  const respostaValida = function(d) { return !!d && typeof d === 'object' && !Array.isArray(d); };
 
-    btn.disabled = false;
-    btn.innerText = "Verificar Disponibilidade";
-
-    if (data.erro) {
-      feedback.innerHTML = '<span class="text-rose-500 font-semibold">CEP não encontrado. Verifique os números digitados.</span>';
-      return;
+  // viaCEP fora do ar ou lento: se a nossa tabela conhece o CEP (Grande SP), segue sem ele.
+  let semViaCep = false;
+  if (!respostaValida(data) && USAR_TABELA_COBERTURA) {
+    const conhecida = await consultarCoberturaSegura(rawCep);
+    if (conhecida && conhecida.noMapa) {
+      data = { localidade: 'Grande São Paulo', uf: 'SP' };
+      semViaCep = true;
     }
+  }
 
+  btn.disabled = false;
+  btn.innerText = "Verificar Disponibilidade";
+
+  if (!respostaValida(data)) {
+    feedback.innerHTML = '<span class="text-rose-500 font-semibold">Oscilação na rede ao buscar o CEP. Toque novamente.</span>';
+    return;
+  }
+  if (data.erro) {
+    feedback.innerHTML = '<span class="text-rose-500 font-semibold">CEP não encontrado. Verifique os números digitados.</span>';
+    return;
+  }
+
+  try {
     estadoAgendamento.cep = rawCep;
     estadoAgendamento.cepFormatado = sanitizarInput(maskedCep);
-    estadoAgendamento.enderecoFormatado = sanitizarInput((data.logradouro || 'Bairro') + ", " + (data.bairro || '') + " - " + data.localidade + "/" + data.uf);
+    estadoAgendamento.enderecoFormatado = semViaCep
+      ? sanitizarInput("CEP " + maskedCep + " - Grande São Paulo/SP")
+      : sanitizarInput((data.logradouro || 'Bairro') + ", " + (data.bairro || '') + " - " + data.localidade + "/" + data.uf);
 
     const cidadeNorm = normalizarTexto(data.localidade);
     const isRegiaoAtendida = (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");
@@ -55,7 +78,7 @@ window.buscarEAnalisarCEP = async function() {
 
     if (!isRegiaoAtendida) {
       estadoAgendamento.isTecnicoExterno = true;
-      feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + sanitizarInput(data.localidade) + '/' + sanitizarInput(data.uf) + ') é atendida via Técnico Parceiro:</span>';
+      feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + escaparHtml(sanitizarInput(data.localidade)) + '/' + escaparHtml(sanitizarInput(data.uf)) + ') é atendida via Técnico Parceiro:</span>';
       boxTecnico.classList.remove('hidden');
     } else {
       estadoAgendamento.isTecnicoExterno = false;
@@ -63,9 +86,7 @@ window.buscarEAnalisarCEP = async function() {
       boxPostos.classList.remove('hidden');
     }
   } catch (error) {
-    btn.disabled = false;
-    btn.innerText = "Verificar Disponibilidade";
-    feedback.innerHTML = '<span class="text-rose-500 font-semibold">Oscilação na rede ao buscar o CEP. Toque novamente.</span>';
+    feedback.innerHTML = '<span class="text-rose-500 font-semibold">Não foi possível analisar este CEP agora. Toque novamente.</span>';
   }
 };
 
@@ -109,7 +130,7 @@ function esconderCaixasCobertura() {
 }
 
 function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
-  const local = sanitizarInput(dadosCep.localidade) + '/' + sanitizarInput(dadosCep.uf);
+  const local = escaparHtml(sanitizarInput(dadosCep.localidade)) + '/' + escaparHtml(sanitizarInput(dadosCep.uf));
 
   if (cobertura.postos.length > 0) {
     estadoAgendamento.isTecnicoExterno = false;

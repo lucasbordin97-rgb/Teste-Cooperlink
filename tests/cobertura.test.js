@@ -108,7 +108,7 @@ const caixas = async page => ({
   await page.fill('#inputPlaca', 'abc1d23');
   await page.evaluate(() => document.getElementById('formAgendamento').requestSubmit());
   await page.waitForFunction(() => !document.getElementById('alertaConflito').classList.contains('hidden'));
-  const tituloDup = await page.evaluate(() => document.getElementById('tituloErroForm').innerText + ' | ' + document.getElementById('msgErroForm').innerText);
+  const tituloDup = await page.evaluate(() => document.getElementById('tituloErroForm').textContent + ' | ' + document.getElementById('msgErroForm').textContent);
   t('placa já agendada: avisa o associado (24 horas / telefone) e NÃO mostra sucesso', /já tem um agendamento/.test(tituloDup) && /24 horas/.test(tituloDup) && !(await visivel(page, 'stepSucesso')), tituloDup);
   t('placa já agendada: o botão de confirmar volta a ficar livre', await page.evaluate(() => !document.getElementById('btnConfirmar').disabled));
   t('placa já agendada: a reserva não fica guardada no navegador', await page.evaluate(() => (localStorage.getItem('agendamentos_db') || '').indexOf('09:30') === -1));

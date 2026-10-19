@@ -1,8 +1,10 @@
 // Validação e envio do agendamento ao Apps Script, com mensagens de erro.
 // Traduz a resposta da planilha em mensagem para o associado.
-// Devolve null quando é sucesso (ou resposta desconhecida de uma versão antiga da planilha).
+// Devolve null só quando a planilha confirmou o agendamento ("success").
+// Resposta vazia, página de erro (HTML) ou código desconhecido NUNCA contam como sucesso.
 function mensagemDeRecusa(resultado) {
   const codigo = resultado && resultado.result;
+  if (codigo === "success") return null;
   const ligar = " Se preferir, ligue para " + TELEFONE_CENTRAL + ".";
 
   if (codigo === "conflict") {
@@ -27,7 +29,7 @@ function mensagemDeRecusa(resultado) {
   if (codigo === "busy" || codigo === "error" || codigo === "invalid_action" || codigo === "unauthorized") {
     return { titulo: "Sistema ocupado", mensagem: "Não conseguimos registrar seu agendamento agora. Toque em Confirmar novamente em instantes." + ligar };
   }
-  return null;
+  return { titulo: "Não conseguimos confirmar", mensagem: "Não recebemos a confirmação do seu agendamento. Toque em Confirmar novamente em instantes; se já tiver agendado, você verá um aviso." + ligar };
 }
 
 function exibirErroFormulario(titulo, msg, campoId) {
@@ -43,6 +45,7 @@ function exibirErroFormulario(titulo, msg, campoId) {
 
 window.finalizarAgendamento = async function(event) {
   event.preventDefault();
+  if (document.getElementById('btnConfirmar').disabled) return;
   document.getElementById('alertaConflito').classList.add('hidden');
   ['inputNome', 'inputTelefone', 'inputPlaca'].forEach(function(id) { document.getElementById(id).removeAttribute('aria-invalid'); });
   
@@ -95,40 +98,38 @@ window.finalizarAgendamento = async function(event) {
     btn.innerText = "Confirmar Agendamento";
   };
 
-  try {
-    // A planilha pode levar alguns segundos quando há vários envios ao mesmo tempo.
-    const response = await fetchComTimeout(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    }, 25000);
-
-    const textoResp = await response.text();
-    let resultado = null;
-    try { resultado = JSON.parse(textoResp); } catch (e) {}
-
-    const recusa = resultado ? mensagemDeRecusa(resultado) : null;
-    if (recusa) {
-      liberarBotao();
-      exibirErroFormulario(recusa.titulo, recusa.mensagem, recusa.campoId);
-      if (recusa.atualizarHorarios) dispararBuscaDeHorariosNaNuvem(true, true);
-      return;
-    }
-  } catch (err) {
-    // Sem resposta (internet instável): reenvia uma vez sem esperar retorno.
-    // A planilha recusa horário duplicado, então o reenvio não ocupa a vaga duas vezes.
+  // Até 2 tentativas, sempre lendo a resposta. Se a 1ª não responder (internet instável), a 2ª é seguro:
+  // a planilha recusa placa/horário repetidos, então o reenvio não grava duas vezes.
+  let resultado = null;
+  let respondeu = false;
+  const tempos = [25000, 15000];
+  for (let i = 0; i < tempos.length && !respondeu; i++) {
     try {
-      await fetch(url, {
+      const response = await fetchComTimeout(url, {
         method: 'POST',
-        mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
-      });
-    } catch (e2) {
-      liberarBotao();
-      exibirErroFormulario("Sem conexão", "Não conseguimos enviar seu agendamento. Verifique sua internet e toque em Confirmar novamente, ou ligue para " + TELEFONE_CENTRAL + ".");
-      return;
+      }, tempos[i]);
+      const textoResp = await response.text();
+      try { resultado = JSON.parse(textoResp); } catch (e) { resultado = null; }
+      respondeu = true;
+    } catch (err) {
+      // sem resposta: tenta de novo
     }
+  }
+
+  if (!respondeu) {
+    liberarBotao();
+    exibirErroFormulario("Sem conexão", "Não conseguimos enviar seu agendamento. Verifique sua internet e toque em Confirmar novamente, ou ligue para " + TELEFONE_CENTRAL + ".");
+    return;
+  }
+
+  const recusa = mensagemDeRecusa(resultado);
+  if (recusa) {
+    liberarBotao();
+    exibirErroFormulario(recusa.titulo, recusa.mensagem, recusa.campoId);
+    if (recusa.atualizarHorarios) dispararBuscaDeHorariosNaNuvem(true, true);
+    return;
   }
 
   if (!payload.isTecnicoExterno) {

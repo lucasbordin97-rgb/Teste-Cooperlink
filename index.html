@@ -7,13 +7,12 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Central de Agendamento Técnico | Cooperlink Brasil</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-  <script src="js/tailwind-config.js"></script>
   <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/tailwind.css">
 </head>
 
 <body class="cooperlink-bg font-sans antialiased min-h-screen flex flex-col justify-between">
@@ -333,7 +332,7 @@
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
               <label for="inputCEP" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Informe o seu CEP</label>
               <div class="flex flex-col gap-3">
-                <input name="cep" autocomplete="postal-code" inputmode="numeric" spellcheck="false" type="tel" id="inputCEP" placeholder="Ex: 13010-140" maxlength="9" oninput="window.mascaraCEP(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();window.buscarEAnalisarCEP();}" class="w-full p-3.5 border-2 border-slate-200 bg-white rounded-xl font-mono text-base font-bold text-center tracking-widest focus:border-brand-blue focus:ring-0 outline-none transition-colors">
+                <input name="cep" autocomplete="postal-code" inputmode="numeric" spellcheck="false" type="tel" id="inputCEP" placeholder="Ex: 13010-140" maxlength="20" oninput="window.mascaraCEP(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();window.buscarEAnalisarCEP();}" class="w-full p-3.5 border-2 border-slate-200 bg-white rounded-xl font-mono text-base font-bold text-center tracking-widest focus:border-brand-blue focus:ring-0 outline-none transition-colors">
                 <button type="button" onclick="window.buscarEAnalisarCEP()" id="btnBuscarCep" class="w-full bg-brand-blue hover:bg-brand-light text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md cursor-pointer">
                   <svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                   Verificar Disponibilidade
@@ -394,7 +393,7 @@
                   </div>
                   <div>
                     <label for="interesseTelefone" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
-                    <input type="tel" id="interesseTelefone" inputmode="tel" maxlength="15" placeholder="(19) 99999-9999" oninput="window.mascaraTelefone(this)" autocomplete="tel" aria-required="true" aria-describedby="interesseErro" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-white">
+                    <input type="tel" id="interesseTelefone" inputmode="tel" maxlength="24" placeholder="(19) 99999-9999" oninput="window.mascaraTelefone(this)" autocomplete="tel" aria-required="true" aria-describedby="interesseErro" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-white">
                   </div>
                   <label for="interesseConsentimento" class="flex items-center gap-3 bg-white border-2 border-slate-200 rounded-xl p-3 min-h-[48px] cursor-pointer text-sm text-slate-700 font-medium has-[:checked]:border-brand-blue transition-colors">
                     <input type="checkbox" id="interesseConsentimento" class="w-5 h-5 shrink-0 accent-brand-orange cursor-pointer">
@@ -501,12 +500,12 @@
 
               <div>
                 <label for="inputTelefone" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">WhatsApp (com DDD)</label>
-                <input name="telefone" autocomplete="tel" inputmode="tel" spellcheck="false" type="tel" id="inputTelefone" required placeholder="(19) 99999-9999" maxlength="15" oninput="window.mascaraTelefone(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+                <input name="telefone" autocomplete="tel" inputmode="tel" spellcheck="false" type="tel" id="inputTelefone" required placeholder="(19) 99999-9999" maxlength="24" oninput="window.mascaraTelefone(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
               </div>
 
               <div>
                 <label for="inputPlaca" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Placa do Veículo (Padrão ou Mercosul)</label>
-                <input name="placa" autocomplete="off" autocapitalize="characters" spellcheck="false" type="text" id="inputPlaca" required placeholder="ABC1D23" maxlength="7" oninput="window.formatarPlaca(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-extrabold text-slate-800 uppercase focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white text-center tracking-widest text-lg">
+                <input name="placa" autocomplete="off" autocapitalize="characters" spellcheck="false" type="text" id="inputPlaca" required placeholder="ABC1D23" maxlength="16" oninput="window.formatarPlaca(this)" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-extrabold text-slate-800 uppercase focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white text-center tracking-widest text-lg">
               </div>
 
               <button type="submit" id="btnConfirmar" class="w-full bg-gradient-to-r from-brand-orange to-brand-darkorange hover:opacity-95 text-white font-display font-extrabold text-base py-4 rounded-xl shadow-lg shadow-brand-orange/30 transition-[transform,box-shadow,border-color,background-color,color,opacity] transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-2 cursor-pointer">

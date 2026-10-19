@@ -64,20 +64,22 @@ function atualizarResumoExtraStep4() {
 }
 
 window.mascaraCEP = function(input) {
-  let v = input.value.replace(/\D/g, "");
+  let v = input.value.replace(/\D/g, "").slice(0, 8);
   v = v.replace(/^(\d{5})(\d)/, "$1-$2");
   input.value = v;
 };
 
 window.mascaraTelefone = function(input) {
   let v = input.value.replace(/\D/g, "");
+  if (v.length > 11 && v.startsWith("55")) v = v.slice(2);
+  v = v.slice(0, 11);
   v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
   v = v.replace(/(\d)(\d{4})$/, "$1-$2");
   input.value = v;
 };
 
 window.formatarPlaca = function(input) {
-  input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
 };
 
 window.selecionarServico = function(servico) {

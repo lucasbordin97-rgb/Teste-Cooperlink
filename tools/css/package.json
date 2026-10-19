@@ -1,0 +1,11 @@
+{
+  "name": "cooperlink-css",
+  "private": true,
+  "description": "Gera css/tailwind.css (compilado uma vez, em vez do Tailwind pelo CDN). Rode: npm install && npm run build",
+  "scripts": {
+    "build": "tailwindcss -c tailwind.config.js -i entrada.css -o ../../css/tailwind.css --minify"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

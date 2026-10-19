@@ -61,7 +61,7 @@ async function irAteFormulario(page, horario) {
   await page.fill('#inputPlaca', 'abc1d23');
 }
 const visivel = (page, id) => page.evaluate(i => !document.getElementById(i).classList.contains('hidden'), id);
-const msgErro = page => page.evaluate(() => document.getElementById('alertaConflito').classList.contains('hidden') ? null : document.getElementById('tituloErroForm').innerText + ' | ' + document.getElementById('msgErroForm').innerText);
+const msgErro = page => page.evaluate(() => document.getElementById('alertaConflito').classList.contains('hidden') ? null : document.getElementById('tituloErroForm').textContent + ' | ' + document.getElementById('msgErroForm').textContent);
 
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium', args: ['--no-sandbox'] });
