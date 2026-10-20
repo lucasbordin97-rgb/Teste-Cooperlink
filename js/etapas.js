@@ -82,7 +82,9 @@ window.formatarPlaca = function(input) {
   input.value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
 };
 
+// Por enquanto só existe agendamento de instalação (o Apps Script também recusa os outros serviços).
 window.selecionarServico = function(servico) {
+  if (servico !== "Instalação") return;
   estadoAgendamento.servico = servico;
   window.voltarPara(2);
 };
