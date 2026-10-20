@@ -180,12 +180,11 @@ function esconderCaixasCobertura() {
 function montarListaPostos(itens, cidade) {
   document.getElementById('listaPostosSP').innerHTML = itens.map(function(p, i) {
       const posto = POSTOS[p.id];
-      const rotulo = posto.curto + ', ' + posto.local + (p.minutos ? ', cerca de ' + p.minutos + ' minutos de carro' : ', atende a sua cidade');
-      const chip = p.minutos ? 'cerca de ' + p.minutos + ' min de carro' : 'atende ' + escaparHtml(cidade || posto.local);
+      const rotulo = posto.curto + ', ' + posto.local + (p.minutos ? '' : ', atende a sua cidade');
+      const atende = p.minutos ? '' : '<span class="text-xs font-bold text-slate-600">atende ' + escaparHtml(cidade || posto.local) + '</span>';
       const selo = (i === 0 && p.minutos) ? '<span class="text-[11px] font-extrabold tracking-wider uppercase text-white bg-brand-orange px-2 py-0.5 rounded-full">Mais próximo</span>' : '';
-      return '<button type="button" data-arg="' + p.id + '" aria-label="Escolher ' + rotulo + '" data-click="escolherPostoSP" class="block w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-[transform,box-shadow,border-color,background-color,color,opacity] hover:bg-blue-50 hover:shadow-md cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2">' +
-        '<div class="trajeto" aria-hidden="true"><span class="text-xs font-bold text-slate-600">Você</span><span class="trajeto-ponto"></span><span class="trajeto-linha"></span><span class="trajeto-chip">' + chip + '</span><span class="trajeto-linha"></span><span class="trajeto-fim"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2"/></svg></span></div>' +
-        '<div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-3.5">' + selo + '<span class="text-[11px] font-extrabold tracking-wider text-[#b8440f] uppercase">Unidade Credenciada</span></div>' +
+      return '<button type="button" data-arg="' + p.id + '"' + (p.minutos ? ' data-minutos="' + p.minutos + '"' : '') + ' aria-label="Escolher ' + rotulo + '" data-click="escolherPostoSP" class="block w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-[transform,box-shadow,border-color,background-color,color,opacity] hover:bg-blue-50 hover:shadow-md cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2">' +
+        '<div class="flex flex-wrap items-center gap-x-2 gap-y-1">' + selo + '<span class="text-[11px] font-extrabold tracking-wider text-[#b8440f] uppercase">Unidade Credenciada</span>' + atende + '</div>' +
         '<h3 class="font-display font-extrabold text-brand-blue text-lg leading-snug mt-1">' + posto.curto + ' — ' + posto.local + '</h3>' +
         '<p class="text-sm text-slate-600 font-medium mt-0.5 leading-relaxed">' + posto.endereco + '</p>' +
         '<div class="mt-3 inline-flex items-center gap-1.5 text-sm font-extrabold text-brand-orange group-hover:translate-x-1 transition-transform">Escolher Data e Horário →</div></button>';
