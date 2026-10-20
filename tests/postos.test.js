@@ -14,7 +14,7 @@ let falhas = 0;
 const t = (n, c, x) => { console.log((c ? 'OK   ' : 'FALHA') + ' ' + n + (c ? '' : ' -> ' + JSON.stringify(x))); if (!c) falhas++; };
 
 const ler = f => fs.readFileSync(path.join(raiz, f), 'utf8');
-const CONFIG_NOVO = "const POSTOS_OUTROS = {\n  zz: { nome: \"Posto Teste Curitiba - Rua X, 100, Centro, Curitiba/PR (CEP 80000-000)\", curto: \"Posto Teste\", local: \"Curitiba\", endereco: \"Rua X, 100 • Centro, Curitiba/PR\", uf: \"PR\", cidades: [\"curitiba\", \"sao jose dos pinhais\"] },\n";
+const CONFIG_NOVO = "const POSTOS_OUTROS = {\n  zz: { nome: \"Posto Teste Londrina - Rua X, 100, Centro, Londrina/PR (CEP 80000-000)\", curto: \"Posto Teste\", local: \"Londrina\", endereco: \"Rua X, 100 • Centro, Londrina/PR\", uf: \"PR\", cidades: [\"londrina\", \"sao jose dos pinhais\"] },\n";
 function carregarSite(configExtra) {
   const cfg = configExtra ? ler('js/config.js').replace("const POSTOS_OUTROS = {\n", configExtra) : ler('js/config.js');
   const ctx = vm.createContext({});
@@ -78,19 +78,19 @@ const vis = (page, id) => page.evaluate(i => !document.getElementById(i).classLi
 
 (async () => {
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium', args: ['--no-sandbox'] });
-  const CURITIBA = { cep: '80010-000', logradouro: 'Rua Teste', bairro: 'Centro', localidade: 'Curitiba', uf: 'PR' };
+  const LONDRINA = { cep: '86010-000', logradouro: 'Rua Teste', bairro: 'Centro', localidade: 'Londrina', uf: 'PR' };
 
-  // sem posto cadastrado: Curitiba continua "ainda não atendemos"
-  let r = await novaPagina(browser, null, CURITIBA);
-  await consultar(r.page, '80010-000');
-  t('sem posto cadastrado: Curitiba/PR segue como "ainda não atendemos" (nada mudou)', (await vis(r.page, 'boxForaCobertura')) && !(await vis(r.page, 'boxPostosSP')));
+  // sem posto cadastrado: Londrina continua "ainda não atendemos"
+  let r = await novaPagina(browser, null, LONDRINA);
+  await consultar(r.page, '86010-000');
+  t('sem posto cadastrado: Londrina/PR segue como "ainda não atendemos" (nada mudou)', (await vis(r.page, 'boxForaCobertura')) && !(await vis(r.page, 'boxPostosSP')));
   await r.ctx.close();
 
   // com posto cadastrado
-  r = await novaPagina(browser, CONFIG_NOVO, CURITIBA);
-  await consultar(r.page, '80010-000');
+  r = await novaPagina(browser, CONFIG_NOVO, LONDRINA);
+  await consultar(r.page, '86010-000');
   const cartoes = await r.page.$$eval('#listaPostosSP button', bs => bs.map(b => ({ id: b.dataset.arg, texto: b.textContent.replace(/\s+/g, ' ') })));
-  t('posto cadastrado em Curitiba/PR aparece para CEP de Curitiba', cartoes.length === 1 && cartoes[0].id === 'zz' && /Posto Teste/.test(cartoes[0].texto) && /atende Curitiba/.test(cartoes[0].texto) && !/Mais próximo|min de carro/.test(cartoes[0].texto), cartoes);
+  t('posto cadastrado em Londrina/PR aparece para CEP de Londrina', cartoes.length === 1 && cartoes[0].id === 'zz' && /Posto Teste/.test(cartoes[0].texto) && /atende Londrina/.test(cartoes[0].texto) && !/Mais próximo|min de carro/.test(cartoes[0].texto), cartoes);
   t('não mostra "fora da cobertura" nem técnico externo', !(await vis(r.page, 'boxForaCobertura')) && !(await vis(r.page, 'boxTecnicoExterno')));
   await r.page.click('#listaPostosSP button');
   await r.page.waitForFunction(() => !document.getElementById('containerHorarios').classList.contains('hidden'));
@@ -98,13 +98,13 @@ const vis = (page, id) => page.evaluate(i => !document.getElementById(i).classLi
   await r.page.fill('#inputNome', 'Maria da Silva'); await r.page.fill('#inputTelefone', '41999990001'); await r.page.fill('#inputPlaca', 'abc1d23');
   await r.page.evaluate(() => { document.getElementById('formAgendamento').requestSubmit(); });
   await r.page.waitForFunction(() => !document.getElementById('stepSucesso').classList.contains('hidden') || !document.getElementById('alertaConflito').classList.contains('hidden'));
-  t('o agendamento envia o nome completo do novo posto para a planilha', r.envios.length === 1 && r.envios[0].posto === 'Posto Teste Curitiba - Rua X, 100, Centro, Curitiba/PR (CEP 80000-000)', r.envios[0] && r.envios[0].posto);
+  t('o agendamento envia o nome completo do novo posto para a planilha', r.envios.length === 1 && r.envios[0].posto === 'Posto Teste Londrina - Rua X, 100, Centro, Londrina/PR (CEP 80000-000)', r.envios[0] && r.envios[0].posto);
   t('fluxo do posto novo sem erros de JavaScript', r.erros.length === 0, r.erros);
   await r.ctx.close();
 
   // outra cidade/UF não é afetada (mesmo nome de cidade em outro estado)
-  r = await novaPagina(browser, CONFIG_NOVO, Object.assign({}, CURITIBA, { uf: 'SC' }));
-  await consultar(r.page, '80010-000');
+  r = await novaPagina(browser, CONFIG_NOVO, Object.assign({}, LONDRINA, { uf: 'SC' }));
+  await consultar(r.page, '86010-000');
   t('mesma cidade em outra UF não usa o posto (confere a UF)', (await vis(r.page, 'boxForaCobertura')) && !(await vis(r.page, 'boxPostosSP')));
   await r.ctx.close();
 

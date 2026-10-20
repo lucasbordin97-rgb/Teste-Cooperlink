@@ -57,6 +57,7 @@ Postos da Grande SP entram pela tabela de tempo de carro (`tools/gerar_cobertura
 
 1. **Gere os trechos:** `python3 tools/novo_posto.py --id cu --nome "Nome do Posto" --rua "Rua X, 100" --bairro Centro --cidade Curitiba --uf PR --cep 80000-000 --cidades "curitiba, sao jose dos pinhais"` (opcional: `--feriados "03-29=Aniversário de Curitiba"`). O script só imprime os trechos, não altera nada.
 2. **Site:** cole o trecho 1 dentro de `POSTOS_OUTROS` em `js/config.js` (e os feriados da cidade em `FERIADOS_MUNICIPAIS`, em `js/feriados.js`).
+   Feriados **estaduais** ficam em `FERIADOS_ESTADUAIS` (por UF, lida do nome do posto), no site e no Apps Script. Estado novo: confira o feriado em fonte oficial antes de cadastrar.
 3. **Apps Script:** cole o nome no fim de `POSTOS_SP` e o id no fim de `IDS_POSTOS_SP` (mesma ordem do site), os feriados em `FERIADOS_MUNICIPAIS`, salve e faça Implantar > Nova versão.
 4. **Teste:** `node tests/postos.test.js index.html caminho/do/apps-script.gs` confere se site e Apps Script têm os mesmos postos e o mesmo texto, e simula um posto novo de ponta a ponta.
 5. **Antes de subir**, rode todas as suítes e teste um agendamento no posto novo numa cópia da planilha.
