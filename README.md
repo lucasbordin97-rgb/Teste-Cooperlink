@@ -38,14 +38,30 @@ Para a Grande SP, o site pode escolher o posto pelo **tempo de carro** até ele 
 - `tools/gerar_cobertura.py` gera essa tabela a partir do CNEFE 2022 do IBGE (um ponto por CEP) e de um servidor OSRM local. Rode de novo se mudar a lista de postos (`POSTOS_SP` em `config.js`) ou o limite.
 - Campinas e Hortolândia seguem na Henricar pela regra antiga e não passam pela tabela.
 - O pedido de contato usa a ação `interesse` do Apps Script (grava na aba "Interesse"). O código da ação não fica aqui.
+- Campinas e Hortolândia: o associado responde se consegue ir ao posto Henricar. Se não, escreve o motivo e segue para o técnico (o motivo vai na coluna M da planilha). As cidades do entorno de Campinas (lista `CIDADES_TECNICO_CAMPINAS` em `js/config.js`) vão direto para o técnico.
 - Cada posto novo precisa do mesmo nome em `POSTOS_SP` e na lista de postos aceitos do Apps Script.
 
 ## Testes
 `node tests/site.test.js index.html` roda 30 verificações do site num navegador de teste, sem internet: fluxo de agendamento, mensagens de erro, técnico externo, janela de 60 dias, LGPD e violações da política de segurança (CSP).
 `node tests/acessibilidade.test.js index.html` roda 30 verificações de acessibilidade e acabamento: rótulos ligados aos campos, ícones decorativos, sem `transition: all`, atributos dos campos, carrossel (pausa, "reduzir movimento", arrastar, setas, `aria-hidden`), link de pular, barra de etapas e foco no campo com erro.
 `node tests/css.test.js` confere se `css/tailwind.css` está em dia com as classes usadas.
+`node tests/postos.test.js index.html caminho/do/apps-script.gs` confere o cadastro de postos (site x Apps Script) e simula um posto novo fora da Grande SP.
+`node tests/tecnico.test.js index.html` confere o prazo de 5 dias úteis do técnico parceiro, o entorno de Campinas (técnico direto) e a pergunta "consegue ir ao posto Henricar?" com o motivo.
 `node tests/feriados.test.js index.html caminho/do/apps-script-v3.2.gs` confere a regra de feriados (inclusive que site e Apps Script concordam em todos os dias de 2026 a 2028) e o comportamento na tela.
 `node tests/robustez.test.js index.html` roda cerca de 55 verificações de resistência: texto hostil, ViaCEP/tabela/Apps Script fora do ar, clique duplo, texto colado, fusos horários, telas de 320 a 1440 px e uso aleatório.
 `node tests/cobertura.test.js index.html` roda 20 verificações da cobertura por tempo de carro (posto perto, técnico externo, fora da cobertura com consentimento, placa já agendada, tabela fora do ar e chave desligada).
 Precisa do pacote `playwright` e do Chromium (use `CHROMIUM_PATH` se o caminho for outro).
 Os testes do Apps Script não estão aqui, porque o código do script não fica neste repositório público.
+
+## Como cadastrar um posto novo
+
+Postos da Grande SP entram pela tabela de tempo de carro (`tools/gerar_cobertura.py`). Postos em **outras cidades ou estados** entram pela lista `POSTOS_OUTROS` em `js/config.js` e atendem por **cidade** (o CEP é consultado no ViaCEP e comparado com a lista de cidades do posto). Em cada passo, o texto de `nome` precisa ser **igual** no site e no Apps Script.
+
+1. **Gere os trechos:** `python3 tools/novo_posto.py --id cu --nome "Nome do Posto" --rua "Rua X, 100" --bairro Centro --cidade Curitiba --uf PR --cep 80000-000 --cidades "curitiba, sao jose dos pinhais"` (opcional: `--feriados "03-29=Aniversário de Curitiba"`). O script só imprime os trechos, não altera nada.
+2. **Site:** cole o trecho 1 dentro de `POSTOS_OUTROS` em `js/config.js` (e os feriados da cidade em `FERIADOS_MUNICIPAIS`, em `js/feriados.js`).
+   Feriados **estaduais** ficam em `FERIADOS_ESTADUAIS` (por UF, lida do nome do posto), no site e no Apps Script. Estado novo: confira o feriado em fonte oficial antes de cadastrar.
+3. **Apps Script:** cole o nome no fim de `POSTOS_SP` e o id no fim de `IDS_POSTOS_SP` (mesma ordem do site), os feriados em `FERIADOS_MUNICIPAIS`, salve e faça Implantar > Nova versão.
+4. **Teste:** `node tests/postos.test.js index.html caminho/do/apps-script.gs` confere se site e Apps Script têm os mesmos postos e o mesmo texto, e simula um posto novo de ponta a ponta.
+5. **Antes de subir**, rode todas as suítes e teste um agendamento no posto novo numa cópia da planilha.
+
+Se um posto novo ficar perto de postos já cadastrados (mesma região), vale gerar a tabela de tempo de carro para a região, em vez de usar só a lista de cidades.

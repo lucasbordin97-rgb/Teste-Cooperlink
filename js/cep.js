@@ -68,6 +68,25 @@ window.buscarEAnalisarCEP = async function() {
     const cidadeNorm = normalizarTexto(data.localidade);
     const isRegiaoAtendida = (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");
 
+    const postosDaCidade = (isRegiaoAtendida || !USAR_TABELA_COBERTURA) ? [] : Object.keys(POSTOS_OUTROS).filter(function(id) {
+      const posto = POSTOS_OUTROS[id];
+      return normalizarTexto(posto.uf) === normalizarTexto(data.uf) && posto.cidades.map(normalizarTexto).indexOf(cidadeNorm) !== -1;
+    });
+    if (postosDaCidade.length > 0) {
+      estadoAgendamento.isTecnicoExterno = false;
+      feedback.innerHTML = '<span class="text-emerald-600 font-semibold">Atendimento liberado em unidade credenciada na sua região:</span>';
+      montarListaPostos(postosDaCidade.map(function(id) { return { id: id }; }), data.localidade);
+      return;
+    }
+
+    // Entorno de Campinas (técnico Claudemir): vai direto para o técnico parceiro.
+    if (!isRegiaoAtendida && normalizarTexto(data.uf) === "sp" && CIDADES_TECNICO_CAMPINAS.indexOf(cidadeNorm) !== -1) {
+      estadoAgendamento.isTecnicoExterno = true;
+      feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + escaparHtml(sanitizarInput(data.localidade)) + '/' + escaparHtml(sanitizarInput(data.uf)) + ') é atendida via Técnico Parceiro:</span>';
+      boxTecnico.classList.remove('hidden');
+      return;
+    }
+
     if (!isRegiaoAtendida && USAR_TABELA_COBERTURA) {
       const cobertura = await consultarCoberturaSegura(rawCep);
       if (cobertura) {
@@ -105,6 +124,7 @@ window.encaminharParaTecnicoParceiro = function() {
 window.confirmarPostoParceiro = function(nomePosto, rotulo) {
   estadoAgendamento.posto = { nome: nomePosto };
   estadoAgendamento.isTecnicoExterno = false;
+  estadoAgendamento.motivoSemPosto = "";
   document.getElementById('resumoModalidade').innerText = rotulo || "Unidade Credenciada Henricar (Campinas)";
   
   const hoje = obterDataHojeBrasil();
@@ -120,13 +140,56 @@ window.confirmarPostoParceiro = function(nomePosto, rotulo) {
   dispararBuscaDeHorariosNaNuvem(false, true);
 };
 
+// Campinas/Hortolândia: o associado que não consegue ir ao posto explica o motivo e segue para o técnico.
+window.abrirMotivoSemPosto = function() {
+  document.getElementById('boxMotivoNaoVai').classList.remove('hidden');
+  document.getElementById('inputMotivoSemPosto').focus();
+};
+
+window.confirmarTecnicoCampinas = function() {
+  const campo = document.getElementById('inputMotivoSemPosto');
+  const erro = document.getElementById('erroMotivoSemPosto');
+  const motivo = sanitizarInput(campo.value).replace(/\s+/g, ' ').trim();
+  if (motivo.length < 5) {
+    erro.innerText = "Conte em poucas palavras por que não consegue ir até o posto.";
+    erro.classList.remove('hidden');
+    campo.setAttribute('aria-invalid', 'true');
+    campo.focus();
+    return;
+  }
+  campo.removeAttribute('aria-invalid');
+  erro.classList.add('hidden');
+  window.encaminharParaTecnicoParceiro();
+  estadoAgendamento.motivoSemPosto = motivo.slice(0, 300);
+};
+
 // ---- Cobertura por tempo de carro (só com USAR_TABELA_COBERTURA ligado) ----
 function esconderCaixasCobertura() {
+  document.getElementById('boxMotivoNaoVai').classList.add('hidden');
+  document.getElementById('erroMotivoSemPosto').classList.add('hidden');
+  document.getElementById('inputMotivoSemPosto').value = "";
+  estadoAgendamento.motivoSemPosto = "";
   document.getElementById('boxPostosSP').classList.add('hidden');
   document.getElementById('boxForaCobertura').classList.add('hidden');
   document.getElementById('formInteresse').classList.remove('hidden');
   document.getElementById('interesseSucesso').classList.add('hidden');
   document.getElementById('interesseErro').classList.add('hidden');
+}
+
+// Monta a lista de postos. Cada item: { id, minutos }. Sem minutos = posto que atende a cidade inteira.
+function montarListaPostos(itens, cidade) {
+  document.getElementById('listaPostosSP').innerHTML = itens.map(function(p, i) {
+      const posto = POSTOS[p.id];
+      const rotulo = posto.curto + ', ' + posto.local + (p.minutos ? '' : ', atende a sua cidade');
+      const atende = p.minutos ? '' : '<span class="text-xs font-bold text-slate-600">atende ' + escaparHtml(cidade || posto.local) + '</span>';
+      const selo = (i === 0 && p.minutos) ? '<span class="text-[11px] font-extrabold tracking-wider uppercase text-white bg-brand-orange px-2 py-0.5 rounded-full">Mais próximo</span>' : '';
+      return '<button type="button" data-arg="' + p.id + '"' + (p.minutos ? ' data-minutos="' + p.minutos + '"' : '') + ' aria-label="Escolher ' + rotulo + '" data-click="escolherPostoSP" class="block w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-[transform,box-shadow,border-color,background-color,color,opacity] hover:bg-blue-50 hover:shadow-md cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2">' +
+        '<div class="flex flex-wrap items-center gap-x-2 gap-y-1">' + selo + '<span class="text-[11px] font-extrabold tracking-wider text-[#b8440f] uppercase">Unidade Credenciada</span>' + atende + '</div>' +
+        '<h3 class="font-display font-extrabold text-brand-blue text-lg leading-snug mt-1">' + posto.curto + ' — ' + posto.local + '</h3>' +
+        '<p class="text-sm text-slate-600 font-medium mt-0.5 leading-relaxed">' + posto.endereco + '</p>' +
+        '<div class="mt-3 inline-flex items-center gap-1.5 text-sm font-extrabold text-brand-orange group-hover:translate-x-1 transition-transform">Escolher Data e Horário →</div></button>';
+  }).join('');
+  document.getElementById('boxPostosSP').classList.remove('hidden');
 }
 
 function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
@@ -135,17 +198,7 @@ function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
   if (cobertura.postos.length > 0) {
     estadoAgendamento.isTecnicoExterno = false;
     feedback.innerHTML = '<span class="text-emerald-600 font-semibold">Atendimento liberado em unidade credenciada perto de você:</span>';
-    document.getElementById('listaPostosSP').innerHTML = cobertura.postos.map(function(p, i) {
-      const posto = POSTOS_SP[p.id];
-      const rotulo = posto.curto + ', ' + posto.local;
-      const selo = i === 0 ? '<span class="text-[11px] font-extrabold tracking-wider uppercase text-white bg-brand-orange px-2 py-0.5 rounded-full">Mais próximo</span>' : '';
-      return '<button type="button" data-arg="' + p.id + '" data-minutos="' + p.minutos + '" aria-label="Escolher ' + rotulo + '" data-click="escolherPostoSP" class="block w-full bg-blue-50/60 border-2 border-brand-blue p-4 rounded-2xl text-left transition-[transform,box-shadow,border-color,background-color,color,opacity] hover:bg-blue-50 hover:shadow-md cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2">' +
-        '<div class="flex flex-wrap items-center gap-x-2 gap-y-1">' + selo + '<span class="text-[11px] font-extrabold tracking-wider text-[#b8440f] uppercase">Unidade Credenciada</span></div>' +
-        '<h3 class="font-display font-extrabold text-brand-blue text-lg leading-snug mt-1">' + posto.curto + ' — ' + posto.local + '</h3>' +
-        '<p class="text-sm text-slate-600 font-medium mt-0.5 leading-relaxed">' + posto.endereco + '</p>' +
-        '<div class="mt-3 inline-flex items-center gap-1.5 text-sm font-extrabold text-brand-orange group-hover:translate-x-1 transition-transform">Escolher Data e Horário →</div></button>';
-    }).join('');
-    document.getElementById('boxPostosSP').classList.remove('hidden');
+    montarListaPostos(cobertura.postos);
     return;
   }
 
@@ -164,7 +217,7 @@ function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
 }
 
 window.escolherPostoSP = function(id) {
-  const posto = POSTOS_SP[id];
+  const posto = POSTOS[id];
   if (!posto) return;
   window.confirmarPostoParceiro(posto.nome, "Unidade Credenciada " + posto.curto + " (" + posto.local + ")");
 };

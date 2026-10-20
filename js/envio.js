@@ -83,6 +83,7 @@ window.finalizarAgendamento = async function(event) {
     servico: sanitizarInput(estadoAgendamento.servico),
     posto: estadoAgendamento.posto ? sanitizarInput(estadoAgendamento.posto.nome) : POSTO_HENRICAR.nome,
     isTecnicoExterno: Boolean(estadoAgendamento.isTecnicoExterno),
+    motivo: estadoAgendamento.isTecnicoExterno ? sanitizarInput(estadoAgendamento.motivoSemPosto || "") : "",
     cep: estadoAgendamento.cepFormatado,
     endereco: estadoAgendamento.enderecoFormatado,
     data: sanitizarInput(estadoAgendamento.data),
@@ -139,6 +140,9 @@ window.finalizarAgendamento = async function(event) {
   slotsOcupadosNaNuvem.push({ data: payload.data, horario: payload.horario, posto: payload.posto });
 
   document.getElementById('step4').classList.add('hidden');
+  document.getElementById('blocoWhatsAppSucesso').classList.toggle('hidden', Boolean(payload.isTecnicoExterno));
+  document.getElementById('blocoTecnicoSucesso').classList.toggle('hidden', !payload.isTecnicoExterno);
+  if (payload.isTecnicoExterno) document.getElementById('textoPrazoTecnico').innerText = textoPrazoTecnico(obterDataHojeBrasil());
   const stepSucesso = document.getElementById('stepSucesso');
   stepSucesso.classList.remove('hidden');
   setTimeout(function() { stepSucesso.classList.add('animate-fade-in'); }, 10);

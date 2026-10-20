@@ -33,18 +33,29 @@ ctxSite.FECHAMENTOS_AVULSOS.h7 = { '2026-12-24': 'Inventário' };
 t('fechamento avulso vale só para o posto indicado', site('2026-12-24', P('h7')) === 'Inventário' && !site('2026-12-24', P('la')));
 delete ctxSite.FECHAMENTOS_AVULSOS.h7;
 
-// ---------- 2) Mesma regra no Apps Script v3.2 ----------
+// Feriados ESTADUAIS por UF: 09/07 só em SP; 24/06 e 02/07 só na BA; PR, SC, MG e MT sem feriado estadual em dia útil.
+const nomeDe = id => ctxSite.POSTOS[id].nome;
+const idsFora = Object.keys(ctxSite.POSTOS_OUTROS);
+const daUF = uf => idsFora.filter(id => ctxSite.POSTOS_OUTROS[id].uf === uf).map(nomeDe);
+t('os postos novos cobrem SP, PR, SC, MG, MT e BA', ['SP', 'PR', 'SC', 'MG', 'MT', 'BA'].every(uf => daUF(uf).length > 0), ['SP', 'PR', 'SC', 'MG', 'MT', 'BA'].map(uf => uf + ':' + daUF(uf).length));
+t('9 de julho (Revolução Constitucionalista) vale em SP, inclusive nos postos novos do interior', !!site('2026-07-09', HENR) && daUF('SP').every(n => !!site('2026-07-09', n)));
+t('9 de julho NÃO vale fora de SP (PR, SC, MG, MT, BA)', ['PR', 'SC', 'MG', 'MT', 'BA'].every(uf => daUF(uf).every(n => !site('2026-07-09', n))));
+t('Bahia: 24/06 e 02/07 são feriado só nos postos da BA', daUF('BA').every(n => !!site('2026-06-24', n) && !!site('2026-07-02', n)) && !site('2026-06-24', HENR) && !site('2026-07-02', HENR) && daUF('PR').every(n => !site('2026-07-02', n)));
+t('UF lida do nome do posto', ctxSite.ufDoPosto(HENR) === 'SP' && daUF('BA').every(n => ctxSite.ufDoPosto(n) === 'BA') && daUF('MT').every(n => ctxSite.ufDoPosto(n) === 'MT') && ctxSite.ufDoPosto(undefined) === 'SP');
+t('feriados nacionais continuam valendo nos postos de todos os estados', ['2026-11-02', '2026-11-20', '2026-12-25', '2026-09-07', '2027-01-01'].every(d => [HENR].concat(Object.keys(ctxSite.POSTOS).map(nomeDe)).every(n => !!site(d, n))));
+
+// ---------- 2) Mesma regra no Apps Script v3.3 ----------
 if (gsPath && fs.existsSync(gsPath)) {
   const ctxGs = vm.createContext({ Utilities: {}, SpreadsheetApp: {}, LockService: {}, CacheService: {}, ContentService: {}, Session: {}, Logger: {}, MailApp: {}, PropertiesService: {} });
   vm.runInContext(fs.readFileSync(gsPath, 'utf8'), ctxGs);
-  const todos = [HENR].concat(ids.map(P));
+  const todos = [HENR].concat(Object.keys(ctxSite.POSTOS).map(nomeDe));
   let dif = [], total = 0;
   for (const nome of todos) for (let ms = Date.UTC(2026, 0, 1); ms < Date.UTC(2029, 0, 1); ms += 86400000) {
     const d = new Date(ms).toISOString().slice(0, 10); total++;
     const a = site(d, nome), b = ctxGs.nomeDoFeriado(d, nome);
     if ((a || null) !== (b || null)) dif.push([d, nome.slice(0, 12), a, b]);
   }
-  t('Apps Script e site concordam em ' + total + ' combinações (11 postos x 2026-2028)', dif.length === 0, dif.slice(0, 3));
+  t('Apps Script e site concordam em ' + total + ' combinações (' + todos.length + ' postos x 2026-2028)', dif.length === 0, dif.slice(0, 3));
 } else console.log('PULADO: informe o caminho do apps-script-v3.2.gs (2º argumento) para conferir site x planilha.');
 
 // ---------- 3) Na tela ----------

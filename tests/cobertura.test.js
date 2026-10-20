@@ -18,7 +18,7 @@ const VIACEP = {
   '08391710': { logradouro: 'Rua Gabriel Garcia Marquez', bairro: 'Jd. Helena', localidade: 'São Paulo', uf: 'SP' },      // Stop System, perto
   '08840220': { logradouro: 'Estrada X', bairro: 'Y', localidade: 'Mogi das Cruzes', uf: 'SP' },                           // Grande SP, passa de 30 min
   '06650000': { logradouro: '', bairro: '', localidade: 'Itapevi', uf: 'SP' },                                              // Grande SP, CEP fora da base do IBGE
-  '13180000': { logradouro: 'Rua X', bairro: 'Y', localidade: 'Sumaré', uf: 'SP' },                                         // fora da cobertura
+  '14400000': { logradouro: 'Rua X', bairro: 'Y', localidade: 'Franca', uf: 'SP' },                                         // fora da cobertura
   '90010000': { logradouro: 'Rua X', bairro: 'Y', localidade: 'Porto Alegre', uf: 'RS' },                                   // fora da cobertura, sem arquivo de tabela
   '13010140': { logradouro: 'Av. Benjamin Constant', bairro: 'Centro', localidade: 'Campinas', uf: 'SP' }                  // Henricar, regra antiga
 };
@@ -133,9 +133,9 @@ const caixas = async page => ({
 
   // 4) Fora da cobertura: pedido de contato com consentimento
   ({ page, ctx, envios } = await novaPagina(browser));
-  await consultar(page, '13180-000');
+  await consultar(page, '14400-000');
   c = await caixas(page);
-  t('Sumaré (fora da cobertura): mostra o pedido de contato, não o técnico', c.fora && !c.tecnico && !c.postosSP, c);
+  t('Franca (fora da cobertura): mostra o pedido de contato, não o técnico', c.fora && !c.tecnico && !c.postosSP, c);
   await page.fill('#interesseNome', 'João Souza');
   await page.fill('#interesseTelefone', '19988887777');
   await page.evaluate(() => document.getElementById('formInteresse').requestSubmit());
@@ -144,7 +144,7 @@ const caixas = async page => ({
   await page.evaluate(() => document.getElementById('formInteresse').requestSubmit());
   await page.waitForFunction(() => !document.getElementById('interesseSucesso').classList.contains('hidden'));
   const e = envios[0] || {};
-  t('com consentimento: envia a ação "interesse" com CEP, cidade, UF e consentimento', envios.length === 1 && e.action === 'interesse' && e.cep === '13180-000' && e.cidade === 'Sumaré' && e.uf === 'SP' && e.consentimento === true && e.nome === 'João Souza', envios);
+  t('com consentimento: envia a ação "interesse" com CEP, cidade, UF e consentimento', envios.length === 1 && e.action === 'interesse' && e.cep === '14400-000' && e.cidade === 'Franca' && e.uf === 'SP' && e.consentimento === true && e.nome === 'João Souza', envios);
   t('mostra a confirmação e esconde o formulário', await visivel(page, 'interesseSucesso') && !(await visivel(page, 'formInteresse')));
   await ctx.close();
 
