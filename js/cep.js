@@ -79,6 +79,14 @@ window.buscarEAnalisarCEP = async function() {
       return;
     }
 
+    // Entorno de Campinas (técnico Claudemir): vai direto para o técnico parceiro.
+    if (!isRegiaoAtendida && normalizarTexto(data.uf) === "sp" && CIDADES_TECNICO_CAMPINAS.indexOf(cidadeNorm) !== -1) {
+      estadoAgendamento.isTecnicoExterno = true;
+      feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + escaparHtml(sanitizarInput(data.localidade)) + '/' + escaparHtml(sanitizarInput(data.uf)) + ') é atendida via Técnico Parceiro:</span>';
+      boxTecnico.classList.remove('hidden');
+      return;
+    }
+
     if (!isRegiaoAtendida && USAR_TABELA_COBERTURA) {
       const cobertura = await consultarCoberturaSegura(rawCep);
       if (cobertura) {
@@ -116,6 +124,7 @@ window.encaminharParaTecnicoParceiro = function() {
 window.confirmarPostoParceiro = function(nomePosto, rotulo) {
   estadoAgendamento.posto = { nome: nomePosto };
   estadoAgendamento.isTecnicoExterno = false;
+  estadoAgendamento.motivoSemPosto = "";
   document.getElementById('resumoModalidade').innerText = rotulo || "Unidade Credenciada Henricar (Campinas)";
   
   const hoje = obterDataHojeBrasil();
@@ -131,8 +140,35 @@ window.confirmarPostoParceiro = function(nomePosto, rotulo) {
   dispararBuscaDeHorariosNaNuvem(false, true);
 };
 
+// Campinas/Hortolândia: o associado que não consegue ir ao posto explica o motivo e segue para o técnico.
+window.abrirMotivoSemPosto = function() {
+  document.getElementById('boxMotivoNaoVai').classList.remove('hidden');
+  document.getElementById('inputMotivoSemPosto').focus();
+};
+
+window.confirmarTecnicoCampinas = function() {
+  const campo = document.getElementById('inputMotivoSemPosto');
+  const erro = document.getElementById('erroMotivoSemPosto');
+  const motivo = sanitizarInput(campo.value).replace(/\s+/g, ' ').trim();
+  if (motivo.length < 5) {
+    erro.innerText = "Conte em poucas palavras por que não consegue ir até o posto.";
+    erro.classList.remove('hidden');
+    campo.setAttribute('aria-invalid', 'true');
+    campo.focus();
+    return;
+  }
+  campo.removeAttribute('aria-invalid');
+  erro.classList.add('hidden');
+  window.encaminharParaTecnicoParceiro();
+  estadoAgendamento.motivoSemPosto = motivo.slice(0, 300);
+};
+
 // ---- Cobertura por tempo de carro (só com USAR_TABELA_COBERTURA ligado) ----
 function esconderCaixasCobertura() {
+  document.getElementById('boxMotivoNaoVai').classList.add('hidden');
+  document.getElementById('erroMotivoSemPosto').classList.add('hidden');
+  document.getElementById('inputMotivoSemPosto').value = "";
+  estadoAgendamento.motivoSemPosto = "";
   document.getElementById('boxPostosSP').classList.add('hidden');
   document.getElementById('boxForaCobertura').classList.add('hidden');
   document.getElementById('formInteresse').classList.remove('hidden');

@@ -134,3 +134,41 @@ async function fetchComTimeout(url, options, timeoutMs) {
     throw err;
   }
 }
+
+// ---- Dias úteis: segunda a sexta, sem feriado nacional nem ponto facultativo (prazo do técnico parceiro) ----
+function msDeISO(iso) {
+  const p = iso.split('-').map(Number);
+  return Date.UTC(p[0], p[1] - 1, p[2]);
+}
+
+function ehDiaUtilGeral(iso) {
+  const dow = new Date(msDeISO(iso)).getUTCDay();
+  if (dow === 0 || dow === 6) return false;
+  return !(FERIADOS_FIXOS[iso.slice(5)] || feriadosMoveis(Number(iso.slice(0, 4)))[iso]);
+}
+
+// Primeiro dia útil DEPOIS da data informada.
+function proximoDiaUtil(iso) {
+  let ms = msDeISO(iso);
+  do { ms += 86400000; } while (!ehDiaUtilGeral(dataISOdeUTC(ms)));
+  return dataISOdeUTC(ms);
+}
+
+// Prazo do técnico: começa no primeiro dia útil depois de hoje e vai até o 5º dia útil (contando o primeiro).
+function prazoTecnico(hojeISO) {
+  const inicio = proximoDiaUtil(hojeISO);
+  let fim = inicio;
+  for (let i = 1; i < 5; i++) fim = proximoDiaUtil(fim);
+  return { inicio: inicio, fim: fim };
+}
+
+function rotuloDiaCurto(iso) {
+  const dias = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+  return dias[new Date(msDeISO(iso)).getUTCDay()] + ", " + iso.slice(8, 10) + "/" + iso.slice(5, 7);
+}
+
+function textoPrazoTecnico(hojeISO) {
+  const p = prazoTecnico(hojeISO);
+  return "Um técnico parceiro da Cooperlink entrará em contato com você em até 5 dias úteis (de " + rotuloDiaCurto(p.inicio) +
+    " a " + rotuloDiaCurto(p.fim) + ") para combinar a melhor data e horário.";
+}

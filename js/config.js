@@ -107,6 +107,12 @@ const POSTOS_OUTROS = {
 // Todos os postos com agenda própria (Grande SP + outros); a Henricar tem regra própria.
 const POSTOS = Object.assign({}, POSTOS_SP, POSTOS_OUTROS);
 
+// Cidades do entorno de Campinas atendidas pelo técnico parceiro Claudemir (sem posto próprio). Escreva sem acento e em
+// minúsculas, como o ViaCEP devolve; vale só para SP. Campinas e Hortolândia ficam de fora: lá vale a Henricar.
+const CIDADES_TECNICO_CAMPINAS = ["jaguariuna", "cosmopolis", "limeira", "atibaia", "sumare", "paulinia", "americana",
+  "artur nogueira", "arthur nogueira", "monte mor", "indaiatuba", "nova odessa", "santa barbara d'oeste", "santa barbara doeste",
+  "holambra", "valinhos", "vinhedo", "itatiba", "louveira", "amparo", "pedreira"];
+
 // Chave de segurança: com false o site usa só a regra antiga (Campinas/Hortolândia = Henricar, o resto = técnico).
 const USAR_TABELA_COBERTURA = true;
 // Até quantos minutos de carro um posto ainda atende; acima disso vai para técnico externo.
@@ -125,6 +131,7 @@ let estadoAgendamento = {
   cepFormatado: "",
   enderecoFormatado: "",
   isTecnicoExterno: false,
+  motivoSemPosto: "",
   data: "",
   horario: ""
 };

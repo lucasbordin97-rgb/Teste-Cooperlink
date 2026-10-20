@@ -15,7 +15,7 @@ const t = (n, c, x) => { console.log((c ? 'OK   ' : 'FALHA') + ' ' + n + (c ? ''
 
 const VIACEP = {
   '08391710': { logradouro: 'Rua Gabriel Garcia Marquez', bairro: 'Jd. Helena', localidade: 'São Paulo', uf: 'SP' },
-  '13180000': { logradouro: 'Rua X', bairro: 'Y', localidade: 'Sumaré', uf: 'SP' },
+  '14400000': { logradouro: 'Rua X', bairro: 'Y', localidade: 'Franca', uf: 'SP' },
   '13010140': { logradouro: 'Av. Benjamin Constant', bairro: 'Centro', localidade: 'Campinas', uf: 'SP' }
 };
 const OK = { json: { result: 'success' } };
@@ -108,7 +108,7 @@ const botaoBuscaLivre = page => page.evaluate(() => !document.getElementById('bt
   const hostil = { json: { localidade: '<img src=x onerror="window.__xss=1">', uf: 'SP' } };
   for (const flag of [true, false]) {
     r = await novaPagina(browser, { flag, viacep: () => hostil });
-    await consultar(r.page, '13180-000');
+    await consultar(r.page, '14400-000');
     const x = await r.page.evaluate(() => ({ xss: window.__xss, imgs: document.querySelectorAll('#cepFeedback img').length, texto: document.getElementById('cepFeedback').textContent }));
     t('cidade hostil do viaCEP (' + (flag ? 'regra nova' : 'regra antiga') + '): não executa código, não cria elemento e aparece só como texto', x.xss === undefined && x.imgs === 0 && !/[<>]/.test(x.texto) && /img src=x/.test(x.texto), x);
     t('cidade hostil: página sem erros de JavaScript', r.erros.length === 0, r.erros);
@@ -135,12 +135,12 @@ const botaoBuscaLivre = page => page.evaluate(() => !document.getElementById('bt
   ];
   for (const [nome, d] of cenarios) {
     r = await novaPagina(browser, { flag: false, viacep: () => d });
-    await consultar(r.page, '13180-000');
+    await consultar(r.page, '14400-000');
     t('viaCEP ' + nome + ': mostra "Oscilação na rede" e o botão volta a funcionar', /Oscilação na rede/.test(await msgFeedback(r.page)) && await botaoBuscaLivre(r.page) && r.erros.length === 0, { msg: await msgFeedback(r.page), erros: r.erros });
     await r.ctx.close();
   }
   r = await novaPagina(browser, { flag: false, viacep: () => ({ hang: true }) });
-  await consultar(r.page, '13180-000', false);
+  await consultar(r.page, '14400-000', false);
   await r.page.clock.fastForward(8000);
   await r.page.waitForFunction(() => document.getElementById('cepFeedback').textContent.trim() !== '');
   t('viaCEP que nunca responde: depois de 7 s mostra o aviso e libera o botão', /Oscilação na rede/.test(await msgFeedback(r.page)) && await botaoBuscaLivre(r.page));
@@ -152,7 +152,7 @@ const botaoBuscaLivre = page => page.evaluate(() => !document.getElementById('bt
   t('endereço enviado nesse caso não fica vazio', await r.page.evaluate(() => /^CEP 08391-710/.test(estadoAgendamento.enderecoFormatado)), await r.page.evaluate(() => estadoAgendamento.enderecoFormatado));
   await r.ctx.close();
   r = await novaPagina(browser, { viacep: () => ({ abort: true }) });
-  await consultar(r.page, '13180-000');
+  await consultar(r.page, '14400-000');
   t('viaCEP fora do ar + CEP que não está na tabela: aviso de rede (sem travar)', /Oscilação na rede/.test(await msgFeedback(r.page)) && await botaoBuscaLivre(r.page));
   await r.ctx.close();
 
@@ -201,7 +201,7 @@ const botaoBuscaLivre = page => page.evaluate(() => !document.getElementById('bt
   t('três envios no mesmo instante: só 1 vai para a planilha', r.envios.length === 1, r.envios.length);
   await r.ctx.close();
   r = await novaPagina(browser, { script: () => ({ html: true }) });
-  await consultar(r.page, '13180-000');
+  await consultar(r.page, '14400-000');
   await r.page.fill('#interesseNome', 'João Souza'); await r.page.fill('#interesseTelefone', '19988887777'); await r.page.check('#interesseConsentimento');
   await r.page.evaluate(() => { document.getElementById('formInteresse').requestSubmit(); });
   await r.page.waitForFunction(() => !document.getElementById('interesseErro').classList.contains('hidden') || !document.getElementById('interesseSucesso').classList.contains('hidden'));
@@ -275,7 +275,7 @@ const botaoBuscaLivre = page => page.evaluate(() => !document.getElementById('bt
     await r.page.evaluate(() => window.selecionarHorario('09:00')); rel.push(['formulário', await medir(r.page)]);
     await preencher(r.page); await enviar(r.page); await aguardarResultadoEnvio(r.page); rel.push(['sucesso', await medir(r.page)]);
     await r.page.evaluate(() => { window.reiniciarFluxo(); window.selecionarServico('Instalação'); });
-    await r.page.fill('#inputCEP', '13180-000'); await r.page.evaluate(() => { window.buscarEAnalisarCEP(); });
+    await r.page.fill('#inputCEP', '14400-000'); await r.page.evaluate(() => { window.buscarEAnalisarCEP(); });
     await r.page.waitForFunction(() => !document.getElementById('boxForaCobertura').classList.contains('hidden')); rel.push(['fora da cobertura', await medir(r.page)]);
     const ruins = rel.filter(([, m]) => m.sw > m.vw + 1 || m.fora.length);
     t('largura ' + w + ' px: nenhuma etapa estoura a tela nem cria rolagem lateral', ruins.length === 0, ruins.map(([n, m]) => n + ': ' + m.sw + '>' + m.vw + ' ' + m.fora.join(', ')));
@@ -284,13 +284,13 @@ const botaoBuscaLivre = page => page.evaluate(() => !document.getElementById('bt
 
   // ================= 8) o "macaco": cliques, digitação e teclas ao acaso =================
   const rng = seed => { let s = seed; return () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296; };
-  const textos = ['', 'a', 'Maria da Silva', '19999990001', '13010-140', '08391-710', '13180-000', '<script>window.__x=1</script>', 'x'.repeat(3000), '😀🚗', 'ABC1D23', "'; DROP TABLE--", '١٢٣٤', ' ', '‮abc', '=1+1', '99999-999', '00000000'];
+  const textos = ['', 'a', 'Maria da Silva', '19999990001', '13010-140', '08391-710', '14400-000', '<script>window.__x=1</script>', 'x'.repeat(3000), '😀🚗', 'ABC1D23', "'; DROP TABLE--", '١٢٣٤', ' ', '‮abc', '=1+1', '99999-999', '00000000'];
   const chaves = ['Tab', 'Shift+Tab', 'Enter', 'Escape', 'ArrowLeft', 'ArrowRight', 'Space'];
   for (const seed of [11, 202, 3033]) {
     const dado = rng(seed);
     const sorteio = lista => lista[Math.floor(dado() * lista.length)];
     r = await novaPagina(browser, {
-      viacep: c => { const q = dado(); return q < 0.15 ? { abort: true } : q < 0.25 ? { html: true } : { json: VIACEP[c] || (c.endsWith('0') ? { erro: true } : { localidade: sorteio(['Osasco', 'Santo André', 'Sumaré', 'Curitiba']), uf: 'SP', logradouro: 'Rua ' + sorteio(['A', 'B']) }) }; },
+      viacep: c => { const q = dado(); return q < 0.15 ? { abort: true } : q < 0.25 ? { html: true } : { json: VIACEP[c] || (c.endsWith('0') ? { erro: true } : { localidade: sorteio(['Osasco', 'Santo André', 'Franca', 'Curitiba']), uf: 'SP', logradouro: 'Rua ' + sorteio(['A', 'B']) }) }; },
       script: () => { const q = dado(); return q < 0.55 ? OK : q < 0.65 ? { json: { result: 'conflict' } } : q < 0.72 ? { json: { result: 'duplicate' } } : q < 0.8 ? { html: true } : q < 0.88 ? { abort: true } : q < 0.94 ? { json: { result: 'busy' } } : { json: { result: 'invalid', campo: sorteio(['nome', 'telefone', 'placa', 'data']) } }; }
     });
     await r.page.goto('http://site.local/');
