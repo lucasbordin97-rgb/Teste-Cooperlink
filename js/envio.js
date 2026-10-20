@@ -142,7 +142,12 @@ window.finalizarAgendamento = async function(event) {
   document.getElementById('step4').classList.add('hidden');
   document.getElementById('blocoWhatsAppSucesso').classList.toggle('hidden', Boolean(payload.isTecnicoExterno));
   document.getElementById('blocoTecnicoSucesso').classList.toggle('hidden', !payload.isTecnicoExterno);
-  if (payload.isTecnicoExterno) document.getElementById('textoPrazoTecnico').innerText = textoPrazoTecnico(obterDataHojeBrasil());
+  if (payload.isTecnicoExterno) {
+    // Com motivo informado (não consegue ir ao posto): o setor analisa antes, sem prometer técnico nem prazo.
+    document.getElementById('textoPrazoTecnico').innerText = payload.motivo
+      ? "Sua solicitação foi enviada ao nosso setor. Em breve entraremos em contato para confirmar o seu atendimento."
+      : textoPrazoTecnico(obterDataHojeBrasil());
+  }
   const stepSucesso = document.getElementById('stepSucesso');
   stepSucesso.classList.remove('hidden');
   setTimeout(function() { stepSucesso.classList.add('animate-fade-in'); }, 10);

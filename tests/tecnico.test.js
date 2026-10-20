@@ -112,7 +112,12 @@ const via = (cidade, uf, cep) => ({ cep: cep, logradouro: 'Rua Teste', bairro: '
   await r.page.fill('#inputMotivoSemPosto', '<b>Sem carro</b> até sexta');
   await r.page.click('[data-click="confirmarTecnicoCampinas"]');
   await r.page.waitForFunction(() => !document.getElementById('step4').classList.contains('hidden'));
+  const resumo = await r.page.evaluate(() => document.getElementById('resumoModalidade').innerText);
+  t('com motivo: o resumo NÃO diz que será técnico (o setor analisa antes)', /nosso setor/.test(resumo) && !/t[ée]cnico|externo/i.test(resumo), resumo);
+  t('com motivo: o botão não promete técnico', !/t[ée]cnico/i.test(await r.page.evaluate(() => document.querySelector('[data-click="confirmarTecnicoCampinas"]').innerText)));
   await preencherEEnviar(r.page);
+  const msgMotivo = await r.page.evaluate(() => document.getElementById('textoPrazoTecnico').innerText);
+  t('com motivo: a tela de sucesso diz que foi enviado ao setor e que entraremos em contato, sem falar de técnico nem de prazo', /enviada ao nosso setor/.test(msgMotivo) && /entraremos em contato para confirmar/.test(msgMotivo) && !/t[ée]cnico|dias [úu]teis/i.test(msgMotivo), msgMotivo);
   t('com motivo: envia técnico + motivo (sem < >)', r.envios.length === 1 && /^Agend\. Tecnico Parceiro - CEP: 13010-140$/.test(r.envios[0].posto) && !/[<>]/.test(r.envios[0].motivo) && /Sem carro/.test(r.envios[0].motivo) && r.envios[0].isTecnicoExterno === true, r.envios[0]);
   t('campinas sem posto: tela de sucesso é a do técnico', await r.page.evaluate(() => !document.getElementById('blocoTecnicoSucesso').classList.contains('hidden')));
   t('fluxo do motivo sem erros de JavaScript', r.erros.length === 0, r.erros);

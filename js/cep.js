@@ -161,6 +161,8 @@ window.confirmarTecnicoCampinas = function() {
   erro.classList.add('hidden');
   window.encaminharParaTecnicoParceiro();
   estadoAgendamento.motivoSemPosto = motivo.slice(0, 300);
+  // Quem informa um motivo NÃO é avisado de que vai ter técnico: o setor analisa antes de confirmar.
+  document.getElementById('resumoModalidade').innerText = "Solicitação enviada para análise do nosso setor";
 };
 
 // ---- Cobertura por tempo de carro (só com USAR_TABELA_COBERTURA ligado) ----

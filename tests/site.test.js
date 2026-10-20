@@ -49,6 +49,9 @@ async function novaPagina(browser, cfg) {
 
 async function irAteFormulario(page, horario) {
   await page.goto('http://site.local/');
+  t('só existe a opção Instalação (sem Manutenção nem Remoção)', await page.evaluate(() => { const b = Array.from(document.querySelectorAll('#step1 [data-click="selecionarServico"]')); return b.length === 1 && b[0].dataset.arg === 'Instalação' && !/Manuten|Remo/.test(document.getElementById('step1').innerText); }));
+  await page.evaluate(() => { window.selecionarServico('Manutenção'); });
+  t('serviço fora da lista é ignorado', await page.evaluate(() => estadoAgendamento.servico === ''));
   await page.evaluate(() => window.selecionarServico('Instalação'));
   await page.fill('#inputCEP', '13010-140');
   await page.evaluate(() => window.buscarEAnalisarCEP());
@@ -141,7 +144,7 @@ const msgErro = page => page.evaluate(() => document.getElementById('alertaConfl
   for (const [cep, rotulo] of [['13180-000', 'Sumaré'], ['01001-000', 'São Paulo']]) {
     r = await novaPagina(browser, {});
     await r.page.goto('http://site.local/');
-    await r.page.evaluate(() => window.selecionarServico('Manutenção'));
+    await r.page.evaluate(() => window.selecionarServico('Instalação'));
     await r.page.fill('#inputCEP', cep);
     await r.page.evaluate(() => window.buscarEAnalisarCEP());
     await r.page.waitForFunction(() => !document.getElementById('boxTecnicoExterno').classList.contains('hidden'));
