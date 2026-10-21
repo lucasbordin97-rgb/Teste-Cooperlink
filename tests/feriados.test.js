@@ -110,15 +110,22 @@ const livres = page => page.evaluate(() => Array.from(document.querySelectorAll(
   await page.waitForFunction(() => !document.getElementById('containerHorarios').classList.contains('hidden'));
   t('voltar para dia normal: aviso some e horários voltam', !(await visivel(page, 'avisoFeriado')) && (await livres(page)) > 0);
 
-  // feriado só de uma cidade: 08/12 é feriado em Mauá (st) e dia normal em outro posto
-  await page.fill('#dataAgendamento', '2026-12-08');
-  await page.dispatchEvent('#dataAgendamento', 'change');
-  t('Mauá: 08/12 bloqueado (aniversário da cidade)', (await visivel(page, 'avisoFeriado')) && /Mauá/.test(await page.textContent('#avisoFeriado')));
   t('página sem erros de JavaScript', erros.length === 0, erros);
   await ctx.close();
 
+  // feriado só de uma cidade: 08/12 é feriado em Mauá (st) e dia normal em outro posto.
+  // O site só agenda até 14 dias à frente, então o relógio fica em 01/12 para o dia 08/12 estar dentro da janela.
   ({ page, ctx, erros } = await novaPagina(browser));
-  await page.clock.setFixedTime(new Date('2026-10-30T22:00:00-03:00'));
+  await page.clock.setFixedTime(new Date('2026-12-01T10:00:00-03:00'));
+  await ateHorarios(page, 'st');
+  await page.fill('#dataAgendamento', '2026-12-08');
+  await page.dispatchEvent('#dataAgendamento', 'change');
+  t('Mauá: 08/12 bloqueado (aniversário da cidade)', (await visivel(page, 'avisoFeriado')) && /Mauá/.test(await page.textContent('#avisoFeriado')));
+  t('página sem erros de JavaScript (Mauá)', erros.length === 0, erros);
+  await ctx.close();
+
+  ({ page, ctx, erros } = await novaPagina(browser));
+  await page.clock.setFixedTime(new Date('2026-12-01T10:00:00-03:00'));
   await ateHorarios(page, 'ho');
   await page.fill('#dataAgendamento', '2026-12-08');
   await page.dispatchEvent('#dataAgendamento', 'change');
