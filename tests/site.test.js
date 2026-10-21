@@ -170,13 +170,13 @@ const msgErro = page => page.evaluate(() => document.getElementById('alertaConfl
   t('dados antigos: nome/telefone/placa apagados, data/horario mantidos', apos.db && !/Fulano|9999|AAA1A11/.test(apos.db) && /2026-10-19/.test(apos.db) && apos.url === null, apos);
   await r.ctx.close();
 
-  // 8) janela de 60 dias
+  // 8) janela de 14 dias (2 semanas)
   r = await novaPagina(browser, {});
   await irAteFormulario(r.page, '14:00');
   await r.page.evaluate(() => { document.getElementById('dataAgendamento').value = '2027-03-01'; window.aoMudarDataManual(); });
-  t('data alem de 60 dias mostra aviso', await visivel(r.page, 'avisoDataForaJanela') && !(await visivel(r.page, 'containerHorarios')));
+  t('data alem de 14 dias mostra aviso', await visivel(r.page, 'avisoDataForaJanela') && !(await visivel(r.page, 'containerHorarios')));
   const max = await r.page.evaluate(() => document.getElementById('dataAgendamento').max);
-  t('calendario limitado a 60 dias (max=2026-12-15)', max === '2026-12-15', max);
+  t('calendario limitado a 14 dias (max=2026-10-30)', max === '2026-10-30', max);
   await r.ctx.close();
 
   // 9) LGPD e seguranca basica do HTML

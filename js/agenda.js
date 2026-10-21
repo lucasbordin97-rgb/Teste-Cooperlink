@@ -95,7 +95,7 @@ function encontrarProximoDiaDisponivel(dataBaseStr) {
   const partes = base.split('-').map(Number);
   const dt = new Date(partes[0], partes[1] - 1, partes[2], 12, 0, 0);
 
-  for (let tentativa = 0; tentativa < 45; tentativa++) {
+  for (let tentativa = 0; tentativa <= DIAS_MAXIMOS_AGENDAMENTO; tentativa++) {
     const a = dt.getFullYear();
     const m = String(dt.getMonth() + 1).padStart(2, '0');
     const d = String(dt.getDate()).padStart(2, '0');

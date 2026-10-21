@@ -1,7 +1,7 @@
 // Constantes do site e estado do agendamento. O SCRIPT_URL aponta para o Apps Script.
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKpqBTom5p0x7dgMXSSZ7a2c8298HPZKfAeVsa414hcR-DMLhn5yTY_xuAfhp0ts7d/exec";
 const TELEFONE_CENTRAL = "(19) 2042-3966";
-const DIAS_MAXIMOS_AGENDAMENTO = 60;
+const DIAS_MAXIMOS_AGENDAMENTO = 14;   // 2 semanas; precisa ser igual a DIAS_MAXIMOS no Apps Script
 
 const POSTO_HENRICAR = {
   nome: "Henricar - Av. Benjamin Constant, 550, Campinas/SP (CEP 13010-140)",

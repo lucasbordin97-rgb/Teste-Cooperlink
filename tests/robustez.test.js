@@ -238,10 +238,10 @@ const botaoBuscaLivre = page => page.evaluate(() => !document.getElementById('bt
   await r.page.goto('http://site.local/');
   t('sexta 17:30 (já passou o último horário): sugere segunda-feira (19/10)', (await r.page.inputValue('#dataAgendamento')) === '2026-10-19', await r.page.inputValue('#dataAgendamento'));
   await r.ctx.close();
-  for (const [relogio, esperado] of [['2026-12-31T22:00:00-03:00', '2027-03-01'], ['2028-01-01T12:00:00-03:00', '2028-03-01'], ['2026-10-16T10:00:00-03:00', '2026-12-15']]) {
+  for (const [relogio, esperado] of [['2026-12-31T22:00:00-03:00', '2027-01-14'], ['2028-02-20T12:00:00-03:00', '2028-03-05'], ['2026-10-16T10:00:00-03:00', '2026-10-30']]) {
     r = await novaPagina(browser, { clock: relogio });
     await r.page.goto('http://site.local/');
-    t('limite de 60 dias a partir de ' + relogio.slice(0, 10) + ' = ' + esperado, (await r.page.getAttribute('#dataAgendamento', 'max')) === esperado, await r.page.getAttribute('#dataAgendamento', 'max'));
+    t('limite de 14 dias a partir de ' + relogio.slice(0, 10) + ' = ' + esperado, (await r.page.getAttribute('#dataAgendamento', 'max')) === esperado, await r.page.getAttribute('#dataAgendamento', 'max'));
     await r.ctx.close();
   }
   r = await novaPagina(browser, { clock: '2026-10-19T09:14:00-03:00' });
