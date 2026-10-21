@@ -65,6 +65,10 @@ window.buscarEAnalisarCEP = async function() {
       ? sanitizarInput("CEP " + maskedCep + " - Grande São Paulo/SP")
       : sanitizarInput((data.logradouro || 'Bairro') + ", " + (data.bairro || '') + " - " + data.localidade + "/" + data.uf);
 
+    estadoAgendamento.viaCep = semViaCep
+      ? { rua: "", bairro: "", cidadeUf: "Grande São Paulo/SP" }
+      : { rua: sanitizarInput(data.logradouro || ""), bairro: sanitizarInput(data.bairro || ""), cidadeUf: sanitizarInput(data.localidade + "/" + data.uf) };
+
     const cidadeNorm = normalizarTexto(data.localidade);
     // Campinas e Hortolândia (SP): vale a Henricar. A UF é conferida para não confundir com cidade de mesmo nome em outro estado.
     const isRegiaoAtendida = normalizarTexto(data.uf) === "sp" && (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");

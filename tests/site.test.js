@@ -149,7 +149,7 @@ const msgErro = page => page.evaluate(() => document.getElementById('alertaConfl
     await r.page.evaluate(() => window.buscarEAnalisarCEP());
     await r.page.waitForFunction(() => !document.getElementById('boxTecnicoExterno').classList.contains('hidden'));
     await r.page.evaluate(() => window.encaminharParaTecnicoParceiro());
-    await r.page.fill('#inputNome', 'João Souza'); await r.page.fill('#inputTelefone', '11988887777'); await r.page.fill('#inputPlaca', 'XYZ9K88');
+    await r.page.fill('#inputNome', 'João Souza'); await r.page.fill('#inputTelefone', '11988887777'); await r.page.fill('#inputPlaca', 'XYZ9K88'); await r.page.fill('#inputNumero', '45');
     await r.page.evaluate(() => document.getElementById('formAgendamento').requestSubmit());
     await r.page.waitForFunction(() => !document.getElementById('stepSucesso').classList.contains('hidden'));
     const e = r.envios[0];

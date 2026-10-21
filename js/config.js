@@ -130,6 +130,7 @@ let estadoAgendamento = {
   cep: "",
   cepFormatado: "",
   enderecoFormatado: "",
+  viaCep: null,   // rua, bairro e cidade/UF do CEP (para pré-preencher o endereço do técnico)
   isTecnicoExterno: false,
   motivoSemPosto: "",
   data: "",

@@ -47,7 +47,7 @@ window.finalizarAgendamento = async function(event) {
   event.preventDefault();
   if (document.getElementById('btnConfirmar').disabled) return;
   document.getElementById('alertaConflito').classList.add('hidden');
-  ['inputNome', 'inputTelefone', 'inputPlaca'].forEach(function(id) { document.getElementById(id).removeAttribute('aria-invalid'); });
+  ['inputNome', 'inputTelefone', 'inputPlaca', 'inputRua', 'inputNumero'].forEach(function(id) { document.getElementById(id).removeAttribute('aria-invalid'); });
   
   const hp = document.getElementById('website_hp').value;
   if (hp !== "") return;
@@ -73,6 +73,26 @@ window.finalizarAgendamento = async function(event) {
     return;
   }
 
+  // Técnico externo: o endereço do veículo vem do que o associado informou (não só do CEP).
+  let enderecoDoAtendimento = estadoAgendamento.enderecoFormatado;
+  if (estadoAgendamento.isTecnicoExterno) {
+    const rua = sanitizarInput(document.getElementById('inputRua').value).replace(/\s+/g, ' ').trim();
+    const numero = sanitizarInput(document.getElementById('inputNumero').value).replace(/\s+/g, ' ').trim();
+    const bairro = sanitizarInput(document.getElementById('inputBairro').value).replace(/\s+/g, ' ').trim();
+    const complemento = sanitizarInput(document.getElementById('inputComplemento').value).replace(/\s+/g, ' ').trim();
+    if (rua.length < 3) {
+      exibirErroFormulario("Endereço incompleto", "Informe a rua ou avenida onde o veículo fica.", "inputRua");
+      return;
+    }
+    if (numero.length < 1) {
+      exibirErroFormulario("Endereço incompleto", "Informe o número do endereço (ou S/N, se não houver).", "inputNumero");
+      return;
+    }
+    const cidadeUf = (estadoAgendamento.viaCep && estadoAgendamento.viaCep.cidadeUf) || "";
+    // Complemento por último: se passar de 200 caracteres (limite do Apps Script), é ele que perde o final.
+    enderecoDoAtendimento = (rua + ", " + numero + (bairro ? " - " + bairro : "") + (cidadeUf ? ", " + cidadeUf : "") + (complemento ? " - Compl.: " + complemento : "")).slice(0, 200);
+  }
+
   const btn = document.getElementById('btnConfirmar');
   btn.disabled = true;
   btn.innerText = "Confirmando Agendamento…";
@@ -85,7 +105,7 @@ window.finalizarAgendamento = async function(event) {
     isTecnicoExterno: Boolean(estadoAgendamento.isTecnicoExterno),
     motivo: estadoAgendamento.isTecnicoExterno ? sanitizarInput(estadoAgendamento.motivoSemPosto || "") : "",
     cep: estadoAgendamento.cepFormatado,
-    endereco: estadoAgendamento.enderecoFormatado,
+    endereco: enderecoDoAtendimento,
     data: sanitizarInput(estadoAgendamento.data),
     horario: sanitizarInput(estadoAgendamento.horario),
     nome: nomeLimpo,

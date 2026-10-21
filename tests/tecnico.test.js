@@ -63,6 +63,8 @@ t('rótulo curto e texto da mensagem', ctx.__rot('2026-10-21') === 'qua, 21/10' 
 async function novaPaginaTec(browser, viacep) { return novaPagina(browser, null, viacep); }
 async function preencherEEnviar(page) {
   await page.fill('#inputNome', 'Maria da Silva'); await page.fill('#inputTelefone', '19999990001'); await page.fill('#inputPlaca', 'abc1d23');
+  // técnico externo: rua e número do veículo são obrigatórios (a rua já vem do CEP)
+  if (await page.evaluate(() => !document.getElementById('blocoEnderecoVeiculo').classList.contains('hidden'))) await page.fill('#inputNumero', '123');
   await page.evaluate(() => { document.getElementById('formAgendamento').requestSubmit(); });
   await page.waitForFunction(() => !document.getElementById('stepSucesso').classList.contains('hidden') || !document.getElementById('alertaConflito').classList.contains('hidden'));
 }
@@ -88,7 +90,17 @@ const via = (cidade, uf, cep) => ({ cep: cep, logradouro: 'Rua Teste', bairro: '
   await consultar(r.page, '13480-000');
   await r.page.click('#boxTecnicoExterno button');
   await r.page.waitForFunction(() => !document.getElementById('step4').classList.contains('hidden'));
+  const end = await r.page.evaluate(() => ({ visivel: !document.getElementById('blocoEnderecoVeiculo').classList.contains('hidden'), rua: document.getElementById('inputRua').value, bairro: document.getElementById('inputBairro').value, numero: document.getElementById('inputNumero').value, obrig: document.getElementById('inputRua').required && document.getElementById('inputNumero').required }));
+  t('técnico: aparece o endereço do veículo, com rua e bairro vindos do CEP e número vazio e obrigatório', end.visivel && end.rua === 'Rua Teste' && end.bairro === 'Centro' && end.numero === '' && end.obrig, end);
+  await r.page.fill('#inputNome', 'Maria da Silva'); await r.page.fill('#inputTelefone', '19999990001'); await r.page.fill('#inputPlaca', 'abc1d23');
+  await r.page.evaluate(() => window.finalizarAgendamento({ preventDefault() {} }));   // sem a validação nativa do navegador, para testar a nossa mensagem
+  t('técnico sem número: não envia e avisa', r.envios.length === 0 && await r.page.evaluate(() => !document.getElementById('alertaConflito').classList.contains('hidden') && /número/i.test(document.getElementById('msgErroForm').innerText)), r.envios);
+  await r.page.fill('#inputRua', '   '); await r.page.fill('#inputNumero', '123');
+  await r.page.evaluate(() => window.finalizarAgendamento({ preventDefault() {} }));
+  t('técnico sem rua: não envia e avisa', r.envios.length === 0 && await r.page.evaluate(() => /rua/i.test(document.getElementById('msgErroForm').innerText)), r.envios);
+  await r.page.fill('#inputRua', 'Rua das Palmeiras'); await r.page.fill('#inputBairro', 'Jardim Azul'); await r.page.fill('#inputComplemento', 'portão azul');
   await preencherEEnviar(r.page);
+  t('técnico: o endereço enviado é o que o associado informou (rua, número, bairro, cidade/UF e complemento)', r.envios.length === 1 && r.envios[0].endereco === 'Rua das Palmeiras, 123 - Jardim Azul, Limeira/SP - Compl.: portão azul', r.envios[0] && r.envios[0].endereco);
   const msg = await r.page.evaluate(() => ({ tec: !document.getElementById('blocoTecnicoSucesso').classList.contains('hidden'), zap: !document.getElementById('blocoWhatsAppSucesso').classList.contains('hidden'), texto: document.getElementById('textoPrazoTecnico').textContent }));
   t('técnico: tela de sucesso mostra o prazo de 5 dias úteis e esconde o texto do WhatsApp', msg.tec && !msg.zap && /em até 5 dias úteis \(de \w{3}, \d\d\/\d\d a \w{3}, \d\d\/\d\d\)/.test(msg.texto), msg);
   t('técnico do entorno: envia posto de técnico, data "A agendar via técnico" e motivo vazio', r.envios.length === 1 && /^Agend\. Tecnico Parceiro - CEP: 13480-000$/.test(r.envios[0].posto) && r.envios[0].data === 'A agendar via técnico' && r.envios[0].motivo === '', r.envios[0]);
@@ -131,7 +143,9 @@ const via = (cidade, uf, cep) => ({ cep: cep, logradouro: 'Rua Teste', bairro: '
   await r.page.click('#boxPostosFixos button[data-click="confirmarPostoParceiro"]');
   await r.page.waitForFunction(() => !document.getElementById('containerHorarios').classList.contains('hidden'));
   await r.page.evaluate(() => window.selecionarHorario('09:00'));
+  t('posto: o endereço do veículo NÃO aparece e não é obrigatório', await r.page.evaluate(() => document.getElementById('blocoEnderecoVeiculo').classList.contains('hidden') && !document.getElementById('inputRua').required && !document.getElementById('inputNumero').required));
   await preencherEEnviar(r.page);
+  t('posto: o endereço enviado continua sendo o do CEP', r.envios.length === 1 && /^Rua Teste, Centro - /.test(r.envios[0].endereco), r.envios[0] && r.envios[0].endereco);
   t('quem escolhe o posto depois de escrever um motivo NÃO envia motivo', r.envios.length === 1 && /^Henricar/.test(r.envios[0].posto) && r.envios[0].motivo === '' && r.envios[0].isTecnicoExterno === false, r.envios[0]);
   t('posto: tela de sucesso continua com o texto do WhatsApp', await r.page.evaluate(() => !document.getElementById('blocoWhatsAppSucesso').classList.contains('hidden') && document.getElementById('blocoTecnicoSucesso').classList.contains('hidden')));
   await r.ctx.close();

@@ -15,6 +15,7 @@ window.voltarPara = function(etapa) {
     setTimeout(function() { alvo.classList.add('animate-fade-in'); }, 10);
   }
   atualizarTracker(etapa);
+  if (Number(etapa) === 4) prepararEnderecoDoVeiculo();
 
   const badgeTopo = document.getElementById('badgeServicoTopo');
   if (badgeTopo) {
@@ -23,6 +24,29 @@ window.voltarPara = function(etapa) {
       : "Agendamento Online";
   }
 };
+
+// Técnico externo vai até o veículo: o associado informa em que endereço ele fica (rua e número obrigatórios).
+function prepararEnderecoDoVeiculo() {
+  const bloco = document.getElementById('blocoEnderecoVeiculo');
+  if (!bloco) return;
+  const tecnico = Boolean(estadoAgendamento.isTecnicoExterno);
+  bloco.classList.toggle('hidden', !tecnico);
+  ['inputRua', 'inputNumero'].forEach(function(id) {
+    const campo = document.getElementById(id);
+    if (tecnico) campo.setAttribute('required', ''); else campo.removeAttribute('required');
+  });
+  if (!tecnico) return;
+  const via = estadoAgendamento.viaCep || {};
+  document.getElementById('cidadeUfEndereco').innerText = via.cidadeUf ? "Cidade: " + via.cidadeUf + " • CEP: " + estadoAgendamento.cepFormatado : "";
+  // Pré-preenche só quando o CEP mudou, para não apagar o que o associado já digitou ao voltar e avançar.
+  if (bloco.dataset.cep !== estadoAgendamento.cep) {
+    bloco.dataset.cep = estadoAgendamento.cep;
+    document.getElementById('inputRua').value = via.rua || "";
+    document.getElementById('inputBairro').value = via.bairro || "";
+    document.getElementById('inputNumero').value = "";
+    document.getElementById('inputComplemento').value = "";
+  }
+}
 
 window.voltarDeEtapa4 = function() {
   if (estadoAgendamento.isTecnicoExterno) {
