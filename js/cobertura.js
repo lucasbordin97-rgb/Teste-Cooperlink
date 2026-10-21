@@ -11,8 +11,9 @@ const CIDADES_GRANDE_SP = [
 
 const arquivosCobertura = {};
 
-function cidadeEhGrandeSP(cidade) {
-  return CIDADES_GRANDE_SP.indexOf(normalizarTexto(cidade)) !== -1;
+// Só vale em SP: Santo André, por exemplo, também existe na Paraíba.
+function cidadeEhGrandeSP(cidade, uf) {
+  return normalizarTexto(uf) === "sp" && CIDADES_GRANDE_SP.indexOf(normalizarTexto(cidade)) !== -1;
 }
 
 // Devolve { noMapa, postos: [{ id, minutos }] } ou null se a tabela não puder ser lida.

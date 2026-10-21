@@ -66,7 +66,8 @@ window.buscarEAnalisarCEP = async function() {
       : sanitizarInput((data.logradouro || 'Bairro') + ", " + (data.bairro || '') + " - " + data.localidade + "/" + data.uf);
 
     const cidadeNorm = normalizarTexto(data.localidade);
-    const isRegiaoAtendida = (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");
+    // Campinas e Hortolândia (SP): vale a Henricar. A UF é conferida para não confundir com cidade de mesmo nome em outro estado.
+    const isRegiaoAtendida = normalizarTexto(data.uf) === "sp" && (cidadeNorm === "campinas" || cidadeNorm === "hortolandia");
 
     const postosDaCidade = (isRegiaoAtendida || !USAR_TABELA_COBERTURA) ? [] : Object.keys(POSTOS_OUTROS).filter(function(id) {
       const posto = POSTOS_OUTROS[id];
@@ -204,7 +205,7 @@ function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
     return;
   }
 
-  if (cobertura.noMapa || cidadeEhGrandeSP(dadosCep.localidade)) {
+  if (cobertura.noMapa || cidadeEhGrandeSP(dadosCep.localidade, dadosCep.uf)) {
     estadoAgendamento.isTecnicoExterno = true;
     feedback.innerHTML = '<span class="text-amber-600 font-semibold">Sua região (' + local + ') é atendida via Técnico Parceiro:</span>';
     boxTecnico.classList.remove('hidden');

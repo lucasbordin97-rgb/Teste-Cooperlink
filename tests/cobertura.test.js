@@ -20,6 +20,8 @@ const VIACEP = {
   '06650000': { logradouro: '', bairro: '', localidade: 'Itapevi', uf: 'SP' },                                              // Grande SP, CEP fora da base do IBGE
   '14400000': { logradouro: 'Rua X', bairro: 'Y', localidade: 'Franca', uf: 'SP' },                                         // fora da cobertura
   '90010000': { logradouro: 'Rua X', bairro: 'Y', localidade: 'Porto Alegre', uf: 'RS' },                                   // fora da cobertura, sem arquivo de tabela
+  '58675000': { logradouro: '', bairro: '', localidade: 'Santo André', uf: 'PB' },                                          // mesmo nome de cidade da Grande SP, em outro estado
+  '99999001': { logradouro: '', bairro: '', localidade: 'Campinas', uf: 'PB' },                                             // mesmo nome de Campinas, em outro estado
   '13010140': { logradouro: 'Av. Benjamin Constant', bairro: 'Centro', localidade: 'Campinas', uf: 'SP' }                  // Henricar, regra antiga
 };
 const STOP = 'Stop System - Rua Rio de Janeiro, 346 - Jardim Oratório, Mauá/SP (CEP 09381-050)';
@@ -153,6 +155,18 @@ const caixas = async page => ({
   await consultar(page, '90010-000');
   c = await caixas(page);
   t('outro estado: fora da cobertura', c.fora && !c.tecnico, c);
+  await ctx.close();
+
+  // 5b) Cidade com o mesmo nome de uma da Grande SP / de Campinas, mas em outro estado: fora da cobertura
+  ({ page, ctx } = await novaPagina(browser));
+  await consultar(page, '58675-000');
+  c = await caixas(page);
+  t('Santo André/PB (mesmo nome de Santo André/SP): fora da cobertura, NÃO técnico nem posto de SP', c.fora && !c.tecnico && !c.postosSP && !c.henricar, c);
+  await ctx.close();
+  ({ page, ctx } = await novaPagina(browser));
+  await consultar(page, '99999-001');
+  c = await caixas(page);
+  t('Campinas/PB (mesmo nome de Campinas/SP): fora da cobertura, NÃO Henricar', c.fora && !c.henricar && !c.tecnico && !c.postosSP, c);
   await ctx.close();
 
   // 6) Campinas continua na Henricar (regra antiga), sem consultar a tabela
