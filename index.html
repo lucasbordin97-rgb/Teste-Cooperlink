@@ -322,23 +322,26 @@
                   </div>
                 </div>
               </button>
+            </div>
 
-              <button type="button" data-click="abrirMotivoSemPosto" class="w-full mt-3 border-2 border-slate-200 bg-slate-50 hover:bg-white text-slate-700 font-bold text-sm p-3.5 rounded-xl transition-[transform,box-shadow,border-color,background-color,color,opacity] cursor-pointer">
+            <!-- POSTOS DA GRANDE SP (só aparece com USAR_TABELA_COBERTURA ligado) -->
+            <div id="boxPostosSP" class="hidden pt-1">
+              <div id="listaPostosSP" class="space-y-3"></div>
+            </div>
+
+            <!-- "NÃO CONSIGO IR AO POSTO": serve a Campinas/Hortolândia e à Grande SP (aparece junto da lista de postos) -->
+            <div id="blocoNaoConsigoIr" class="hidden pt-3">
+              <button type="button" data-click="abrirMotivoSemPosto" class="w-full border-2 border-slate-200 bg-slate-50 hover:bg-white text-slate-700 font-bold text-sm p-3.5 rounded-xl transition-[transform,box-shadow,border-color,background-color,color,opacity] cursor-pointer">
                 Não consigo ir até o posto
               </button>
               <div id="boxMotivoNaoVai" class="hidden mt-3">
                 <label for="inputMotivoSemPosto" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Conte o motivo</label>
                 <textarea id="inputMotivoSemPosto" rows="3" maxlength="300" placeholder="Ex: não tenho como me deslocar até o posto" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white"></textarea>
                 <p id="erroMotivoSemPosto" role="alert" class="hidden text-xs font-semibold text-rose-500 mt-1"></p>
-                <button type="button" data-click="confirmarTecnicoCampinas" class="w-full mt-3 bg-gradient-to-r from-brand-orange to-brand-darkorange hover:opacity-95 text-white font-bold text-sm p-4 rounded-2xl shadow-lg transition-[transform,box-shadow,border-color,background-color,color,opacity] cursor-pointer">
+                <button type="button" data-click="confirmarSemPosto" class="w-full mt-3 bg-gradient-to-r from-brand-orange to-brand-darkorange hover:opacity-95 text-white font-bold text-sm p-4 rounded-2xl shadow-lg transition-[transform,box-shadow,border-color,background-color,color,opacity] cursor-pointer">
                   Enviar solicitação →
                 </button>
               </div>
-            </div>
-
-            <!-- POSTOS DA GRANDE SP (só aparece com USAR_TABELA_COBERTURA ligado) -->
-            <div id="boxPostosSP" class="hidden pt-1">
-              <div id="listaPostosSP" class="space-y-3"></div>
             </div>
 
             <!-- FORA DA COBERTURA: pedido de contato (só aparece com USAR_TABELA_COBERTURA ligado) -->

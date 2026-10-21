@@ -104,6 +104,8 @@ window.finalizarAgendamento = async function(event) {
     posto: estadoAgendamento.posto ? sanitizarInput(estadoAgendamento.posto.nome) : POSTO_HENRICAR.nome,
     isTecnicoExterno: Boolean(estadoAgendamento.isTecnicoExterno),
     motivo: estadoAgendamento.isTecnicoExterno ? sanitizarInput(estadoAgendamento.motivoSemPosto || "") : "",
+    postosDisponiveis: (estadoAgendamento.isTecnicoExterno && estadoAgendamento.motivoSemPosto)
+      ? (estadoAgendamento.postosDisponiveis || []).map(sanitizarInput).join(" | ").slice(0, 300) : "",
     cep: estadoAgendamento.cepFormatado,
     endereco: enderecoDoAtendimento,
     data: sanitizarInput(estadoAgendamento.data),

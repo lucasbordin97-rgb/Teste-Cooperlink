@@ -108,6 +108,8 @@ window.buscarEAnalisarCEP = async function() {
       estadoAgendamento.isTecnicoExterno = false;
       feedback.innerHTML = '<span class="text-emerald-600 font-semibold">Atendimento liberado na unidade credenciada local:</span>';
       boxPostos.classList.remove('hidden');
+      estadoAgendamento.postosDisponiveis = ["Henricar — Campinas"];
+      document.getElementById('blocoNaoConsigoIr').classList.remove('hidden');
     }
   } catch (error) {
     feedback.innerHTML = '<span class="text-rose-500 font-semibold">Não foi possível analisar este CEP agora. Toque novamente.</span>';
@@ -145,13 +147,14 @@ window.confirmarPostoParceiro = function(nomePosto, rotulo) {
   dispararBuscaDeHorariosNaNuvem(false, true);
 };
 
-// Campinas/Hortolândia: o associado que não consegue ir ao posto explica o motivo e segue para o técnico.
+// Campinas/Hortolândia e Grande SP: o associado que não consegue ir ao posto explica o motivo e segue para o técnico.
+// Os postos que estavam disponíveis para ele (estadoAgendamento.postosDisponiveis) vão junto, para o setor analisar.
 window.abrirMotivoSemPosto = function() {
   document.getElementById('boxMotivoNaoVai').classList.remove('hidden');
   document.getElementById('inputMotivoSemPosto').focus();
 };
 
-window.confirmarTecnicoCampinas = function() {
+window.confirmarSemPosto = function() {
   const campo = document.getElementById('inputMotivoSemPosto');
   const erro = document.getElementById('erroMotivoSemPosto');
   const motivo = sanitizarInput(campo.value).replace(/\s+/g, ' ').trim();
@@ -176,6 +179,8 @@ function esconderCaixasCobertura() {
   document.getElementById('erroMotivoSemPosto').classList.add('hidden');
   document.getElementById('inputMotivoSemPosto').value = "";
   estadoAgendamento.motivoSemPosto = "";
+  estadoAgendamento.postosDisponiveis = [];
+  document.getElementById('blocoNaoConsigoIr').classList.add('hidden');
   document.getElementById('boxPostosSP').classList.add('hidden');
   document.getElementById('boxForaCobertura').classList.add('hidden');
   document.getElementById('formInteresse').classList.remove('hidden');
@@ -184,7 +189,7 @@ function esconderCaixasCobertura() {
 }
 
 // Monta a lista de postos. Cada item: { id, minutos }. Sem minutos = posto que atende a cidade inteira.
-function montarListaPostos(itens, cidade) {
+function montarListaPostos(itens, cidade, comOpcaoSemPosto) {
   document.getElementById('listaPostosSP').innerHTML = itens.map(function(p, i) {
       const posto = POSTOS[p.id];
       const rotulo = posto.curto + ', ' + posto.local + (p.minutos ? '' : ', atende a sua cidade');
@@ -197,6 +202,8 @@ function montarListaPostos(itens, cidade) {
         '<div class="mt-3 inline-flex items-center gap-1.5 text-sm font-extrabold text-brand-orange group-hover:translate-x-1 transition-transform">Escolher Data e Horário →</div></button>';
   }).join('');
   document.getElementById('boxPostosSP').classList.remove('hidden');
+  estadoAgendamento.postosDisponiveis = itens.map(function(p) { return POSTOS[p.id].curto + " — " + POSTOS[p.id].local; });
+  document.getElementById('blocoNaoConsigoIr').classList.toggle('hidden', !comOpcaoSemPosto);
 }
 
 function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
@@ -205,7 +212,8 @@ function aplicarCobertura(cobertura, dadosCep, feedback, boxTecnico) {
   if (cobertura.postos.length > 0) {
     estadoAgendamento.isTecnicoExterno = false;
     feedback.innerHTML = '<span class="text-emerald-600 font-semibold">Atendimento liberado em unidade credenciada perto de você:</span>';
-    montarListaPostos(cobertura.postos);
+    // Grande SP (tabela de cobertura): também há técnico parceiro, então vale a opção "não consigo ir ao posto".
+    montarListaPostos(cobertura.postos, null, cobertura.noMapa || cidadeEhGrandeSP(dadosCep.localidade, dadosCep.uf));
     return;
   }
 
