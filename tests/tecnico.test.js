@@ -119,14 +119,14 @@ const via = (cidade, uf, cep) => ({ cep: cep, logradouro: 'Rua Teste', bairro: '
   await consultar(r.page, '13010-140');
   await r.page.click('[data-click="abrirMotivoSemPosto"]');
   t('"Não consigo ir" abre a caixa de motivo', await vis(r.page, 'boxMotivoNaoVai'));
-  await r.page.click('[data-click="confirmarTecnicoCampinas"]');
+  await r.page.click('[data-click="confirmarSemPosto"]');
   t('sem motivo não avança e avisa', (await vis(r.page, 'erroMotivoSemPosto')) && !(await vis(r.page, 'step4')));
   await r.page.fill('#inputMotivoSemPosto', '<b>Sem carro</b> até sexta');
-  await r.page.click('[data-click="confirmarTecnicoCampinas"]');
+  await r.page.click('[data-click="confirmarSemPosto"]');
   await r.page.waitForFunction(() => !document.getElementById('step4').classList.contains('hidden'));
   const resumo = await r.page.evaluate(() => document.getElementById('resumoModalidade').innerText);
   t('com motivo: o resumo NÃO diz que será técnico (o setor analisa antes)', /nosso setor/.test(resumo) && !/t[ée]cnico|externo/i.test(resumo), resumo);
-  t('com motivo: o botão não promete técnico', !/t[ée]cnico/i.test(await r.page.evaluate(() => document.querySelector('[data-click="confirmarTecnicoCampinas"]').innerText)));
+  t('com motivo: o botão não promete técnico', !/t[ée]cnico/i.test(await r.page.evaluate(() => document.querySelector('[data-click="confirmarSemPosto"]').innerText)));
   await preencherEEnviar(r.page);
   const msgMotivo = await r.page.evaluate(() => document.getElementById('textoPrazoTecnico').innerText);
   t('com motivo: a tela de sucesso diz que foi enviado ao setor e que entraremos em contato, sem falar de técnico nem de prazo', /enviada ao nosso setor/.test(msgMotivo) && /entraremos em contato para confirmar/.test(msgMotivo) && !/t[ée]cnico|dias [úu]teis/i.test(msgMotivo), msgMotivo);
@@ -148,6 +148,62 @@ const via = (cidade, uf, cep) => ({ cep: cep, logradouro: 'Rua Teste', bairro: '
   t('posto: o endereço enviado continua sendo o do CEP', r.envios.length === 1 && /^Rua Teste, Centro - /.test(r.envios[0].endereco), r.envios[0] && r.envios[0].endereco);
   t('quem escolhe o posto depois de escrever um motivo NÃO envia motivo', r.envios.length === 1 && /^Henricar/.test(r.envios[0].posto) && r.envios[0].motivo === '' && r.envios[0].isTecnicoExterno === false, r.envios[0]);
   t('posto: tela de sucesso continua com o texto do WhatsApp', await r.page.evaluate(() => !document.getElementById('blocoWhatsAppSucesso').classList.contains('hidden') && document.getElementById('blocoTecnicoSucesso').classList.contains('hidden')));
+  await r.ctx.close();
+
+
+  // ---------- 4) Grande SP com posto: "não consigo ir ao posto" + postos que estavam disponíveis ----------
+  r = await novaPaginaTec(browser, via('Mauá', 'SP', '09381-050'));
+  await consultar(r.page, '08391-710');
+  t('Grande SP: lista de postos e a opção "não consigo ir" aparecem, com a caixa de motivo fechada', (await vis(r.page, 'boxPostosSP')) && (await vis(r.page, 'blocoNaoConsigoIr')) && !(await vis(r.page, 'boxMotivoNaoVai')));
+  const listados = await r.page.evaluate(() => Array.from(document.querySelectorAll('#listaPostosSP h3')).map(h => h.textContent.trim()));
+  t('Grande SP: há ao menos um posto listado', listados.length > 0, listados);
+  await r.page.click('[data-click="abrirMotivoSemPosto"]');
+  await r.page.fill('#inputMotivoSemPosto', 'Não consigo chegar ao posto <i>nenhum</i>');
+  await r.page.click('[data-click="confirmarSemPosto"]');
+  await r.page.waitForFunction(() => !document.getElementById('step4').classList.contains('hidden'));
+  await preencherEEnviar(r.page);
+  const e = r.envios[0] || {};
+  t('Grande SP com motivo: vai para o técnico, com o motivo (sem < >)', r.envios.length === 1 && /^Agend\. Tecnico Parceiro - CEP: /.test(e.posto) && e.isTecnicoExterno === true && /Não consigo chegar/.test(e.motivo) && !/[<>]/.test(e.motivo), e);
+  t('Grande SP com motivo: envia os postos que estavam disponíveis, iguais aos da lista mostrada', e.postosDisponiveis === listados.join(' | ') && e.postosDisponiveis.length > 0 && e.postosDisponiveis.length <= 300, { enviado: e.postosDisponiveis, listados });
+  t('Grande SP com motivo: tela de sucesso sem falar de técnico nem prazo', await r.page.evaluate(() => /enviada ao nosso setor/.test(document.getElementById('textoPrazoTecnico').innerText) && !/t[ée]cnico|dias [úu]teis/i.test(document.getElementById('textoPrazoTecnico').innerText)));
+  t('Grande SP: fluxo sem erros de JavaScript', r.erros.length === 0, r.erros);
+  await r.ctx.close();
+
+  // Grande SP, mas escolhe o posto: nada de motivo nem de postos disponíveis no envio
+  r = await novaPaginaTec(browser, via('Mauá', 'SP', '09381-050'));
+  await consultar(r.page, '08391-710');
+  await r.page.click('[data-click="abrirMotivoSemPosto"]');
+  await r.page.fill('#inputMotivoSemPosto', 'escrevi e desisti');
+  await r.page.click('#listaPostosSP button[data-click="escolherPostoSP"]');
+  await r.page.waitForFunction(() => !document.getElementById('containerHorarios').classList.contains('hidden'));
+  await r.page.evaluate(() => window.selecionarHorario('09:00'));
+  await preencherEEnviar(r.page);
+  t('Grande SP escolhendo o posto: motivo e postos disponíveis vão vazios', r.envios.length === 1 && r.envios[0].motivo === '' && r.envios[0].postosDisponiveis === '' && r.envios[0].isTecnicoExterno === false, r.envios[0]);
+  await r.ctx.close();
+
+  // Cidade com posto mas SEM técnico parceiro (Leme): sem a opção "não consigo ir"
+  r = await novaPaginaTec(browser, via('Leme', 'SP', '13610-119'));
+  await consultar(r.page, '13610-119');
+  t('Leme (posto sem técnico parceiro): lista o posto e NÃO oferece "não consigo ir"', (await vis(r.page, 'boxPostosSP')) && !(await vis(r.page, 'blocoNaoConsigoIr')));
+  await r.ctx.close();
+
+  // Campinas: os postos disponíveis também vão
+  r = await novaPaginaTec(browser, via('Campinas', 'SP', '13010-140'));
+  await consultar(r.page, '13010-140');
+  await r.page.click('[data-click="abrirMotivoSemPosto"]');
+  await r.page.fill('#inputMotivoSemPosto', 'sem carro até sexta');
+  await r.page.click('[data-click="confirmarSemPosto"]');
+  await r.page.waitForFunction(() => !document.getElementById('step4').classList.contains('hidden'));
+  await preencherEEnviar(r.page);
+  t('Campinas com motivo: envia o posto Henricar como disponível', r.envios.length === 1 && r.envios[0].postosDisponiveis === 'Henricar — Campinas', r.envios[0]);
+  await r.ctx.close();
+
+  // Técnico direto (entorno, sem posto): não há postos disponíveis a registrar
+  r = await novaPaginaTec(browser, via('Limeira', 'SP', '13480-000'));
+  await consultar(r.page, '13480-000');
+  await r.page.evaluate(() => window.encaminharParaTecnicoParceiro());
+  await preencherEEnviar(r.page);
+  t('Técnico direto: postosDisponiveis vai vazio', r.envios.length === 1 && r.envios[0].postosDisponiveis === '', r.envios[0]);
   await r.ctx.close();
 
   await browser.close();

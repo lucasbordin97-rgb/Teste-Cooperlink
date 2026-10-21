@@ -133,6 +133,7 @@ let estadoAgendamento = {
   viaCep: null,   // rua, bairro e cidade/UF do CEP (para pré-preencher o endereço do técnico)
   isTecnicoExterno: false,
   motivoSemPosto: "",
+  postosDisponiveis: [],   // postos mostrados ao associado (só vai na planilha se ele disser que não consegue ir)
   data: "",
   horario: ""
 };
