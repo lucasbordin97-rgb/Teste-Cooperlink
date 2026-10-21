@@ -477,13 +477,39 @@
                 <input name="placa" autocomplete="off" autocapitalize="characters" spellcheck="false" type="text" id="inputPlaca" required placeholder="ABC1D23" maxlength="16" data-input="formatarPlaca" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-mono font-extrabold text-slate-800 uppercase focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white text-center tracking-widest text-lg">
               </div>
 
+              <div id="blocoEnderecoVeiculo" class="hidden space-y-3.5 border-2 border-brand-orange/30 bg-orange-50/40 rounded-2xl p-3.5">
+                <div>
+                  <p class="text-xs font-extrabold text-brand-blue uppercase tracking-wider">Endereço onde o veículo fica</p>
+                  <p class="text-[11px] text-slate-600 mt-0.5 leading-relaxed">O técnico irá até este endereço. Confira a rua e informe o número.</p>
+                </div>
+                <div>
+                  <label for="inputRua" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Rua / Avenida</label>
+                  <input name="rua" autocomplete="street-address" spellcheck="false" type="text" id="inputRua" maxlength="70" placeholder="Ex: Rua das Flores" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div>
+                    <label for="inputNumero" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Número</label>
+                    <input name="numero" autocomplete="off" spellcheck="false" type="text" id="inputNumero" maxlength="8" placeholder="123 ou S/N" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+                  </div>
+                  <div class="col-span-2">
+                    <label for="inputBairro" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Bairro</label>
+                    <input name="bairro" autocomplete="off" spellcheck="false" type="text" id="inputBairro" maxlength="40" placeholder="Bairro" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+                  </div>
+                </div>
+                <div>
+                  <label for="inputComplemento" class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Complemento ou ponto de referência (opcional)</label>
+                  <input name="complemento" autocomplete="off" spellcheck="false" type="text" id="inputComplemento" maxlength="40" placeholder="Ex: apto 12, portão azul" class="w-full p-3.5 border-2 border-slate-200 rounded-xl font-semibold text-base text-slate-800 focus:border-brand-blue outline-none transition-colors bg-slate-50 focus:bg-white">
+                </div>
+                <p id="cidadeUfEndereco" class="text-[11px] text-slate-600 font-semibold"></p>
+              </div>
+
               <button type="submit" id="btnConfirmar" class="w-full bg-gradient-to-r from-brand-orange to-brand-darkorange hover:opacity-95 text-white font-display font-extrabold text-base py-4 rounded-xl shadow-lg shadow-brand-orange/30 transition-[transform,box-shadow,border-color,background-color,color,opacity] transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-2 cursor-pointer">
                 <svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 Confirmar Agendamento
               </button>
 
               <p class="text-[11px] text-slate-500 leading-relaxed text-center pt-1">
-                Usamos seu nome, WhatsApp, placa e CEP apenas para agendar e realizar o atendimento técnico, conforme a LGPD. Dúvidas: <span class="font-semibold whitespace-nowrap">(19) 2042-3966</span>.
+                Usamos seu nome, WhatsApp, placa, CEP e endereço apenas para agendar e realizar o atendimento técnico, conforme a LGPD. Dúvidas: <span class="font-semibold whitespace-nowrap">(19) 2042-3966</span>.
               </p>
             </form>
           </div>
