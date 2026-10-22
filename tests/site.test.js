@@ -96,7 +96,8 @@ const msgErro = page => page.evaluate(() => document.getElementById('alertaConfl
   await r.page.fill('#inputNome', 'Maria da Silva'); await r.page.fill('#inputTelefone', '19999990001'); await r.page.fill('#inputPlaca', 'abc1d23');
   await r.page.evaluate(() => document.getElementById('formAgendamento').requestSubmit());
   await r.page.waitForFunction(() => !document.getElementById('stepSucesso').classList.contains('hidden'));
-  t('sucesso: mostra tela "Tudo Certo"', true);
+  const sucessoPosto = await r.page.evaluate(() => ({ titulo: document.getElementById('tituloSucesso').textContent, selo: document.getElementById('seloSucesso').textContent, aviso: document.getElementById('blocoWhatsAppSucesso').innerText, visivel: !document.getElementById('blocoWhatsAppSucesso').classList.contains('hidden') }));
+  t('sucesso em posto: diz que está "quase pronto" e que entraremos em contato para confirmar (sem "Tudo Certo")', sucessoPosto.visivel && /quase pronto/i.test(sucessoPosto.aviso) && /entrar em contato/i.test(sucessoPosto.aviso) && /confirmar/i.test(sucessoPosto.aviso) && /Quase pronto/.test(sucessoPosto.titulo) && !/Tudo Certo/i.test(sucessoPosto.titulo + sucessoPosto.aviso), sucessoPosto);
   t('enviou 1 pedido com posto e horario', r.envios.length === 1 && r.envios[0].posto === POSTO && r.envios[0].horario === '13:00', r.envios);
   const ls = await r.page.evaluate(() => localStorage.getItem('agendamentos_db'));
   t('navegador guarda so data/horario/posto (sem nome, telefone, placa)', ls && !/Maria|9999|ABC1D23|telefone|placa|nome/i.test(ls), ls);

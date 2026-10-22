@@ -103,6 +103,7 @@ const via = (cidade, uf, cep) => ({ cep: cep, logradouro: 'Rua Teste', bairro: '
   t('técnico: o endereço enviado é o que o associado informou (rua, número, bairro, cidade/UF e complemento)', r.envios.length === 1 && r.envios[0].endereco === 'Rua das Palmeiras, 123 - Jardim Azul, Limeira/SP - Compl.: portão azul', r.envios[0] && r.envios[0].endereco);
   const msg = await r.page.evaluate(() => ({ tec: !document.getElementById('blocoTecnicoSucesso').classList.contains('hidden'), zap: !document.getElementById('blocoWhatsAppSucesso').classList.contains('hidden'), texto: document.getElementById('textoPrazoTecnico').textContent }));
   t('técnico: tela de sucesso mostra o prazo de 5 dias úteis e esconde o texto do WhatsApp', msg.tec && !msg.zap && /em até 5 dias úteis \(de \w{3}, \d\d\/\d\d a \w{3}, \d\d\/\d\d\)/.test(msg.texto), msg);
+  t('técnico: o topo da tela de sucesso continua "Tudo Certo!" (a mensagem de "quase pronto" é só de posto)', await r.page.evaluate(() => document.getElementById('tituloSucesso').textContent === 'Tudo Certo!' && document.getElementById('seloSucesso').textContent === 'Protocolo Registrado'));
   t('técnico do entorno: envia posto de técnico, data "A agendar via técnico" e motivo vazio', r.envios.length === 1 && /^Agend\. Tecnico Parceiro - CEP: 13480-000$/.test(r.envios[0].posto) && r.envios[0].data === 'A agendar via técnico' && r.envios[0].motivo === '', r.envios[0]);
   t('fluxo do técnico sem erros de JavaScript', r.erros.length === 0, r.erros);
   await r.ctx.close();
@@ -147,7 +148,7 @@ const via = (cidade, uf, cep) => ({ cep: cep, logradouro: 'Rua Teste', bairro: '
   await preencherEEnviar(r.page);
   t('posto: o endereço enviado continua sendo o do CEP', r.envios.length === 1 && /^Rua Teste, Centro - /.test(r.envios[0].endereco), r.envios[0] && r.envios[0].endereco);
   t('quem escolhe o posto depois de escrever um motivo NÃO envia motivo', r.envios.length === 1 && /^Henricar/.test(r.envios[0].posto) && r.envios[0].motivo === '' && r.envios[0].isTecnicoExterno === false, r.envios[0]);
-  t('posto: tela de sucesso continua com o texto do WhatsApp', await r.page.evaluate(() => !document.getElementById('blocoWhatsAppSucesso').classList.contains('hidden') && document.getElementById('blocoTecnicoSucesso').classList.contains('hidden')));
+  t('posto (Henricar): tela de sucesso avisa que está quase pronto e que entraremos em contato para confirmar', await r.page.evaluate(() => { const b = document.getElementById('blocoWhatsAppSucesso'); return !b.classList.contains('hidden') && document.getElementById('blocoTecnicoSucesso').classList.contains('hidden') && /quase pronto/i.test(b.innerText) && /entrar em contato/i.test(b.innerText) && /confirmar/i.test(b.innerText) && document.getElementById('tituloSucesso').textContent === 'Quase pronto!'; }));
   await r.ctx.close();
 
 
