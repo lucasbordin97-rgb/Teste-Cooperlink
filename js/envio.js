@@ -43,6 +43,29 @@ function exibirErroFormulario(titulo, msg, campoId) {
   }
 }
 
+// Textos do topo da tela de sucesso. Em posto (inclusive Henricar) o horário ainda será confirmado
+// com o associado, então não dizemos "Tudo certo". O técnico externo mantém o texto de sempre.
+// Os dois textos são aplicados sempre, para um agendamento não herdar o texto do anterior.
+const TEXTOS_SUCESSO = {
+  posto: {
+    selo: "Agendamento Recebido",
+    titulo: "Quase pronto!",
+    subtitulo: "Recebemos o seu pedido de agendamento."
+  },
+  tecnico: {
+    selo: "Protocolo Registrado",
+    titulo: "Tudo Certo!",
+    subtitulo: "Sua solicitação já está sincronizada com a equipe técnica da Cooperlink Brasil."
+  }
+};
+
+function aplicarTextoSucesso(ehTecnicoExterno) {
+  const t = ehTecnicoExterno ? TEXTOS_SUCESSO.tecnico : TEXTOS_SUCESSO.posto;
+  document.getElementById('seloSucesso').textContent = t.selo;
+  document.getElementById('tituloSucesso').textContent = t.titulo;
+  document.getElementById('subtituloSucesso').textContent = t.subtitulo;
+}
+
 window.finalizarAgendamento = async function(event) {
   event.preventDefault();
   if (document.getElementById('btnConfirmar').disabled) return;
@@ -162,6 +185,7 @@ window.finalizarAgendamento = async function(event) {
   slotsOcupadosNaNuvem.push({ data: payload.data, horario: payload.horario, posto: payload.posto });
 
   document.getElementById('step4').classList.add('hidden');
+  aplicarTextoSucesso(Boolean(payload.isTecnicoExterno));
   document.getElementById('blocoWhatsAppSucesso').classList.toggle('hidden', Boolean(payload.isTecnicoExterno));
   document.getElementById('blocoTecnicoSucesso').classList.toggle('hidden', !payload.isTecnicoExterno);
   if (payload.isTecnicoExterno) {

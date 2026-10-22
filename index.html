@@ -523,14 +523,18 @@
               <svg aria-hidden="true" class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             </div>
             <div>
-              <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Protocolo Registrado</span>
-              <h2 class="font-display text-2xl font-extrabold text-slate-800 tracking-tight mt-2">Tudo Certo!</h2>
-              <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-[270px] mx-auto">Sua solicitação já está sincronizada com a equipe técnica da Cooperlink Brasil.</p>
+              <span id="seloSucesso" class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Protocolo Registrado</span>
+              <h2 id="tituloSucesso" class="font-display text-2xl font-extrabold text-slate-800 tracking-tight mt-2">Tudo Certo!</h2>
+              <p id="subtituloSucesso" class="text-xs sm:text-sm text-slate-500 mt-1 max-w-[270px] mx-auto">Sua solicitação já está sincronizada com a equipe técnica da Cooperlink Brasil.</p>
             </div>
 
-            <div id="blocoWhatsAppSucesso" class="bg-blue-50 border-2 border-brand-blue/20 p-4 rounded-2xl text-brand-blue flex items-center justify-center gap-3 shadow-sm">
-              <svg aria-hidden="true" class="w-6 h-6 shrink-0 text-brand-orange animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
-              <span class="text-xs sm:text-sm font-bold text-left leading-snug">Você receberá os detalhes da Ordem de Serviço diretamente no seu WhatsApp!</span>
+            <!-- Agendamento em posto (inclusive Henricar): o horário ainda será confirmado com o associado. -->
+            <div id="blocoWhatsAppSucesso" role="status" class="bg-orange-50 border-2 border-brand-orange p-4 rounded-2xl text-slate-800 flex items-start gap-3 shadow-sm text-left">
+              <svg aria-hidden="true" class="w-7 h-7 shrink-0 text-brand-orange animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+              <div>
+                <p class="font-display text-base sm:text-lg font-extrabold leading-snug">Seu agendamento está quase pronto!</p>
+                <p class="text-xs sm:text-sm font-semibold leading-snug mt-1">Em breve vamos entrar em contato com você para <strong>confirmar</strong> o agendamento. Fique atento ao seu WhatsApp.</p>
+              </div>
             </div>
 
             <div id="blocoTecnicoSucesso" class="hidden bg-blue-50 border-2 border-brand-blue/20 p-4 rounded-2xl text-brand-blue shadow-sm">
